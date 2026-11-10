@@ -1,0 +1,25 @@
+{
+	"schemaVersion": 1,
+	"id": "erleichterungen",
+	"version": "${version}",
+	"name": "Erleichterungen",
+	"description": "Client-Mod mit Anti-Vanish, Block-ESP, Player-ESP und Geoden-Wachstums-Tracker.",
+	"authors": ["paulpuder30-cloud"],
+	"contact": {
+		"sources": "https://github.com/paulpuder30-cloud/Minecraft-erleichterungen-"
+	},
+	"license": "MIT",
+	"environment": "client",
+	"entrypoints": {
+		"client": ["de.erleichterungen.ErleichterungenClient"]
+	},
+	"mixins": [
+		{ "config": "erleichterungen.mixins.json", "environment": "client" }
+	],
+	"depends": {
+		"fabricloader": ">=0.20.1",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
