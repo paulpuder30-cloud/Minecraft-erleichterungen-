@@ -30,6 +30,10 @@ public final class Hud {
 		if (cfg.blockEspEnabled) {
 			lines.add(new Line("Block-ESP: " + BlockEsp.lastRendered() + " / " + BlockEsp.TRACKER.size(), 0xFF7FE8FF));
 		}
+		if (cfg.entityEspEnabled) {
+			lines.add(new Line("Entity-ESP: " + EntityEsp.lastRendered(), 0xFFFFC04D));
+			for (String s : EntityEsp.topCounts(4)) lines.add(new Line("  " + s, 0xFFDDDDDD));
+		}
 		if (cfg.playerEspEnabled) {
 			lines.add(new Line("Player-ESP: " + PlayerEsp.lastRendered() + " Spieler", 0xFFFF7F7F));
 		}

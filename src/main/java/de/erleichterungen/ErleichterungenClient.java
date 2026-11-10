@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import de.erleichterungen.config.ModConfig;
 import de.erleichterungen.feature.AntiVanish;
 import de.erleichterungen.feature.BlockEsp;
+import de.erleichterungen.feature.EntityEsp;
 import de.erleichterungen.feature.GeodeTracker;
 import de.erleichterungen.feature.Hud;
 import de.erleichterungen.feature.PlayerEsp;
@@ -35,6 +36,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 
 	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath(MOD_ID, "main"));
 	private static KeyMapping keyBlockEsp;
+	private static KeyMapping keyEntityEsp;
 	private static KeyMapping keyPlayerEsp;
 	private static KeyMapping keyGeode;
 	private static KeyMapping keyAntiVanish;
@@ -46,8 +48,10 @@ public class ErleichterungenClient implements ClientModInitializer {
 		ScanManager.init();
 		BlockEsp.init();
 		GeodeTracker.init();
+		EntityEsp.init();
 
 		keyBlockEsp = key("block_esp", InputConstants.KEY_F6);
+		keyEntityEsp = key("entity_esp", InputConstants.KEY_F4);
 		keyPlayerEsp = key("player_esp", InputConstants.KEY_F7);
 		keyGeode = key("geode_tracker", InputConstants.KEY_F8);
 		keyAntiVanish = key("anti_vanish", InputConstants.KEY_F9);
@@ -64,6 +68,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 			try (Gizmos.TemporaryCollection ignored = context.levelRenderer().collectPerFrameRenderThreadGizmos()) {
 				BlockEsp.render(mc, cam);
 				GeodeTracker.render(mc, cam);
+				EntityEsp.render(mc, cam, partialTick);
 				PlayerEsp.render(mc, cam, partialTick);
 			} catch (Exception e) {
 				LOGGER.error("Fehler beim Rendern", e);
@@ -81,7 +86,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> Commands.register(dispatcher));
 
-		LOGGER.info("Erleichterungen geladen: Anti-Vanish, Block-ESP, Player-ESP, Geoden-Tracker");
+		LOGGER.info("Erleichterungen geladen: Anti-Vanish, Block-ESP, Entity-ESP, Player-ESP, Geoden-Tracker");
 	}
 
 	private static KeyMapping key(String name, int glfwKey) {
@@ -91,6 +96,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 
 	private static void onTick(Minecraft mc) {
 		while (keyBlockEsp.consumeClick()) toggle("blockesp");
+		while (keyEntityEsp.consumeClick()) toggle("entityesp");
 		while (keyPlayerEsp.consumeClick()) toggle("playeresp");
 		while (keyGeode.consumeClick()) toggle("geode");
 		while (keyAntiVanish.consumeClick()) toggle("antivanish");
@@ -108,6 +114,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 		String label;
 		switch (module.toLowerCase(Locale.ROOT)) {
 			case "blockesp" -> { state = c.blockEspEnabled = !c.blockEspEnabled; label = "Block-ESP"; }
+			case "entityesp" -> { state = c.entityEspEnabled = !c.entityEspEnabled; label = "Entity-ESP"; }
 			case "playeresp" -> { state = c.playerEspEnabled = !c.playerEspEnabled; label = "Player-ESP"; }
 			case "geode" -> { state = c.geodeTrackerEnabled = !c.geodeTrackerEnabled; label = "Geoden-Tracker"; }
 			case "antivanish" -> {

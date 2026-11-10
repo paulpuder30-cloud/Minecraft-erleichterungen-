@@ -8,6 +8,7 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import de.erleichterungen.config.ModConfig;
 import de.erleichterungen.feature.AntiVanish;
 import de.erleichterungen.feature.BlockEsp;
+import de.erleichterungen.feature.EntityEsp;
 import de.erleichterungen.feature.GeodeTracker;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
@@ -37,7 +38,13 @@ public final class Commands {
 	private static final SuggestionProvider<FabricClientCommandSource> CONFIGURED_BLOCKS = (ctx, builder) ->
 			SharedSuggestionProvider.suggest(ModConfig.get().blockEspBlocks.keySet(), builder);
 
-	private static final String[] MODULES = {"blockesp", "playeresp", "geode", "antivanish", "hud"};
+	private static final SuggestionProvider<FabricClientCommandSource> ENTITY_IDS = (ctx, builder) ->
+			SharedSuggestionProvider.suggest(BuiltInRegistries.ENTITY_TYPE.keySet().stream().map(Identifier::toString), builder);
+
+	private static final SuggestionProvider<FabricClientCommandSource> CONFIGURED_ENTITIES = (ctx, builder) ->
+			SharedSuggestionProvider.suggest(ModConfig.get().entityEspTypes.keySet(), builder);
+
+	private static final String[] MODULES = {"blockesp", "entityesp", "playeresp", "geode", "antivanish", "hud"};
 
 	public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
 		dispatcher.register(literal("erl")
@@ -47,6 +54,7 @@ public final class Commands {
 				.then(literal("reload").executes(ctx -> {
 					ModConfig.load();
 					BlockEsp.rebuildFilter();
+					EntityEsp.rebuildFilter();
 					return ok(ctx, "Konfiguration neu geladen.");
 				}))
 				.then(literal("toggle")
@@ -79,6 +87,28 @@ public final class Commands {
 						.then(intSetting("range", 8, 512, (c, v) -> c.blockEspRange = v))
 						.then(intSetting("max", 10, 20000, (c, v) -> c.blockEspMaxBoxes = v))
 						.then(boolSetting("fill", c -> c.blockEspFill = !c.blockEspFill, c -> c.blockEspFill)))
+				.then(literal("entityesp")
+						.then(literal("add")
+								.then(argument("entity", StringArgumentType.greedyString()).suggests(ENTITY_IDS)
+										.executes(ctx -> addEntity(ctx, null))))
+						.then(literal("color")
+								.then(argument("farbe", StringArgumentType.word())
+										.then(argument("entity", StringArgumentType.greedyString()).suggests(CONFIGURED_ENTITIES)
+												.executes(ctx -> addEntity(ctx, StringArgumentType.getString(ctx, "farbe"))))))
+						.then(literal("remove")
+								.then(argument("entity", StringArgumentType.greedyString()).suggests(CONFIGURED_ENTITIES)
+										.executes(Commands::removeEntity)))
+						.then(literal("list").executes(Commands::listEntities))
+						.then(literal("clear").executes(ctx -> {
+							ModConfig.get().entityEspTypes.clear();
+							ModConfig.save();
+							EntityEsp.rebuildFilter();
+							return ok(ctx, "Entity-Liste geleert.");
+						}))
+						.then(intSetting("range", 8, 512, (c, v) -> c.entityEspRange = v))
+						.then(intSetting("max", 10, 20000, (c, v) -> c.entityEspMaxBoxes = v))
+						.then(boolSetting("labels", c -> c.entityEspLabels = !c.entityEspLabels, c -> c.entityEspLabels))
+						.then(boolSetting("fill", c -> c.entityEspFill = !c.entityEspFill, c -> c.entityEspFill)))
 				.then(literal("playeresp")
 						.then(intSetting("range", 8, 1024, (c, v) -> c.playerEspRange = v))
 						.then(boolSetting("names", c -> c.playerEspNames = !c.playerEspNames, c -> c.playerEspNames))
@@ -165,6 +195,37 @@ public final class Commands {
 		return 1;
 	}
 
+	private static int addEntity(CommandContext<FabricClientCommandSource> ctx, String color) {
+		String id = BlockEsp.normalize(StringArgumentType.getString(ctx, "entity").trim());
+		if (EntityEsp.resolve(id) == null) return err(ctx, "Unbekannte Entity: " + id);
+		String hex = color != null ? color.replace("#", "") : String.format("%06X", BlockEsp.defaultColor(id) & 0xFFFFFF);
+		if (color != null && ModConfig.parseColor(hex, 0) == 0 && !hex.matches("0+")) return err(ctx, "Ungültige Farbe: " + color);
+		ModConfig.get().entityEspTypes.put(id, hex);
+		ModConfig.save();
+		EntityEsp.rebuildFilter();
+		return ok(ctx, id + " hinzugefügt (Farbe #" + hex + ").");
+	}
+
+	private static int removeEntity(CommandContext<FabricClientCommandSource> ctx) {
+		String id = BlockEsp.normalize(StringArgumentType.getString(ctx, "entity").trim());
+		if (ModConfig.get().entityEspTypes.remove(id) == null) return err(ctx, id + " ist nicht in der Liste.");
+		ModConfig.save();
+		EntityEsp.rebuildFilter();
+		return ok(ctx, id + " entfernt.");
+	}
+
+	private static int listEntities(CommandContext<FabricClientCommandSource> ctx) {
+		Map<String, String> types = ModConfig.get().entityEspTypes;
+		if (types.isEmpty()) return ok(ctx, "Keine Entities in der Liste. /erl entityesp add <entity>");
+		ctx.getSource().sendFeedback(Component.literal("Entity-ESP Typen:").withStyle(ChatFormatting.LIGHT_PURPLE));
+		for (Map.Entry<String, String> e : types.entrySet()) {
+			int color = ModConfig.parseColor(e.getValue(), 0xFFFFFFFF);
+			ctx.getSource().sendFeedback(Component.literal(" ■ ").withColor(color & 0xFFFFFF)
+					.append(Component.literal(e.getKey() + " #" + e.getValue()).withStyle(ChatFormatting.GRAY)));
+		}
+		return 1;
+	}
+
 	private static int geodeStats(CommandContext<FabricClientCommandSource> ctx) {
 		FabricClientCommandSource src = ctx.getSource();
 		src.sendFeedback(Component.literal("Geoden-Statistik (Sitzung):").withStyle(ChatFormatting.LIGHT_PURPLE));
@@ -185,7 +246,7 @@ public final class Commands {
 
 	private static int status(CommandContext<FabricClientCommandSource> ctx) {
 		ModConfig c = ModConfig.get();
-		ok(ctx, "Block-ESP: " + onOff(c.blockEspEnabled) + " | Player-ESP: " + onOff(c.playerEspEnabled)
+		ok(ctx, "Block-ESP: " + onOff(c.blockEspEnabled) + " | Entity-ESP: " + onOff(c.entityEspEnabled) + " | Player-ESP: " + onOff(c.playerEspEnabled)
 				+ " | Geoden: " + onOff(c.geodeTrackerEnabled) + " | Anti-Vanish: " + onOff(c.antiVanishEnabled)
 				+ " | HUD: " + onOff(c.hudEnabled));
 		return 1;
@@ -199,16 +260,18 @@ public final class Commands {
 		FabricClientCommandSource s = ctx.getSource();
 		s.sendFeedback(Component.literal("Erleichterungen – Befehle:").withStyle(ChatFormatting.LIGHT_PURPLE));
 		String[] lines = {
-				"/erl toggle <blockesp|playeresp|geode|antivanish|hud>",
+				"/erl toggle <blockesp|entityesp|playeresp|geode|antivanish|hud>",
 				"/erl status",
 				"/erl blockesp add <block> | color <hex> <block> | remove <block> | list | clear",
 				"/erl blockesp range <n> | max <n> | fill",
+				"/erl entityesp add <entity> | color <hex> <entity> | remove <entity> | list | clear",
+				"/erl entityesp range <n> | max <n> | labels | fill",
 				"/erl playeresp range <n> | names | fill",
 				"/erl geode range <n> | budding | growing | notify | sound | stats | reset",
 				"/erl antivanish list | clear | command <cmd> | interval <s> | timeout <ms>",
 				"/erl antivanish leave | completion | entity | spectator | sound",
 				"/erl reload",
-				"Tasten (änderbar in Steuerung): F6 Block-ESP, F7 Player-ESP, F8 Geoden, F9 Anti-Vanish, F10 HUD"
+				"Tasten (änderbar in Steuerung): F4 Entity-ESP, F6 Block-ESP, F7 Player-ESP, F8 Geoden, F9 Anti-Vanish, F10 HUD"
 		};
 		for (String l : lines) s.sendFeedback(Component.literal(" " + l).withStyle(ChatFormatting.GRAY));
 		return 1;

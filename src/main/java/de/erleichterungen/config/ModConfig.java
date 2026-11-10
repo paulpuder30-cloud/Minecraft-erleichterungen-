@@ -38,6 +38,17 @@ public final class ModConfig {
 	/** Block-ID -> Farbe (Hex, RGB oder ARGB). */
 	public Map<String, String> blockEspBlocks = defaultBlocks();
 
+	// ---------- Entity ESP ----------
+	public boolean entityEspEnabled = false;
+	public int entityEspRange = 128;
+	public int entityEspMaxBoxes = 1000;
+	/** Name bzw. Gegenstand im Item Frame + Entfernung anzeigen. */
+	public boolean entityEspLabels = true;
+	public boolean entityEspFill = false;
+	public float entityEspLineWidth = 2.0f;
+	/** Entity-ID -> Farbe (Hex, RGB oder ARGB). */
+	public Map<String, String> entityEspTypes = defaultEntities();
+
 	// ---------- Player ESP ----------
 	public boolean playerEspEnabled = false;
 	public int playerEspRange = 256;
@@ -83,6 +94,24 @@ public final class ModConfig {
 		return map;
 	}
 
+	private static Map<String, String> defaultEntities() {
+		Map<String, String> map = new LinkedHashMap<>();
+		map.put("minecraft:item_frame", "FFAA00");
+		map.put("minecraft:glow_item_frame", "00FFCC");
+		map.put("minecraft:armor_stand", "FFFFFF");
+		map.put("minecraft:painting", "C080FF");
+		map.put("minecraft:chest_minecart", "FFD700");
+		map.put("minecraft:hopper_minecart", "A0A0A0");
+		map.put("minecraft:villager", "55FF55");
+		map.put("minecraft:leash_knot", "C8A060");
+		map.put("minecraft:end_crystal", "FF55FF");
+		for (String wood : new String[]{"oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak"}) {
+			map.put("minecraft:" + wood + "_chest_boat", "DDAA55");
+		}
+		map.put("minecraft:bamboo_chest_raft", "DDAA55");
+		return map;
+	}
+
 	public static ModConfig get() {
 		return instance;
 	}
@@ -93,6 +122,7 @@ public final class ModConfig {
 				ModConfig loaded = GSON.fromJson(reader, ModConfig.class);
 				if (loaded != null) {
 					if (loaded.blockEspBlocks == null) loaded.blockEspBlocks = defaultBlocks();
+					if (loaded.entityEspTypes == null) loaded.entityEspTypes = defaultEntities();
 					instance = loaded;
 				}
 			} catch (Exception e) {
