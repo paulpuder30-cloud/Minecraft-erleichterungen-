@@ -5,6 +5,8 @@ import de.erleichterungen.config.ModConfig;
 import de.erleichterungen.feature.AntiVanish;
 import de.erleichterungen.feature.BlockEsp;
 import de.erleichterungen.feature.EntityEsp;
+import de.erleichterungen.feature.Freecam;
+import de.erleichterungen.gui.ClickGuiScreen;
 import de.erleichterungen.feature.GeodeTracker;
 import de.erleichterungen.feature.Hud;
 import de.erleichterungen.feature.PlayerEsp;
@@ -42,6 +44,8 @@ public class ErleichterungenClient implements ClientModInitializer {
 	private static KeyMapping keyGeode;
 	private static KeyMapping keyAntiVanish;
 	private static KeyMapping keyHud;
+	private static KeyMapping keyFreecam;
+	private static KeyMapping keyGui;
 
 	@Override
 	public void onInitializeClient() {
@@ -57,6 +61,8 @@ public class ErleichterungenClient implements ClientModInitializer {
 		keyGeode = key("geode_tracker", InputConstants.KEY_F8);
 		keyAntiVanish = key("anti_vanish", InputConstants.KEY_F9);
 		keyHud = key("hud", InputConstants.KEY_F10);
+		keyFreecam = key("freecam", InputConstants.KEY_G);
+		keyGui = key("gui", InputConstants.KEY_RSHIFT);
 
 		ClientTickEvents.END_CLIENT_TICK.register(ErleichterungenClient::onTick);
 
@@ -85,11 +91,28 @@ public class ErleichterungenClient implements ClientModInitializer {
 		});
 
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> AntiVanish.reset());
-		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> client.execute(AntiVanish::reset));
+		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> client.execute(() -> {
+			AntiVanish.reset();
+			Freecam.disable();
+		}));
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> Commands.register(dispatcher));
 
 		LOGGER.info("Erleichterungen geladen: Anti-Vanish, Block-ESP, Entity-ESP, Player-ESP, Geoden-Tracker");
+	}
+
+	public static KeyMapping keyFor(String module) {
+		return switch (module) {
+			case "blockesp" -> keyBlockEsp;
+			case "entityesp" -> keyEntityEsp;
+			case "playeresp" -> keyPlayerEsp;
+			case "geode" -> keyGeode;
+			case "antivanish" -> keyAntiVanish;
+			case "hud" -> keyHud;
+			case "freecam" -> keyFreecam;
+			case "gui" -> keyGui;
+			default -> null;
+		};
 	}
 
 	private static KeyMapping key(String name, int glfwKey) {
@@ -104,6 +127,12 @@ public class ErleichterungenClient implements ClientModInitializer {
 		while (keyGeode.consumeClick()) toggle("geode");
 		while (keyAntiVanish.consumeClick()) toggle("antivanish");
 		while (keyHud.consumeClick()) toggle("hud");
+		while (keyFreecam.consumeClick()) toggle("freecam");
+		while (keyGui.consumeClick()) {
+			if (mc.gui.screen() == null) mc.setScreenAndShow(new ClickGuiScreen());
+		}
+
+		Freecam.tick(mc);
 
 		ScanManager.tick(mc);
 		AntiVanish.tick(mc);
@@ -112,6 +141,11 @@ public class ErleichterungenClient implements ClientModInitializer {
 
 	/** Schaltet ein Modul um. @return neuer Zustand oder null bei unbekanntem Modul. */
 	public static Boolean toggle(String module) {
+		return toggle(module, true);
+	}
+
+	/** @param announce Chat-Nachricht ausgeben (aus der GUI heraus nicht nötig). */
+	public static Boolean toggle(String module, boolean announce) {
 		ModConfig c = ModConfig.get();
 		boolean state;
 		String label;
@@ -126,11 +160,17 @@ public class ErleichterungenClient implements ClientModInitializer {
 				if (!state) AntiVanish.reset();
 			}
 			case "hud" -> { state = c.hudEnabled = !c.hudEnabled; label = "HUD"; }
+			case "freecam" -> {
+				Freecam.toggle();
+				state = Freecam.isActive();
+				label = "Freecam";
+			}
 			default -> {
 				return null;
 			}
 		}
 		ModConfig.save();
+		if (!announce) return state;
 		Chat.send("Erleichterungen", Component.literal(label + " ").withStyle(ChatFormatting.GRAY)
 				.append(state ? Component.literal("AN").withStyle(ChatFormatting.GREEN)
 						: Component.literal("AUS").withStyle(ChatFormatting.RED)));

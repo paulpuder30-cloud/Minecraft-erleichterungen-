@@ -24,6 +24,9 @@ public final class Hud {
 		ModConfig cfg = ModConfig.get();
 		Minecraft mc = Minecraft.getInstance();
 		if (!cfg.hudEnabled || mc.player == null || mc.getDebugOverlay().showDebugScreen()) return;
+		// Hinter der eigenen GUI nicht zeichnen
+		if (mc.gui.screen() instanceof de.erleichterungen.gui.ClickGuiScreen
+				|| mc.gui.screen() instanceof de.erleichterungen.gui.ListEditScreen) return;
 
 		List<Line> lines = new ArrayList<>();
 		lines.add(new Line("Erleichterungen", 0xFFD58CFF));
@@ -33,6 +36,9 @@ public final class Hud {
 		if (cfg.entityEspEnabled) {
 			lines.add(new Line("Entity-ESP: " + EntityEsp.lastRendered(), 0xFFFFC04D));
 			for (String s : EntityEsp.topCounts(4)) lines.add(new Line("  " + s, 0xFFDDDDDD));
+		}
+		if (de.erleichterungen.feature.Freecam.isActive()) {
+			lines.add(new Line("Freecam aktiv", 0xFF7FFFD4));
 		}
 		if (cfg.playerEspEnabled) {
 			lines.add(new Line("Player-ESP: " + PlayerEsp.lastRendered() + " Spieler", 0xFFFF7F7F));

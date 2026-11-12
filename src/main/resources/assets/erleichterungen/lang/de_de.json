@@ -5,5 +5,7 @@
 	"key.erleichterungen.geode_tracker": "Geoden-Tracker umschalten",
 	"key.erleichterungen.anti_vanish": "Anti-Vanish umschalten",
 	"key.erleichterungen.hud": "HUD umschalten",
-	"key.erleichterungen.entity_esp": "Entity-ESP umschalten"
+	"key.erleichterungen.entity_esp": "Entity-ESP umschalten",
+	"key.erleichterungen.freecam": "Freecam umschalten",
+	"key.erleichterungen.gui": "Einstellungs-GUI öffnen"
 }

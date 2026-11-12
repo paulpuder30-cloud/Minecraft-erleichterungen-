@@ -1,6 +1,9 @@
 # Erleichterungen – Fabric-Client-Mod für Minecraft 26.3
 
-Client-seitige Fabric-Mod mit fünf Modulen:
+Client-seitige Fabric-Mod mit sechs Modulen und einer Click-GUI (**Rechte Shift-Taste**):
+
+![Click-GUI](docs/gui.png)
+
 
 | Modul | Taste | Beschreibung |
 |---|---|---|
@@ -9,26 +12,48 @@ Client-seitige Fabric-Mod mit fünf Modulen:
 | **Player-ESP** | `F7` | Boxen + Name + Entfernung um alle Spieler, durch Wände sichtbar. Vanish-Verdächtige in Magenta. |
 | **Geoden-Tracker** | `F8` | Findet knospenden Amethyst und alle Knospen, färbt sie nach Wachstumsstufe, erkennt Wachstum live und meldet ausgewachsene Cluster. |
 | **Anti-Vanish** | `F9` | Erkennt Spieler, die per Vanish unsichtbar sind (standardmäßig an). |
+| **Freecam** | `G` | Kamera frei bewegen, der Spieler bleibt stehen. WASD, Leertaste/Shift = hoch/runter, Sprint = schneller. |
 | HUD | `F10` | Info-Overlay oben links. |
+| **Einstellungs-GUI** | `Rechte Shift` | Alle Module und Einstellungen übersichtlich an einem Ort. |
 
 Alle Tasten lassen sich unter *Optionen → Steuerung → Erleichterungen* ändern.
 
 ## Installation
 
 **Direkter Download (ohne GitHub-Login):**
-https://github.com/paulpuder30-cloud/Minecraft-erleichterungen-/raw/claude/epic-goldberg-fi63ne/download/erleichterungen-1.2.0.jar
+https://github.com/paulpuder30-cloud/Minecraft-erleichterungen-/raw/claude/epic-goldberg-fi63ne/download/erleichterungen-1.3.0.jar
 
 1. [Fabric Loader](https://fabricmc.net/use/) **0.20.1+** für Minecraft **26.3** installieren.
 2. [Fabric API](https://modrinth.com/mod/fabric-api) für 26.3 in den `mods`-Ordner legen.
-3. `erleichterungen-1.2.0.jar` in den `mods`-Ordner legen.
+3. `erleichterungen-1.3.0.jar` in den `mods`-Ordner legen.
 
 Die fertige JAR gibt es unter **Actions → Build → Artifacts** (`erleichterungen-mod`)
 oder selbst bauen:
 
 ```bash
 ./gradlew build      # benötigt Java 25
-# Ergebnis: build/libs/erleichterungen-1.2.0.jar
+# Ergebnis: build/libs/erleichterungen-1.3.0.jar
 ```
+
+## Click-GUI (Rechte Shift-Taste)
+
+Ein Fenster pro Kategorie (Render, Welt, Spieler, Sonstiges, Client):
+
+- **Linksklick** auf ein Modul: an/aus
+- **Rechtsklick** auf ein Modul: Einstellungen aufklappen (Regler, Schalter, Farben, Texte)
+- **Mittelklick** auf ein Modul (oder Klick auf „Taste“): Taste neu belegen – Entf = keine Taste
+- Fenster am **Titel ziehen** zum Verschieben, Rechtsklick auf den Titel klappt es ein
+- **Mausrad** scrollt ein Fenster bzw. stellt einen Regler fein ein
+- Block- und Entity-Listen werden in einem eigenen Fenster mit Suche und Farbreglern bearbeitet
+- Akzentfarbe unter *Client → GUI* änderbar; Positionen werden gespeichert
+
+| Einstellungen | Listen-Editor |
+|---|---|
+| ![Einstellungen](docs/gui-einstellungen.png) | ![Listen-Editor](docs/liste-bearbeiten.png) |
+
+| ESP + Tracer | Freecam |
+|---|---|
+| ![ESP](docs/esp.png) | ![Freecam](docs/freecam.png) |
 
 ## Module im Detail
 
@@ -96,6 +121,12 @@ Alle Einstellungen liegen zusätzlich in `config/erleichterungen.json`.
 ## Hinweis
 ESP- und Anti-Vanish-Funktionen sind auf vielen Servern laut Regeln verboten.
 Nutzung auf eigene Verantwortung – im Einzelspieler bzw. auf eigenen Servern unproblematisch.
+
+## Automatischer Test
+
+`./gradlew runClientGameTest` startet Minecraft, erstellt eine Testwelt, platziert Erz/Geode/Item Frame/
+Rüstungsständer, öffnet die GUI und den Listen-Editor, testet Freecam (Spieler darf sich nicht bewegen)
+und speichert Screenshots unter `build/run/clientGameTest/screenshots/`.
 
 ## Technik
 - Minecraft 26.3, Fabric Loader 0.20.1, Fabric API 0.166.0+26.3, Java 25

@@ -33,3 +33,15 @@ java {
 	sourceCompatibility = JavaVersion.VERSION_25
 	targetCompatibility = JavaVersion.VERSION_25
 }
+
+// Automatischer Client-Test (Welt erstellen, GUI öffnen, Freecam testen, Screenshots):
+//   ./gradlew runClientGameTest
+fabricApi {
+	configureTests {
+		createSourceSet = true
+		modId = "erleichterungen-test"
+		enableGameTests = false
+		enableClientGameTests = true
+		eula = true
+	}
+}

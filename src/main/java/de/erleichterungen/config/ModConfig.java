@@ -27,6 +27,14 @@ public final class ModConfig {
 	// ---------- HUD ----------
 	public boolean hudEnabled = true;
 
+	// ---------- GUI ----------
+	public String guiAccent = "8A5CFF";
+	/** Panel-Positionen der GUI: Kategorie -> {x, y, eingeklappt(0/1)}. */
+	public Map<String, int[]> guiPanels = new LinkedHashMap<>();
+
+	// ---------- Freecam ----------
+	public float freecamSpeed = 1.0f;
+
 	// ---------- Tracer ----------
 	public float tracerWidth = 1.5f;
 
@@ -138,6 +146,7 @@ public final class ModConfig {
 				if (loaded != null) {
 					if (loaded.blockEspBlocks == null) loaded.blockEspBlocks = defaultBlocks();
 					if (loaded.entityEspTypes == null) loaded.entityEspTypes = defaultEntities();
+					if (loaded.guiPanels == null) loaded.guiPanels = new LinkedHashMap<>();
 					instance = loaded;
 				}
 			} catch (Exception e) {

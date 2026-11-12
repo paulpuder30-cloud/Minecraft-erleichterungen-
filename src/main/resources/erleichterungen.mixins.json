@@ -3,7 +3,11 @@
 	"package": "de.erleichterungen.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
-		"ClientPacketListenerMixin"
+		"CameraMixin",
+		"ClientPacketListenerMixin",
+		"EntityMixin",
+		"GameRendererMixin",
+		"KeyboardInputMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
