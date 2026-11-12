@@ -1,6 +1,8 @@
 package de.erleichterungen.feature;
 
+import de.erleichterungen.config.EspEntry;
 import de.erleichterungen.config.ModConfig;
+import de.erleichterungen.config.RenderMode;
 import de.erleichterungen.scan.BlockTracker;
 import de.erleichterungen.scan.ScanManager;
 import de.erleichterungen.util.Tracers;
@@ -22,8 +24,8 @@ import java.util.Map;
  * Markiert ausgewählte Blöcke (Erze, Spawner, ...) durch Wände hindurch.
  */
 public final class BlockEsp {
-	/** Block -> ARGB-Farbe. Wird aus der Config aufgebaut. */
-	private static final Map<Block, Integer> COLORS = new IdentityHashMap<>();
+	/** Block -> Eintrag aus der Config (live – Farb-/Modusänderungen wirken sofort). */
+	private static final Map<Block, EspEntry> COLORS = new IdentityHashMap<>();
 	public static final BlockTracker TRACKER = new BlockTracker(state -> COLORS.containsKey(state.getBlock()));
 
 	private static int lastRendered;
@@ -39,11 +41,9 @@ public final class BlockEsp {
 	/** Liest die Blockliste aus der Config neu ein und scannt alle Chunks neu. */
 	public static void rebuildFilter() {
 		COLORS.clear();
-		for (Map.Entry<String, String> e : ModConfig.get().blockEspBlocks.entrySet()) {
+		for (Map.Entry<String, EspEntry> e : ModConfig.get().blockEsp.entrySet()) {
 			Block block = resolve(e.getKey());
-			if (block != null) {
-				COLORS.put(block, ModConfig.parseColor(e.getValue(), defaultColor(e.getKey())));
-			}
+			if (block != null) COLORS.put(block, e.getValue());
 		}
 		TRACKER.clear();
 		ScanManager.rescanAll();
@@ -97,15 +97,17 @@ public final class BlockEsp {
 				stale.add(pos);
 				return;
 			}
-			Integer color = COLORS.get(state.getBlock());
-			if (color == null) return;
-			if (cfg.blockEspBoxes) {
+			EspEntry entry = COLORS.get(state.getBlock());
+			if (entry == null) return;
+			RenderMode mode = entry.mode();
+			if (mode.box()) {
+				int color = entry.boxColor();
 				GizmoStyle style = fill
 						? GizmoStyle.strokeAndFill(color, width, (color & 0x00FFFFFF) | 0x30000000)
 						: GizmoStyle.stroke(color, width);
 				Gizmos.cuboid(bp, style).setAlwaysOnTop();
 			}
-			if (cfg.blockEspTracers) Tracers.line(Vec3.atCenterOf(bp), color);
+			if (mode.tracer()) Tracers.line(Vec3.atCenterOf(bp), entry.tracerColor());
 			count[0]++;
 		});
 

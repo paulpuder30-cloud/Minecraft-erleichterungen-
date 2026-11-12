@@ -1,6 +1,8 @@
 package de.erleichterungen.feature;
 
+import de.erleichterungen.config.EspEntry;
 import de.erleichterungen.config.ModConfig;
+import de.erleichterungen.config.RenderMode;
 import de.erleichterungen.util.Tracers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -26,8 +28,8 @@ import java.util.Map;
  * durch Wände hindurch. Typen und Farben sind frei konfigurierbar.
  */
 public final class EntityEsp {
-	/** EntityType -> ARGB-Farbe. */
-	private static final Map<EntityType<?>, Integer> COLORS = new IdentityHashMap<>();
+	/** EntityType -> Eintrag aus der Config (live). */
+	private static final Map<EntityType<?>, EspEntry> COLORS = new IdentityHashMap<>();
 	/** Anzahl gefundener Entities je Typ im letzten Frame (für das HUD). */
 	private static final Map<EntityType<?>, Integer> COUNTS = new IdentityHashMap<>();
 	private static int lastRendered;
@@ -41,11 +43,9 @@ public final class EntityEsp {
 
 	public static void rebuildFilter() {
 		COLORS.clear();
-		for (Map.Entry<String, String> e : ModConfig.get().entityEspTypes.entrySet()) {
+		for (Map.Entry<String, EspEntry> e : ModConfig.get().entityEsp.entrySet()) {
 			EntityType<?> type = resolve(e.getKey());
-			if (type != null) {
-				COLORS.put(type, ModConfig.parseColor(e.getValue(), BlockEsp.defaultColor(e.getKey())));
-			}
+			if (type != null) COLORS.put(type, e.getValue());
 		}
 	}
 
@@ -73,7 +73,8 @@ public final class EntityEsp {
 	}
 
 	public static int colorOf(EntityType<?> type) {
-		return COLORS.getOrDefault(type, 0xFFFFFFFF);
+		EspEntry e = COLORS.get(type);
+		return e == null ? 0xFFFFFFFF : e.boxColor();
 	}
 
 	public static void render(Minecraft mc, Vec3 cam, float partialTick) {
@@ -87,8 +88,10 @@ public final class EntityEsp {
 
 		for (Entity entity : mc.level.entitiesForRendering()) {
 			if (lastRendered >= max) break;
-			Integer color = COLORS.get(entity.getType());
-			if (color == null || entity.isRemoved()) continue;
+			EspEntry entry = COLORS.get(entity.getType());
+			if (entry == null || entity.isRemoved()) continue;
+			int color = entry.boxColor();
+			RenderMode mode = entry.mode();
 			Vec3 pos = entity.getPosition(partialTick);
 			double distSq = pos.distanceToSqr(cam);
 			if (distSq > rangeSq) continue;
@@ -96,13 +99,13 @@ public final class EntityEsp {
 			AABB box = entity.getBoundingBox().move(pos.subtract(entity.position()));
 			// Sehr flache Boxen (Item Frames, Gemälde) minimal aufdicken, damit sie sichtbar bleiben
 			box = box.inflate(0.02);
-			if (cfg.entityEspBoxes) {
+			if (mode.box()) {
 				GizmoStyle style = cfg.entityEspFill
 						? GizmoStyle.strokeAndFill(color, cfg.entityEspLineWidth, (color & 0x00FFFFFF) | 0x30000000)
 						: GizmoStyle.stroke(color, cfg.entityEspLineWidth);
 				Gizmos.cuboid(box, style).setAlwaysOnTop();
 			}
-			if (cfg.entityEspTracers) Tracers.line(box.getCenter(), color);
+			if (mode.tracer()) Tracers.line(box.getCenter(), entry.tracerColor());
 
 			if (cfg.entityEspLabels) {
 				String label = label(entity);

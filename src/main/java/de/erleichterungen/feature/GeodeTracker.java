@@ -192,7 +192,7 @@ public final class GeodeTracker {
 						freeFaces++;
 					}
 				}
-				if (cfg.geodeShowBudding && cfg.geodeBoxes) {
+				if (cfg.geodeShowBudding && cfg.geodeMode.box()) {
 					Gizmos.cuboid(bp, GizmoStyle.stroke(STAGE_COLORS[STAGE_BUDDING], 1.5f)).setAlwaysOnTop();
 				}
 				return;
@@ -207,13 +207,15 @@ public final class GeodeTracker {
 			AABB shape = state.getShape(level, bp).isEmpty()
 					? new AABB(bp)
 					: state.getShape(level, bp).bounds().move(bp);
-			if (cfg.geodeBoxes) {
+			if (cfg.geodeMode.box()) {
 				GizmoStyle style = stage == STAGE_CLUSTER
 						? GizmoStyle.strokeAndFill(color, 2.5f, (color & 0x00FFFFFF) | 0x50000000)
 						: GizmoStyle.stroke(color, 2.0f);
 				Gizmos.cuboid(shape, style).setAlwaysOnTop();
 			}
-			if (cfg.geodeTracers && stage == STAGE_CLUSTER) Tracers.line(shape.getCenter(), color);
+			if (cfg.geodeMode.tracer() && stage == STAGE_CLUSTER) {
+				Tracers.line(shape.getCenter(), ModConfig.parseColor(cfg.geodeTracerColor, color));
+			}
 		});
 
 		for (int i = 0; i < stale.size(); i++) {

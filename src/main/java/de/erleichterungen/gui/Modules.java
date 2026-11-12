@@ -1,7 +1,9 @@
 package de.erleichterungen.gui;
 
 import de.erleichterungen.ErleichterungenClient;
+import de.erleichterungen.config.EspEntry;
 import de.erleichterungen.config.ModConfig;
+import de.erleichterungen.config.RenderMode;
 import de.erleichterungen.feature.AntiVanish;
 import de.erleichterungen.feature.BlockEsp;
 import de.erleichterungen.feature.EntityEsp;
@@ -47,6 +49,18 @@ public final class Modules {
 		return ids;
 	}
 
+	private static String blockName(String id) {
+		Identifier ident = Identifier.tryParse(id);
+		if (ident == null || !BuiltInRegistries.BLOCK.containsKey(ident)) return id;
+		return BuiltInRegistries.BLOCK.getValue(ident).getName().getString();
+	}
+
+	private static String entityName(String id) {
+		Identifier ident = Identifier.tryParse(id);
+		if (ident == null || !BuiltInRegistries.ENTITY_TYPE.containsKey(ident)) return id;
+		return BuiltInRegistries.ENTITY_TYPE.getValue(ident).getDescription().getString();
+	}
+
 	public static List<Module> all() {
 		if (all != null) return all;
 		List<Module> list = new ArrayList<>();
@@ -55,78 +69,74 @@ public final class Modules {
 		list.add(toggleable("blockesp", "Block-ESP", Category.RENDER,
 				"Markiert ausgewählte Blöcke (Erze, Spawner, ...) durch Wände.", () -> c().blockEspEnabled)
 				.add(new Setting.ListEdit("Blöcke", "Welche Blöcke markiert werden (mit Farbe).",
-						() -> c().blockEspBlocks, Modules::blockIds).onChange(BlockEsp::rebuildFilter))
+						() -> c().blockEsp, Modules::blockIds, Modules::blockName).onChange(BlockEsp::rebuildFilter))
 				.add(new Setting.Int("Reichweite", "Maximale Entfernung in Blöcken.", 8, 512,
 						() -> c().blockEspRange, v -> c().blockEspRange = v))
 				.add(new Setting.Int("Max. Boxen", "Obergrenze gleichzeitig gezeichneter Blöcke.", 10, 20000,
 						() -> c().blockEspMaxBoxes, v -> c().blockEspMaxBoxes = v))
-				.add(new Setting.Bool("Boxen", "Umrisse um die Blöcke zeichnen.",
-						() -> c().blockEspBoxes, v -> c().blockEspBoxes = v))
 				.add(new Setting.Bool("Füllung", "Boxen halbtransparent füllen.",
-						() -> c().blockEspFill, v -> c().blockEspFill = v).visibleIf(() -> c().blockEspBoxes))
+						() -> c().blockEspFill, v -> c().blockEspFill = v))
 				.add(new Setting.Dec("Linienbreite", "Breite der Box-Umrisse.", 0.5f, 6f, 0.5f,
-						() -> c().blockEspLineWidth, v -> c().blockEspLineWidth = v).visibleIf(() -> c().blockEspBoxes))
-				.add(new Setting.Bool("Tracer", "Linien vom Fadenkreuz zu den Blöcken.",
-						() -> c().blockEspTracers, v -> c().blockEspTracers = v)));
+						() -> c().blockEspLineWidth, v -> c().blockEspLineWidth = v))
+				.add(bulkMode("Alle: Box", RenderMode.BOX, () -> c().blockEsp))
+				.add(bulkMode("Alle: Box & Tracer", RenderMode.BOTH, () -> c().blockEsp))
+				.add(bulkMode("Alle: Nur Tracer", RenderMode.TRACER, () -> c().blockEsp)));
 
 		list.add(toggleable("entityesp", "Entity-ESP", Category.RENDER,
 				"Markiert Base-typische Entities: Item Frames, Rüstungsständer, Loren, ...", () -> c().entityEspEnabled)
 				.add(new Setting.ListEdit("Entities", "Welche Entity-Typen markiert werden (mit Farbe).",
-						() -> c().entityEspTypes, Modules::entityIds).onChange(EntityEsp::rebuildFilter))
+						() -> c().entityEsp, Modules::entityIds, Modules::entityName).onChange(EntityEsp::rebuildFilter))
 				.add(new Setting.Int("Reichweite", "Maximale Entfernung in Blöcken.", 8, 512,
 						() -> c().entityEspRange, v -> c().entityEspRange = v))
 				.add(new Setting.Int("Max. Boxen", "Obergrenze gleichzeitig gezeichneter Entities.", 10, 20000,
 						() -> c().entityEspMaxBoxes, v -> c().entityEspMaxBoxes = v))
-				.add(new Setting.Bool("Boxen", "Umrisse um die Entities zeichnen.",
-						() -> c().entityEspBoxes, v -> c().entityEspBoxes = v))
 				.add(new Setting.Bool("Füllung", "Boxen halbtransparent füllen.",
-						() -> c().entityEspFill, v -> c().entityEspFill = v).visibleIf(() -> c().entityEspBoxes))
+						() -> c().entityEspFill, v -> c().entityEspFill = v))
 				.add(new Setting.Dec("Linienbreite", "Breite der Box-Umrisse.", 0.5f, 6f, 0.5f,
-						() -> c().entityEspLineWidth, v -> c().entityEspLineWidth = v).visibleIf(() -> c().entityEspBoxes))
+						() -> c().entityEspLineWidth, v -> c().entityEspLineWidth = v))
 				.add(new Setting.Bool("Beschriftung", "Name bzw. Gegenstand im Item Frame + Entfernung anzeigen.",
 						() -> c().entityEspLabels, v -> c().entityEspLabels = v))
-				.add(new Setting.Bool("Tracer", "Linien vom Fadenkreuz zu den Entities.",
-						() -> c().entityEspTracers, v -> c().entityEspTracers = v)));
+				.add(bulkMode("Alle: Box", RenderMode.BOX, () -> c().entityEsp))
+				.add(bulkMode("Alle: Box & Tracer", RenderMode.BOTH, () -> c().entityEsp))
+				.add(bulkMode("Alle: Nur Tracer", RenderMode.TRACER, () -> c().entityEsp)));
 
 		list.add(toggleable("playeresp", "Player-ESP", Category.RENDER,
 				"Boxen, Namen und Entfernung aller Spieler durch Wände.", () -> c().playerEspEnabled)
 				.add(new Setting.Int("Reichweite", "Maximale Entfernung in Blöcken.", 8, 1024,
 						() -> c().playerEspRange, v -> c().playerEspRange = v))
-				.add(new Setting.Bool("Boxen", "Umrisse um die Spieler zeichnen.",
-						() -> c().playerEspBoxes, v -> c().playerEspBoxes = v))
+				.add(new Setting.Mode("Modus", "Box, Box & Tracer oder nur Tracer.",
+						() -> c().playerEspMode, v -> c().playerEspMode = v))
+				.add(new Setting.Color("Box-Farbe", "Farbe der Boxen und Namen.",
+						() -> c().playerEspColor, v -> c().playerEspColor = v).visibleIf(() -> c().playerEspMode.box()))
+				.add(new Setting.Color("Tracer-Farbe", "Farbe der Tracer-Linien.",
+						() -> c().playerEspTracerColor, v -> c().playerEspTracerColor = v).visibleIf(() -> c().playerEspMode.tracer()))
 				.add(new Setting.Bool("Füllung", "Boxen halbtransparent füllen.",
-						() -> c().playerEspFill, v -> c().playerEspFill = v).visibleIf(() -> c().playerEspBoxes))
+						() -> c().playerEspFill, v -> c().playerEspFill = v).visibleIf(() -> c().playerEspMode.box()))
 				.add(new Setting.Dec("Linienbreite", "Breite der Box-Umrisse.", 0.5f, 6f, 0.5f,
-						() -> c().playerEspLineWidth, v -> c().playerEspLineWidth = v).visibleIf(() -> c().playerEspBoxes))
+						() -> c().playerEspLineWidth, v -> c().playerEspLineWidth = v).visibleIf(() -> c().playerEspMode.box()))
 				.add(new Setting.Bool("Namen", "Name und Entfernung über dem Spieler.",
-						() -> c().playerEspNames, v -> c().playerEspNames = v))
-				.add(new Setting.Bool("Tracer", "Linien vom Fadenkreuz zu den Spielern.",
-						() -> c().playerEspTracers, v -> c().playerEspTracers = v))
-				.add(new Setting.Color("Farbe", "Farbe für normale Spieler.",
-						() -> c().playerEspColor, v -> c().playerEspColor = v))
-				.add(new Setting.Color("Vanish-Farbe", "Farbe für Spieler, die Anti-Vanish als versteckt erkannt hat.",
-						() -> c().playerEspVanishedColor, v -> c().playerEspVanishedColor = v)));
+						() -> c().playerEspNames, v -> c().playerEspNames = v)));
 
 		list.add(new Module("tracers", "Tracer", Category.RENDER,
 				"Gemeinsame Einstellungen für alle Tracer-Linien.", null, null, () -> null)
 				.add(new Setting.Dec("Linienbreite", "Breite aller Tracer-Linien.", 0.5f, 10f, 0.5f,
 						() -> c().tracerWidth, v -> c().tracerWidth = v))
-				.add(new Setting.Action("Alle an", "Schaltet die Tracer aller Module ein.", () -> setAllTracers(true)))
-				.add(new Setting.Action("Alle aus", "Schaltet die Tracer aller Module aus.", () -> setAllTracers(false))));
+				.add(new Setting.Action("Alle Tracer an", "Box → Box & Tracer, für alle Module und Listeneinträge.", () -> c().setAllTracers(true)))
+				.add(new Setting.Action("Alle Tracer aus", "Alles auf nur Box – entfernt sämtliche Tracer.", () -> c().setAllTracers(false))));
 
 		// ------------------------------------------------------------------ Welt
 		list.add(toggleable("geode", "Geoden-Tracker", Category.WORLD,
 				"Zeigt Amethyst-Knospen nach Wachstumsstufe und meldet fertige Cluster.", () -> c().geodeTrackerEnabled)
 				.add(new Setting.Int("Reichweite", "Maximale Entfernung in Blöcken.", 8, 512,
 						() -> c().geodeRange, v -> c().geodeRange = v))
-				.add(new Setting.Bool("Boxen", "Knospen und Cluster umranden.",
-						() -> c().geodeBoxes, v -> c().geodeBoxes = v))
+				.add(new Setting.Mode("Modus", "Boxen um Knospen; Tracer führen zu erntebereiten Clustern.",
+						() -> c().geodeMode, v -> c().geodeMode = v))
+				.add(new Setting.Color("Tracer-Farbe", "Farbe der Tracer zu fertigen Clustern.",
+						() -> c().geodeTracerColor, v -> c().geodeTracerColor = v).visibleIf(() -> c().geodeMode.tracer()))
 				.add(new Setting.Bool("Knospender Amethyst", "Knospende Amethystblöcke (lila) anzeigen.",
-						() -> c().geodeShowBudding, v -> c().geodeShowBudding = v).visibleIf(() -> c().geodeBoxes))
+						() -> c().geodeShowBudding, v -> c().geodeShowBudding = v).visibleIf(() -> c().geodeMode.box()))
 				.add(new Setting.Bool("Wachsende Knospen", "Auch noch nicht fertige Knospen anzeigen.",
-						() -> c().geodeShowGrowing, v -> c().geodeShowGrowing = v).visibleIf(() -> c().geodeBoxes))
-				.add(new Setting.Bool("Tracer", "Linien zu erntebereiten Clustern.",
-						() -> c().geodeTracers, v -> c().geodeTracers = v))
+						() -> c().geodeShowGrowing, v -> c().geodeShowGrowing = v).visibleIf(() -> c().geodeMode.box()))
 				.add(new Setting.Bool("Benachrichtigung", "Chat-Nachricht, wenn ein Cluster ausgewachsen ist.",
 						() -> c().geodeNotifyFullyGrown, v -> c().geodeNotifyFullyGrown = v))
 				.add(new Setting.Bool("Sound", "Ton bei ausgewachsenem Cluster.",
@@ -162,10 +172,16 @@ public final class Modules {
 						() -> c().antiVanishSpectatorCheck, v -> c().antiVanishSpectatorCheck = v))
 				.add(new Setting.Bool("Sound", "Ton bei Erkennung.",
 						() -> c().antiVanishSound, v -> c().antiVanishSound = v))
-				.add(new Setting.Bool("Boxen", "Box um sichtbare Verdächtige (auch ohne Player-ESP).",
-						() -> c().antiVanishBoxes, v -> c().antiVanishBoxes = v))
-				.add(new Setting.Bool("Tracer", "Linien zu sichtbaren Verdächtigen.",
-						() -> c().antiVanishTracers, v -> c().antiVanishTracers = v))
+				.add(new Setting.Bool("Verdächtige markieren", "Sichtbare Verdächtige markieren (auch ohne Player-ESP).",
+						() -> c().antiVanishHighlight, v -> c().antiVanishHighlight = v))
+				.add(new Setting.Mode("Modus", "Box, Box & Tracer oder nur Tracer für Verdächtige.",
+						() -> c().antiVanishMode, v -> c().antiVanishMode = v).visibleIf(() -> c().antiVanishHighlight))
+				.add(new Setting.Color("Box-Farbe", "Farbe der Box um Verdächtige.",
+						() -> c().playerEspVanishedColor, v -> c().playerEspVanishedColor = v)
+						.visibleIf(() -> c().antiVanishHighlight && c().antiVanishMode.box()))
+				.add(new Setting.Color("Tracer-Farbe", "Farbe der Tracer zu Verdächtigen.",
+						() -> c().antiVanishTracerColor, v -> c().antiVanishTracerColor = v)
+						.visibleIf(() -> c().antiVanishHighlight && c().antiVanishMode.tracer()))
 				.add(new Setting.Action("Liste leeren", "Vergisst alle erkannten Vanish-Spieler.", AntiVanish::reset)));
 
 		// ------------------------------------------------------------------ Client
@@ -184,8 +200,8 @@ public final class Modules {
 		return all;
 	}
 
-	private static void setAllTracers(boolean on) {
-		ModConfig c = c();
-		c.blockEspTracers = c.entityEspTracers = c.playerEspTracers = c.geodeTracers = c.antiVanishTracers = on;
+	private static Setting bulkMode(String name, RenderMode mode, java.util.function.Supplier<java.util.Map<String, EspEntry>> map) {
+		return new Setting.Action(name, "Setzt den Modus aller Einträge in der Liste auf \"" + mode.label + "\".",
+				() -> map.get().values().forEach(e -> e.mode = mode));
 	}
 }

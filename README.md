@@ -44,7 +44,9 @@ Ein Fenster pro Kategorie (Render, Welt, Spieler, Sonstiges, Client):
 - **Mittelklick** auf ein Modul (oder Klick auf „Taste“): Taste neu belegen – Entf = keine Taste
 - Fenster am **Titel ziehen** zum Verschieben, Rechtsklick auf den Titel klappt es ein
 - **Mausrad** scrollt ein Fenster bzw. stellt einen Regler fein ein
-- Block- und Entity-Listen werden in einem eigenen Fenster mit Suche und Farbreglern bearbeitet
+- **Suche** unten links: einfach lostippen (Esc leert die Suche) – filtert Module und Einstellungen
+- Block- und Entity-Listen werden in einem eigenen Fenster bearbeitet: Suche nach deutschem Namen oder ID,
+  pro Eintrag Modus sowie Box- und Tracer-Farbe
 - Akzentfarbe unter *Client → GUI* änderbar; Positionen werden gespeichert
 
 | Einstellungen | Listen-Editor |
@@ -57,19 +59,24 @@ Ein Fenster pro Kategorie (Render, Welt, Spieler, Sonstiges, Client):
 
 ## Module im Detail
 
-### Boxen & Tracer (alle Module)
-Jedes Modul kann **Boxen** (Umrisse durch Wände) und **Tracer** (Linien vom Fadenkreuz zum Ziel)
-zeichnen – beides pro Modul einzeln schaltbar:
+### Box, Box & Tracer oder nur Tracer
+Jedes Ziel hat einen **Modus**: **Box** (Umriss durch Wände), **Box & Tracer** oder **Nur Tracer**
+(Linie vom Fadenkreuz zum Ziel) – jeweils mit eigener **Box-Farbe** und **Tracer-Farbe**.
 
-| Modul | Boxen (Standard) | Tracer (Standard) | Befehl |
-|---|---|---|---|
-| Block-ESP | an | aus | `/erl blockesp boxes` / `tracers` |
-| Entity-ESP | an | aus | `/erl entityesp boxes` / `tracers` |
-| Player-ESP | an | **an** | `/erl playeresp boxes` / `tracers` |
-| Geoden-Tracker | an | aus (nur zu fertigen Clustern) | `/erl geode boxes` / `tracers` |
-| Anti-Vanish | an | **an** (zu sichtbaren Verdächtigen, auch ohne Player-ESP) | `/erl antivanish boxes` / `tracers` |
+| Wo | Einstellbar | GUI |
+|---|---|---|
+| Block-ESP | **pro Block** (z. B. Diamanterz: Box & Tracer, Spawner: nur Box) | *Render → Block-ESP → Blöcke* |
+| Entity-ESP | **pro Entity-Typ** (z. B. Item Frame: nur Tracer) | *Render → Entity-ESP → Entities* |
+| Player-ESP | Modus, Box-Farbe, Tracer-Farbe | *Render → Player-ESP* |
+| Geoden-Tracker | Modus, Tracer-Farbe (Tracer führen zu fertigen Clustern) | *Welt → Geoden-Tracker* |
+| Anti-Vanish | Modus, Box-Farbe, Tracer-Farbe für Verdächtige | *Sonstiges → Anti-Vanish* |
 
-Alle Tracer auf einmal: `/erl tracers all true|false`, Linienbreite: `/erl tracers width <0.5-10>`.
+Im Listen-Editor einen Eintrag anklicken → unten Modus-Knöpfe, „Box-Farbe“/„Tracer-Farbe“ wählen und
+mit den R/G/B-Reglern einstellen. Das Kästchen **B / B+T / T** in der Liste wechselt den Modus direkt.
+In Block-/Entity-ESP setzen **„Alle: Box / Box & Tracer / Nur Tracer“** alle Einträge auf einmal.
+
+**Tracer wieder ausschalten:** Modus auf „Box“ stellen – oder *Render → Tracer → „Alle Tracer aus“*
+(bzw. `/erl tracers all false`), das entfernt sämtliche Tracer in allen Modulen.
 
 ### Anti-Vanish
 Kombiniert vier Erkennungsmethoden (einzeln abschaltbar):
@@ -100,18 +107,18 @@ Kombiniert vier Erkennungsmethoden (einzeln abschaltbar):
 ## Befehle (`/erl`)
 
 ```
-/erl toggle <blockesp|entityesp|playeresp|geode|antivanish|hud>
+/erl toggle <blockesp|entityesp|playeresp|geode|antivanish|hud|freecam>
 /erl status
 /erl blockesp add <block>              z.B. /erl blockesp add minecraft:gold_ore
-/erl blockesp color <hex> <block>      z.B. /erl blockesp color FFD700 minecraft:gold_ore
-/erl blockesp remove <block> | list | clear
-/erl blockesp range <n> | max <n> | fill | boxes | tracers
-/erl entityesp add <entity> | color <hex> <entity> | remove <entity> | list | clear
-/erl entityesp range <n> | max <n> | labels | fill | boxes | tracers
-/erl playeresp range <n> | names | fill | boxes | tracers
-/erl geode range <n> | budding | growing | notify | sound | boxes | tracers | stats | reset
+/erl blockesp color <hex> <block>      Box-Farbe, z.B. /erl blockesp color FFD700 minecraft:gold_ore
+/erl blockesp tracercolor <hex> <block>
+/erl blockesp mode <box|beide|tracer> [block]    ohne Block = alle Einträge
+/erl blockesp remove <block> | list | clear | range <n> | max <n> | fill
+/erl entityesp add | color | tracercolor | mode | remove | list | clear | range | max | labels | fill
+/erl playeresp range <n> | names | fill | mode <box|beide|tracer> | tracercolor <hex>
+/erl geode range <n> | budding | growing | notify | sound | mode <..> | tracercolor <hex> | stats | reset
 /erl antivanish list | clear | command <cmd> | interval <s> | timeout <ms>
-/erl antivanish leave | completion | entity | spectator | sound | boxes | tracers
+/erl antivanish leave | completion | entity | spectator | sound | highlight | mode <..> | tracercolor <hex>
 /erl tracers all <true|false> | width <breite>
 /erl reload
 ```

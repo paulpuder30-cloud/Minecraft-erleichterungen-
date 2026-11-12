@@ -52,6 +52,9 @@ public class ClickGuiScreen extends Screen {
 	private Setting.Color openColor;
 	private Module waitingBind;
 	private String tooltip;
+	/** Suchbegriff: einfach lostippen (wie bei Meteor). */
+	private final StringBuilder search = new StringBuilder();
+	private static final int SEARCH_W = 150;
 
 	public ClickGuiScreen() {
 		super(Component.literal("Erleichterungen"));
@@ -75,7 +78,7 @@ public class ClickGuiScreen extends Screen {
 		}
 	}
 
-	private enum Kind {HEADER, MODULE, BIND, BOOL, SLIDER, COLOR, COLOR_CHANNEL, TEXT, LIST, ACTION, PANEL_AREA}
+	private enum Kind {HEADER, MODULE, BIND, BOOL, SLIDER, COLOR, COLOR_CHANNEL, TEXT, MODE, LIST, ACTION, PANEL_AREA, SEARCH, SEARCH_CLEAR}
 
 	private record Hit(Kind kind, int x, int y, int w, int h, Panel panel, Module module, Setting setting, int channel) {
 	}
@@ -133,6 +136,46 @@ public class ClickGuiScreen extends Screen {
 		ModConfig.save();
 	}
 
+	// ------------------------------------------------------------------ Suche
+
+	private String[] searchWords() {
+		String q = search.toString().toLowerCase(Locale.ROOT).trim();
+		return q.isEmpty() ? new String[0] : q.split("\\s+");
+	}
+
+	private static boolean containsAll(String text, String[] words) {
+		String t = text.toLowerCase(Locale.ROOT);
+		for (String w : words) if (!t.contains(w)) return false;
+		return true;
+	}
+
+	private boolean nameMatches(Module m, String[] words) {
+		return containsAll(m.name + " " + m.category.title + " " + m.description, words);
+	}
+
+	private boolean settingMatches(Module m, String[] words) {
+		for (Setting st : m.settings) if (containsAll(st.name + " " + st.description, words)) return true;
+		return false;
+	}
+
+	private boolean visibleModule(Module m) {
+		String[] w = searchWords();
+		return w.length == 0 || nameMatches(m, w) || settingMatches(m, w);
+	}
+
+	/** Beim Suchen werden Module, bei denen nur eine Einstellung passt, automatisch aufgeklappt. */
+	private boolean isExpanded(Module m) {
+		if (EXPANDED.contains(m.id)) return true;
+		String[] w = searchWords();
+		return w.length > 0 && !nameMatches(m, w) && settingMatches(m, w);
+	}
+
+	private List<Module> visibleModules(Panel p) {
+		List<Module> out = new ArrayList<>();
+		for (Module m : p.modules) if (visibleModule(m)) out.add(m);
+		return out;
+	}
+
 	// ------------------------------------------------------------------ Zeichnen
 
 	@Override
@@ -145,19 +188,46 @@ public class ClickGuiScreen extends Screen {
 		super.extractRenderState(g, mouseX, mouseY, delta);
 		hits.clear();
 		tooltip = null;
-		for (Panel p : panels) drawPanel(g, p, mouseX, mouseY);
+		boolean anyVisible = false;
+		for (Panel p : panels) {
+			if (search.isEmpty() || !visibleModules(p).isEmpty()) {
+				drawPanel(g, p, mouseX, mouseY);
+				anyVisible = true;
+			}
+		}
+		if (!anyVisible) g.centeredText(font, "Keine Treffer für \"" + search + "\"", width / 2, height / 2, Theme.TEXT_DIM);
 
-		// Fußzeile mit Hilfe bzw. Beschreibung
-		String help = waitingBind != null
-				? "Taste für " + waitingBind.name + " drücken – Entf/Rücktaste = keine Taste, Esc = abbrechen"
-				: "Links: an/aus · Rechts: Einstellungen · Mitte: Taste belegen · Titel ziehen zum Verschieben";
-		String line = tooltip != null ? tooltip : help;
-		int tw = Math.min(width - 20, font.width(line) + 10);
-		int tx = (width - tw) / 2;
+		// Fußleiste: links Suche, rechts Hilfe bzw. Beschreibung
 		int ty = height - 18;
-		Theme.rect(g, tx, ty, tw, 14, 0xD0101014);
-		Theme.rect(g, tx, ty + 13, tw, 1, Theme.accent());
-		Theme.text(g, font, Theme.ellipsize(font, line, tw - 10), tx + 5, ty + 3, tooltip != null ? Theme.TEXT : Theme.TEXT_DIM);
+		int accent = Theme.accent();
+		int sx = 8;
+		Theme.rect(g, sx, ty, SEARCH_W, 14, 0xE0101014);
+		Theme.rect(g, sx, ty + 13, SEARCH_W, 1, accent);
+		boolean blink = (System.currentTimeMillis() / 500) % 2 == 0;
+		boolean typingHere = focusedText == null && waitingBind == null;
+		if (search.isEmpty()) {
+			Theme.text(g, font, "Suchen: einfach tippen...", sx + 5, ty + 3, Theme.TEXT_DIM);
+		} else {
+			String txt = search.toString();
+			while (font.width(txt + "_") > SEARCH_W - 22 && txt.length() > 1) txt = txt.substring(1);
+			Theme.text(g, font, txt + (blink && typingHere ? "_" : ""), sx + 5, ty + 3, Theme.TEXT);
+			boolean hovClear = Theme.inside(mouseX, mouseY, sx + SEARCH_W - 12, ty, 12, 14);
+			Theme.text(g, font, "x", sx + SEARCH_W - 9, ty + 3, hovClear ? 0xFFFF5555 : Theme.TEXT_DIM);
+			hits.add(new Hit(Kind.SEARCH_CLEAR, sx + SEARCH_W - 12, ty, 12, 14, null, null, null, 0));
+		}
+		hits.add(new Hit(Kind.SEARCH, sx, ty, SEARCH_W - 12, 14, null, null, null, 0));
+
+		String help = waitingBind != null
+				? "Taste für " + waitingBind.name + " drücken – Entf = keine Taste, Esc = abbrechen"
+				: "Links: an/aus · Rechts: Einstellungen · Mitte: Taste · Titel ziehen = verschieben";
+		String line = tooltip != null ? tooltip : help;
+		int hx = sx + SEARCH_W + 6;
+		int hw = width - hx - 8;
+		if (hw > 40) {
+			Theme.rect(g, hx, ty, hw, 14, 0xD0101014);
+			Theme.rect(g, hx, ty + 13, hw, 1, accent);
+			Theme.text(g, font, Theme.ellipsize(font, line, hw - 10), hx + 5, ty + 3, tooltip != null ? Theme.TEXT : Theme.TEXT_DIM);
+		}
 
 		Theme.text(g, font, "Erleichterungen", width - font.width("Erleichterungen") - 6, height - 30, Theme.accent());
 	}
@@ -167,11 +237,12 @@ public class ClickGuiScreen extends Screen {
 		// Titel
 		Theme.rect(g, p.x, p.y, PANEL_W, HEADER_H, accent);
 		Theme.text(g, font, p.category.title, p.x + PAD, p.y + 4, 0xFFFFFFFF);
+		List<Module> mods = visibleModules(p);
 		long active = p.modules.stream().filter(Module::isEnabled).count();
 		Theme.textRight(g, font, (p.collapsed ? "+ " : "") + active + "/" + p.modules.stream().filter(Module::hasToggle).count(),
 				p.x + PANEL_W - PAD, p.y + 4, 0xDDFFFFFF);
 		hits.add(new Hit(Kind.HEADER, p.x, p.y, PANEL_W, HEADER_H, p, null, null, 0));
-		if (p.collapsed) {
+		if (p.collapsed && search.isEmpty()) {
 			Theme.rect(g, p.x, p.y + HEADER_H, PANEL_W, 1, Theme.withAlpha(accent, 0x80));
 			return;
 		}
@@ -186,7 +257,7 @@ public class ClickGuiScreen extends Screen {
 		Theme.rect(g, p.x, top, PANEL_W, p.visibleHeight, Theme.PANEL_BG);
 		g.enableScissor(p.x, top, p.x + PANEL_W, top + p.visibleHeight);
 		int y = top - p.scroll;
-		for (Module m : p.modules) {
+		for (Module m : mods) {
 			y = drawModule(g, p, m, y, top, top + p.visibleHeight, mouseX, mouseY);
 		}
 		g.disableScissor();
@@ -202,9 +273,9 @@ public class ClickGuiScreen extends Screen {
 
 	private int contentHeight(Panel p) {
 		int h = 0;
-		for (Module m : p.modules) {
+		for (Module m : visibleModules(p)) {
 			h += ROW_H;
-			if (EXPANDED.contains(m.id)) {
+			if (isExpanded(m)) {
 				if (m.key.get() != null) h += SET_H;
 				for (Setting s : m.settings) h += settingHeight(s);
 				h += 2;
@@ -237,7 +308,7 @@ public class ClickGuiScreen extends Screen {
 	private int drawModule(GuiGraphicsExtractor g, Panel p, Module m, int y, int clipTop, int clipBottom, int mx, int my) {
 		int accent = Theme.accent();
 		boolean hover = hovered(mx, my, p.x, y, PANEL_W, ROW_H, clipTop, clipBottom);
-		boolean expanded = EXPANDED.contains(m.id);
+		boolean expanded = isExpanded(m);
 		Theme.rect(g, p.x, y, PANEL_W, ROW_H, Theme.ROW_BG);
 		if (m.isEnabled()) {
 			Theme.rect(g, p.x, y, PANEL_W, ROW_H, Theme.withAlpha(accent, 0x38));
@@ -330,6 +401,12 @@ public class ClickGuiScreen extends Screen {
 					Theme.text(g, font, Theme.ellipsize(font, value == null ? "" : value, sw - 10), sx + 5, y + 14, Theme.TEXT);
 					hit(Kind.TEXT, sx + 2, y + 12, sw - 4, 12, clipTop, clipBottom, p, m, s, 0);
 				}
+				case Setting.Mode md -> {
+					if (hov) Theme.rect(g, p.x, y, PANEL_W, h, Theme.HOVER);
+					Theme.text(g, font, s.name, sx + 2, y + 2, Theme.TEXT);
+					Theme.textRight(g, font, "< " + md.get.get().label + " >", sx + sw - 2, y + 2, accent);
+					hit(Kind.MODE, p.x, y, PANEL_W, h, clipTop, clipBottom, p, m, s, 0);
+				}
 				case Setting.ListEdit l -> {
 					if (hov) Theme.rect(g, p.x, y, PANEL_W, h, Theme.HOVER);
 					Theme.text(g, font, s.name, sx + 2, y + 2, Theme.TEXT);
@@ -380,6 +457,12 @@ public class ClickGuiScreen extends Screen {
 		Hit h = hitAt(mx, my);
 		if (h == null) return super.mouseClicked(event, doubleClick);
 
+		if (h.kind == Kind.SEARCH_CLEAR) {
+			search.setLength(0);
+			return true;
+		}
+		if (h.kind == Kind.SEARCH) return true;
+
 		// angeklicktes Panel nach vorne holen
 		panels.remove(h.panel);
 		panels.add(h.panel);
@@ -413,6 +496,11 @@ public class ClickGuiScreen extends Screen {
 			case SLIDER, COLOR_CHANNEL -> {
 				activeSlider = h;
 				applySlider(h, mx);
+			}
+			case MODE -> {
+				Setting.Mode md = (Setting.Mode) h.setting;
+				md.set.accept(button == 1 ? md.get.get().prev() : md.get.get().next());
+				md.onChange.run();
 			}
 			case COLOR -> openColor = openColor == h.setting ? null : (Setting.Color) h.setting;
 			case TEXT -> {
@@ -525,6 +613,15 @@ public class ClickGuiScreen extends Screen {
 			}
 			return true;
 		}
+		// Suche bearbeiten
+		if (event.key() == InputConstants.KEY_BACKSPACE && !search.isEmpty()) {
+			search.setLength(search.length() - 1);
+			return true;
+		}
+		if (event.key() == InputConstants.KEY_DELETE || (event.isEscape() && !search.isEmpty())) {
+			search.setLength(0);
+			return true;
+		}
 		KeyMapping gui = ErleichterungenClient.keyFor("gui");
 		if (gui != null && gui.matches(event)) {
 			onClose();
@@ -537,6 +634,12 @@ public class ClickGuiScreen extends Screen {
 	public boolean charTyped(CharacterEvent event) {
 		if (focusedText != null && event.isAllowedChatCharacter() && textBuffer.length() < 64) {
 			textBuffer.append(event.codepointAsString());
+			return true;
+		}
+		if (focusedText == null && waitingBind == null && event.isAllowedChatCharacter() && search.length() < 40) {
+			if (search.isEmpty() && event.codepointAsString().isBlank()) return true;
+			search.append(event.codepointAsString());
+			for (Panel p : panels) p.scroll = 0;
 			return true;
 		}
 		return super.charTyped(event);

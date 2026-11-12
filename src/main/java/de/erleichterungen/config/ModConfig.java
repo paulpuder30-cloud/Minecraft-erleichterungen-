@@ -2,6 +2,9 @@ package de.erleichterungen.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.erleichterungen.ErleichterungenClient;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -10,9 +13,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,11 +46,9 @@ public final class ModConfig {
 	/** Maximale Anzahl gleichzeitig gezeichneter Boxen (Performance). */
 	public int blockEspMaxBoxes = 1500;
 	public boolean blockEspFill = true;
-	public boolean blockEspBoxes = true;
-	public boolean blockEspTracers = false;
 	public float blockEspLineWidth = 2.0f;
-	/** Block-ID -> Farbe (Hex, RGB oder ARGB). */
-	public Map<String, String> blockEspBlocks = defaultBlocks();
+	/** Block-ID -> Darstellung (Modus, Box-Farbe, Tracer-Farbe). */
+	public Map<String, EspEntry> blockEsp;
 
 	// ---------- Entity ESP ----------
 	public boolean entityEspEnabled = false;
@@ -58,21 +57,19 @@ public final class ModConfig {
 	/** Name bzw. Gegenstand im Item Frame + Entfernung anzeigen. */
 	public boolean entityEspLabels = true;
 	public boolean entityEspFill = false;
-	public boolean entityEspBoxes = true;
-	public boolean entityEspTracers = false;
 	public float entityEspLineWidth = 2.0f;
-	/** Entity-ID -> Farbe (Hex, RGB oder ARGB). */
-	public Map<String, String> entityEspTypes = defaultEntities();
+	/** Entity-ID -> Darstellung (Modus, Box-Farbe, Tracer-Farbe). */
+	public Map<String, EspEntry> entityEsp;
 
 	// ---------- Player ESP ----------
 	public boolean playerEspEnabled = false;
 	public int playerEspRange = 256;
 	public boolean playerEspNames = true;
 	public boolean playerEspFill = false;
-	public boolean playerEspBoxes = true;
-	public boolean playerEspTracers = true;
+	public RenderMode playerEspMode = RenderMode.BOTH;
 	public float playerEspLineWidth = 2.5f;
 	public String playerEspColor = "FF3B3B";
+	public String playerEspTracerColor = "FF3B3B";
 	public String playerEspVanishedColor = "FF00FF";
 
 	// ---------- Anti Vanish ----------
@@ -91,8 +88,9 @@ public final class ModConfig {
 	public boolean antiVanishSpectatorCheck = true;
 	public boolean antiVanishSound = true;
 	/** Box/Tracer zu sichtbaren Vanish-Verdächtigen (auch wenn Player-ESP aus ist). */
-	public boolean antiVanishBoxes = true;
-	public boolean antiVanishTracers = true;
+	public boolean antiVanishHighlight = true;
+	public RenderMode antiVanishMode = RenderMode.BOTH;
+	public String antiVanishTracerColor = "FF00FF";
 
 	// ---------- Geoden-Tracker ----------
 	public boolean geodeTrackerEnabled = false;
@@ -101,11 +99,11 @@ public final class ModConfig {
 	public boolean geodeShowGrowing = true;
 	public boolean geodeNotifyFullyGrown = true;
 	public boolean geodeSound = true;
-	public boolean geodeBoxes = true;
-	/** Tracer zu erntebereiten Clustern. */
-	public boolean geodeTracers = false;
+	/** Box für alle angezeigten Knospen, Tracer nur zu erntebereiten Clustern. */
+	public RenderMode geodeMode = RenderMode.BOX;
+	public String geodeTracerColor = "3BFF5A";
 
-	private static Map<String, String> defaultBlocks() {
+	private static Map<String, String> defaultBlockColors() {
 		Map<String, String> map = new LinkedHashMap<>();
 		map.put("minecraft:diamond_ore", "00E5FF");
 		map.put("minecraft:deepslate_diamond_ore", "00E5FF");
@@ -117,7 +115,7 @@ public final class ModConfig {
 		return map;
 	}
 
-	private static Map<String, String> defaultEntities() {
+	private static Map<String, String> defaultEntityColors() {
 		Map<String, String> map = new LinkedHashMap<>();
 		map.put("minecraft:item_frame", "FFAA00");
 		map.put("minecraft:glow_item_frame", "00FFCC");
@@ -135,24 +133,89 @@ public final class ModConfig {
 		return map;
 	}
 
+	private static Map<String, EspEntry> toEntries(Map<String, String> colors, RenderMode mode) {
+		Map<String, EspEntry> out = new LinkedHashMap<>();
+		colors.forEach((id, color) -> out.put(id, new EspEntry(color, color, mode)));
+		return out;
+	}
+
+	/** Liest ein altes boxes/tracers-Paar aus Version 1.2/1.3 als Modus. */
+	private static RenderMode legacyMode(JsonObject json, String boxesKey, String tracersKey, RenderMode fallback) {
+		if (!json.has(boxesKey) && !json.has(tracersKey)) return fallback;
+		boolean boxes = !json.has(boxesKey) || json.get(boxesKey).getAsBoolean();
+		boolean tracers = json.has(tracersKey) && json.get(tracersKey).getAsBoolean();
+		if (boxes && tracers) return RenderMode.BOTH;
+		if (tracers) return RenderMode.TRACER;
+		return RenderMode.BOX;
+	}
+
+	private static Map<String, String> legacyColors(JsonObject json, String key) {
+		Map<String, String> out = new LinkedHashMap<>();
+		JsonElement e = json.get(key);
+		if (e != null && e.isJsonObject()) {
+			e.getAsJsonObject().entrySet().forEach(en -> out.put(en.getKey(), en.getValue().getAsString()));
+		}
+		return out;
+	}
+
+	/** Ergänzt fehlende Werte und übernimmt Einstellungen aus älteren Versionen. */
+	private void fillDefaults(JsonObject json) {
+		if (blockEsp == null) {
+			if (json.has("blockEspBlocks")) {
+				blockEsp = toEntries(legacyColors(json, "blockEspBlocks"), legacyMode(json, "blockEspBoxes", "blockEspTracers", RenderMode.BOX));
+			} else {
+				blockEsp = toEntries(defaultBlockColors(), RenderMode.BOX);
+			}
+		}
+		if (entityEsp == null) {
+			if (json.has("entityEspTypes")) {
+				entityEsp = toEntries(legacyColors(json, "entityEspTypes"), legacyMode(json, "entityEspBoxes", "entityEspTracers", RenderMode.BOX));
+			} else {
+				entityEsp = toEntries(defaultEntityColors(), RenderMode.BOX);
+			}
+		}
+		if (!json.has("playerEspMode")) playerEspMode = legacyMode(json, "playerEspBoxes", "playerEspTracers", RenderMode.BOTH);
+		if (!json.has("antiVanishMode")) antiVanishMode = legacyMode(json, "antiVanishBoxes", "antiVanishTracers", RenderMode.BOTH);
+		if (!json.has("geodeMode")) geodeMode = legacyMode(json, "geodeBoxes", "geodeTracers", RenderMode.BOX);
+		if (playerEspMode == null) playerEspMode = RenderMode.BOTH;
+		if (antiVanishMode == null) antiVanishMode = RenderMode.BOTH;
+		if (geodeMode == null) geodeMode = RenderMode.BOX;
+		if (guiPanels == null) guiPanels = new LinkedHashMap<>();
+		blockEsp.values().forEach(EspEntry::normalize);
+		entityEsp.values().forEach(EspEntry::normalize);
+	}
+
+	/** Schaltet die Tracer aller Module und Listeneinträge an bzw. aus. */
+	public void setAllTracers(boolean on) {
+		java.util.function.UnaryOperator<RenderMode> f = m -> on ? (m == RenderMode.BOX ? RenderMode.BOTH : m) : RenderMode.BOX;
+		blockEsp.values().forEach(e -> e.mode = f.apply(e.mode()));
+		entityEsp.values().forEach(e -> e.mode = f.apply(e.mode()));
+		playerEspMode = f.apply(playerEspMode);
+		antiVanishMode = f.apply(antiVanishMode);
+		geodeMode = f.apply(geodeMode);
+	}
+
 	public static ModConfig get() {
 		return instance;
 	}
 
 	public static void load() {
+		JsonObject json = new JsonObject();
+		ModConfig loaded = null;
 		if (Files.exists(FILE)) {
 			try (Reader reader = Files.newBufferedReader(FILE)) {
-				ModConfig loaded = GSON.fromJson(reader, ModConfig.class);
-				if (loaded != null) {
-					if (loaded.blockEspBlocks == null) loaded.blockEspBlocks = defaultBlocks();
-					if (loaded.entityEspTypes == null) loaded.entityEspTypes = defaultEntities();
-					if (loaded.guiPanels == null) loaded.guiPanels = new LinkedHashMap<>();
-					instance = loaded;
+				JsonElement root = JsonParser.parseReader(reader);
+				if (root != null && root.isJsonObject()) {
+					json = root.getAsJsonObject();
+					loaded = GSON.fromJson(json, ModConfig.class);
 				}
 			} catch (Exception e) {
 				ErleichterungenClient.LOGGER.error("Konnte Konfiguration nicht laden, verwende Standardwerte", e);
+				json = new JsonObject();
 			}
 		}
+		instance = loaded != null ? loaded : new ModConfig();
+		instance.fillDefaults(json);
 		save();
 	}
 
@@ -182,7 +245,4 @@ public final class ModConfig {
 		}
 	}
 
-	public List<String> blockIds() {
-		return new ArrayList<>(blockEspBlocks.keySet());
-	}
 }

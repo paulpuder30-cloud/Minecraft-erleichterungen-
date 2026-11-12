@@ -32,7 +32,7 @@ public final class PlayerEsp {
 		if (mc.level == null || mc.player == null) return;
 		boolean all = cfg.playerEspEnabled;
 		// Anti-Vanish markiert sichtbare Verdächtige auch ohne Player-ESP
-		boolean suspects = cfg.antiVanishEnabled && (cfg.antiVanishBoxes || cfg.antiVanishTracers);
+		boolean suspects = cfg.antiVanishEnabled && cfg.antiVanishHighlight;
 		if (!all && !suspects) return;
 
 		int normal = ModConfig.parseColor(cfg.playerEspColor, 0xFFFF3B3B);
@@ -47,8 +47,11 @@ public final class PlayerEsp {
 
 			boolean suspected = AntiVanish.isSuspected(player);
 			if (!all && !suspected) continue;
-			boolean drawBox = all ? cfg.playerEspBoxes || (suspected && cfg.antiVanishBoxes) : cfg.antiVanishBoxes;
-			boolean drawTracer = all ? cfg.playerEspTracers || (suspected && cfg.antiVanishTracers) : cfg.antiVanishTracers;
+			// Verdächtige nutzen den Anti-Vanish-Modus, alle anderen den Player-ESP-Modus
+			boolean useVanish = suspected && suspects;
+			boolean drawBox = useVanish ? cfg.antiVanishMode.box() : cfg.playerEspMode.box();
+			boolean drawTracer = useVanish ? cfg.antiVanishMode.tracer() : cfg.playerEspMode.tracer();
+			int tracerColor = ModConfig.parseColor(useVanish ? cfg.antiVanishTracerColor : cfg.playerEspTracerColor, 0xFFFFFFFF);
 			int color = suspected ? vanished : normal;
 			if (player.isInvisible() && !suspected) {
 				color = (color & 0x00FFFFFF) | 0xA0000000; // unsichtbare Spieler etwas transparenter
@@ -62,7 +65,7 @@ public final class PlayerEsp {
 						: GizmoStyle.stroke(color, cfg.playerEspLineWidth);
 				Gizmos.cuboid(box, style).setAlwaysOnTop();
 			}
-			if (drawTracer) Tracers.line(box.getCenter(), color);
+			if (drawTracer) Tracers.line(box.getCenter(), tracerColor);
 
 			if (cfg.playerEspNames && (drawBox || drawTracer)) {
 				double dist = Math.sqrt(distSq);

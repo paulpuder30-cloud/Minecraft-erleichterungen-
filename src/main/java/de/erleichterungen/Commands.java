@@ -5,7 +5,9 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import de.erleichterungen.config.EspEntry;
 import de.erleichterungen.config.ModConfig;
+import de.erleichterungen.config.RenderMode;
 import de.erleichterungen.feature.AntiVanish;
 import de.erleichterungen.feature.BlockEsp;
 import de.erleichterungen.feature.EntityEsp;
@@ -36,13 +38,13 @@ public final class Commands {
 			SharedSuggestionProvider.suggest(BuiltInRegistries.BLOCK.keySet().stream().map(Identifier::toString), builder);
 
 	private static final SuggestionProvider<FabricClientCommandSource> CONFIGURED_BLOCKS = (ctx, builder) ->
-			SharedSuggestionProvider.suggest(ModConfig.get().blockEspBlocks.keySet(), builder);
+			SharedSuggestionProvider.suggest(ModConfig.get().blockEsp.keySet(), builder);
 
 	private static final SuggestionProvider<FabricClientCommandSource> ENTITY_IDS = (ctx, builder) ->
 			SharedSuggestionProvider.suggest(BuiltInRegistries.ENTITY_TYPE.keySet().stream().map(Identifier::toString), builder);
 
 	private static final SuggestionProvider<FabricClientCommandSource> CONFIGURED_ENTITIES = (ctx, builder) ->
-			SharedSuggestionProvider.suggest(ModConfig.get().entityEspTypes.keySet(), builder);
+			SharedSuggestionProvider.suggest(ModConfig.get().entityEsp.keySet(), builder);
 
 	private static final String[] MODULES = {"blockesp", "entityesp", "playeresp", "geode", "antivanish", "hud"};
 
@@ -79,7 +81,7 @@ public final class Commands {
 										.executes(Commands::removeBlock)))
 						.then(literal("list").executes(Commands::listBlocks))
 						.then(literal("clear").executes(ctx -> {
-							ModConfig.get().blockEspBlocks.clear();
+							ModConfig.get().blockEsp.clear();
 							ModConfig.save();
 							BlockEsp.rebuildFilter();
 							return ok(ctx, "Block-Liste geleert.");
@@ -87,8 +89,8 @@ public final class Commands {
 						.then(intSetting("range", 8, 512, (c, v) -> c.blockEspRange = v))
 						.then(intSetting("max", 10, 20000, (c, v) -> c.blockEspMaxBoxes = v))
 						.then(boolSetting("fill", c -> c.blockEspFill = !c.blockEspFill, c -> c.blockEspFill))
-						.then(boolSetting("boxes", c -> c.blockEspBoxes = !c.blockEspBoxes, c -> c.blockEspBoxes))
-						.then(boolSetting("tracers", c -> c.blockEspTracers = !c.blockEspTracers, c -> c.blockEspTracers)))
+						.then(listModeCommand("block", CONFIGURED_BLOCKS, () -> ModConfig.get().blockEsp))
+						.then(listTracerColorCommand("block", CONFIGURED_BLOCKS, () -> ModConfig.get().blockEsp)))
 				.then(literal("entityesp")
 						.then(literal("add")
 								.then(argument("entity", StringArgumentType.greedyString()).suggests(ENTITY_IDS)
@@ -102,7 +104,7 @@ public final class Commands {
 										.executes(Commands::removeEntity)))
 						.then(literal("list").executes(Commands::listEntities))
 						.then(literal("clear").executes(ctx -> {
-							ModConfig.get().entityEspTypes.clear();
+							ModConfig.get().entityEsp.clear();
 							ModConfig.save();
 							EntityEsp.rebuildFilter();
 							return ok(ctx, "Entity-Liste geleert.");
@@ -111,22 +113,22 @@ public final class Commands {
 						.then(intSetting("max", 10, 20000, (c, v) -> c.entityEspMaxBoxes = v))
 						.then(boolSetting("labels", c -> c.entityEspLabels = !c.entityEspLabels, c -> c.entityEspLabels))
 						.then(boolSetting("fill", c -> c.entityEspFill = !c.entityEspFill, c -> c.entityEspFill))
-						.then(boolSetting("boxes", c -> c.entityEspBoxes = !c.entityEspBoxes, c -> c.entityEspBoxes))
-						.then(boolSetting("tracers", c -> c.entityEspTracers = !c.entityEspTracers, c -> c.entityEspTracers)))
+						.then(listModeCommand("entity", CONFIGURED_ENTITIES, () -> ModConfig.get().entityEsp))
+						.then(listTracerColorCommand("entity", CONFIGURED_ENTITIES, () -> ModConfig.get().entityEsp)))
 				.then(literal("playeresp")
 						.then(intSetting("range", 8, 1024, (c, v) -> c.playerEspRange = v))
 						.then(boolSetting("names", c -> c.playerEspNames = !c.playerEspNames, c -> c.playerEspNames))
 						.then(boolSetting("fill", c -> c.playerEspFill = !c.playerEspFill, c -> c.playerEspFill))
-						.then(boolSetting("boxes", c -> c.playerEspBoxes = !c.playerEspBoxes, c -> c.playerEspBoxes))
-						.then(boolSetting("tracers", c -> c.playerEspTracers = !c.playerEspTracers, c -> c.playerEspTracers)))
+						.then(modeCommand((c, m) -> c.playerEspMode = m))
+						.then(tracerColorCommand((c, v) -> c.playerEspTracerColor = v)))
 				.then(literal("geode")
 						.then(intSetting("range", 8, 512, (c, v) -> c.geodeRange = v))
 						.then(boolSetting("budding", c -> c.geodeShowBudding = !c.geodeShowBudding, c -> c.geodeShowBudding))
 						.then(boolSetting("growing", c -> c.geodeShowGrowing = !c.geodeShowGrowing, c -> c.geodeShowGrowing))
 						.then(boolSetting("notify", c -> c.geodeNotifyFullyGrown = !c.geodeNotifyFullyGrown, c -> c.geodeNotifyFullyGrown))
 						.then(boolSetting("sound", c -> c.geodeSound = !c.geodeSound, c -> c.geodeSound))
-						.then(boolSetting("boxes", c -> c.geodeBoxes = !c.geodeBoxes, c -> c.geodeBoxes))
-						.then(boolSetting("tracers", c -> c.geodeTracers = !c.geodeTracers, c -> c.geodeTracers))
+						.then(modeCommand((c, m) -> c.geodeMode = m))
+						.then(tracerColorCommand((c, v) -> c.geodeTracerColor = v))
 						.then(literal("stats").executes(Commands::geodeStats))
 						.then(literal("reset").executes(ctx -> {
 							GeodeTracker.reset();
@@ -151,13 +153,13 @@ public final class Commands {
 						.then(boolSetting("entity", c -> c.antiVanishEntityCheck = !c.antiVanishEntityCheck, c -> c.antiVanishEntityCheck))
 						.then(boolSetting("spectator", c -> c.antiVanishSpectatorCheck = !c.antiVanishSpectatorCheck, c -> c.antiVanishSpectatorCheck))
 						.then(boolSetting("sound", c -> c.antiVanishSound = !c.antiVanishSound, c -> c.antiVanishSound))
-						.then(boolSetting("boxes", c -> c.antiVanishBoxes = !c.antiVanishBoxes, c -> c.antiVanishBoxes))
-						.then(boolSetting("tracers", c -> c.antiVanishTracers = !c.antiVanishTracers, c -> c.antiVanishTracers)))
+						.then(boolSetting("highlight", c -> c.antiVanishHighlight = !c.antiVanishHighlight, c -> c.antiVanishHighlight))
+						.then(modeCommand((c, m) -> c.antiVanishMode = m))
+						.then(tracerColorCommand((c, v) -> c.antiVanishTracerColor = v)))
 				.then(literal("tracers")
 						.then(literal("all").then(argument("an", com.mojang.brigadier.arguments.BoolArgumentType.bool()).executes(ctx -> {
 							boolean on = com.mojang.brigadier.arguments.BoolArgumentType.getBool(ctx, "an");
-							ModConfig c = ModConfig.get();
-							c.blockEspTracers = c.entityEspTracers = c.playerEspTracers = c.geodeTracers = c.antiVanishTracers = on;
+							ModConfig.get().setAllTracers(on);
 							ModConfig.save();
 							return ok(ctx, "Alle Tracer: " + onOff(on));
 						})))
@@ -187,66 +189,137 @@ public final class Commands {
 		});
 	}
 
+	private static final SuggestionProvider<FabricClientCommandSource> MODES = (ctx, b) ->
+			SharedSuggestionProvider.suggest(new String[]{"box", "beide", "tracer"}, b);
+
+	private static String hexOf(String color) {
+		String hex = color.replace("#", "").toUpperCase(Locale.ROOT);
+		return hex.matches("[0-9A-F]{6}") ? hex : null;
+	}
+
+	/** /erl <modul> mode <box|beide|tracer> */
+	private static com.mojang.brigadier.builder.LiteralArgumentBuilder<FabricClientCommandSource> modeCommand(
+			BiConsumer<ModConfig, RenderMode> setter) {
+		return literal("mode").then(argument("modus", StringArgumentType.word()).suggests(MODES).executes(ctx -> {
+			RenderMode m = RenderMode.parse(StringArgumentType.getString(ctx, "modus"));
+			if (m == null) return err(ctx, "Modus muss box, beide oder tracer sein.");
+			setter.accept(ModConfig.get(), m);
+			ModConfig.save();
+			return ok(ctx, "Modus: " + m.label);
+		}));
+	}
+
+	/** /erl <modul> tracercolor <hex> */
+	private static com.mojang.brigadier.builder.LiteralArgumentBuilder<FabricClientCommandSource> tracerColorCommand(
+			BiConsumer<ModConfig, String> setter) {
+		return literal("tracercolor").then(argument("farbe", StringArgumentType.word()).executes(ctx -> {
+			String hex = hexOf(StringArgumentType.getString(ctx, "farbe"));
+			if (hex == null) return err(ctx, "Farbe als RRGGBB angeben, z.B. FF0000.");
+			setter.accept(ModConfig.get(), hex);
+			ModConfig.save();
+			return ok(ctx, "Tracer-Farbe: #" + hex);
+		}));
+	}
+
+	/** /erl blockesp mode <modus> [block] – ohne Block für alle Einträge. */
+	private static com.mojang.brigadier.builder.LiteralArgumentBuilder<FabricClientCommandSource> listModeCommand(
+			String argName, SuggestionProvider<FabricClientCommandSource> configured, java.util.function.Supplier<Map<String, EspEntry>> map) {
+		return literal("mode").then(argument("modus", StringArgumentType.word()).suggests(MODES)
+				.executes(ctx -> {
+					RenderMode m = RenderMode.parse(StringArgumentType.getString(ctx, "modus"));
+					if (m == null) return err(ctx, "Modus muss box, beide oder tracer sein.");
+					map.get().values().forEach(e -> e.mode = m);
+					ModConfig.save();
+					return ok(ctx, "Alle Einträge: " + m.label);
+				})
+				.then(argument(argName, StringArgumentType.greedyString()).suggests(configured).executes(ctx -> {
+					RenderMode m = RenderMode.parse(StringArgumentType.getString(ctx, "modus"));
+					if (m == null) return err(ctx, "Modus muss box, beide oder tracer sein.");
+					String id = BlockEsp.normalize(StringArgumentType.getString(ctx, argName).trim());
+					EspEntry e = map.get().get(id);
+					if (e == null) return err(ctx, id + " ist nicht in der Liste.");
+					e.mode = m;
+					ModConfig.save();
+					return ok(ctx, id + ": " + m.label);
+				})));
+	}
+
+	/** /erl blockesp tracercolor <hex> <block> */
+	private static com.mojang.brigadier.builder.LiteralArgumentBuilder<FabricClientCommandSource> listTracerColorCommand(
+			String argName, SuggestionProvider<FabricClientCommandSource> configured, java.util.function.Supplier<Map<String, EspEntry>> map) {
+		return literal("tracercolor").then(argument("farbe", StringArgumentType.word())
+				.then(argument(argName, StringArgumentType.greedyString()).suggests(configured).executes(ctx -> {
+					String hex = hexOf(StringArgumentType.getString(ctx, "farbe"));
+					if (hex == null) return err(ctx, "Farbe als RRGGBB angeben, z.B. FF0000.");
+					String id = BlockEsp.normalize(StringArgumentType.getString(ctx, argName).trim());
+					EspEntry e = map.get().get(id);
+					if (e == null) return err(ctx, id + " ist nicht in der Liste.");
+					e.tracerColor = hex;
+					ModConfig.save();
+					return ok(ctx, id + " Tracer-Farbe: #" + hex);
+				})));
+	}
+
+	private static int addEntry(CommandContext<FabricClientCommandSource> ctx, String argName, Map<String, EspEntry> map,
+			boolean valid, String id, String color, Runnable rebuild) {
+		if (!valid) return err(ctx, "Unbekannt: " + id);
+		String hex = color != null ? hexOf(color) : String.format("%06X", BlockEsp.defaultColor(id) & 0xFFFFFF);
+		if (hex == null) return err(ctx, "Farbe als RRGGBB angeben, z.B. FF0000.");
+		EspEntry existing = map.get(id);
+		if (existing != null) {
+			existing.color = hex;
+		} else {
+			map.put(id, EspEntry.of(hex));
+		}
+		ModConfig.save();
+		rebuild.run();
+		return ok(ctx, id + (existing != null ? " Box-Farbe: #" : " hinzugefügt (Farbe #") + hex + (existing != null ? "" : ")"));
+	}
+
 	private static int addBlock(CommandContext<FabricClientCommandSource> ctx, String color) {
 		String id = BlockEsp.normalize(StringArgumentType.getString(ctx, "block").trim());
-		if (BlockEsp.resolve(id) == null) return err(ctx, "Unbekannter Block: " + id);
-		String hex = color != null ? color.replace("#", "") : String.format("%06X", BlockEsp.defaultColor(id) & 0xFFFFFF);
-		if (color != null && ModConfig.parseColor(hex, 0) == 0 && !hex.matches("0+")) return err(ctx, "Ungültige Farbe: " + color);
-		ModConfig.get().blockEspBlocks.put(id, hex);
-		ModConfig.save();
-		BlockEsp.rebuildFilter();
-		return ok(ctx, id + " hinzugefügt (Farbe #" + hex + ").");
-	}
-
-	private static int removeBlock(CommandContext<FabricClientCommandSource> ctx) {
-		String id = BlockEsp.normalize(StringArgumentType.getString(ctx, "block").trim());
-		if (ModConfig.get().blockEspBlocks.remove(id) == null) return err(ctx, id + " ist nicht in der Liste.");
-		ModConfig.save();
-		BlockEsp.rebuildFilter();
-		return ok(ctx, id + " entfernt.");
-	}
-
-	private static int listBlocks(CommandContext<FabricClientCommandSource> ctx) {
-		Map<String, String> blocks = ModConfig.get().blockEspBlocks;
-		if (blocks.isEmpty()) return ok(ctx, "Keine Blöcke in der Liste. /erl blockesp add <block>");
-		ctx.getSource().sendFeedback(Component.literal("Block-ESP Blöcke:").withStyle(ChatFormatting.LIGHT_PURPLE));
-		for (Map.Entry<String, String> e : blocks.entrySet()) {
-			int color = ModConfig.parseColor(e.getValue(), 0xFFFFFFFF);
-			ctx.getSource().sendFeedback(Component.literal(" ■ ").withColor(color & 0xFFFFFF)
-					.append(Component.literal(e.getKey() + " #" + e.getValue()).withStyle(ChatFormatting.GRAY)));
-		}
-		return 1;
+		return addEntry(ctx, "block", ModConfig.get().blockEsp, BlockEsp.resolve(id) != null, id, color, BlockEsp::rebuildFilter);
 	}
 
 	private static int addEntity(CommandContext<FabricClientCommandSource> ctx, String color) {
 		String id = BlockEsp.normalize(StringArgumentType.getString(ctx, "entity").trim());
-		if (EntityEsp.resolve(id) == null) return err(ctx, "Unbekannte Entity: " + id);
-		String hex = color != null ? color.replace("#", "") : String.format("%06X", BlockEsp.defaultColor(id) & 0xFFFFFF);
-		if (color != null && ModConfig.parseColor(hex, 0) == 0 && !hex.matches("0+")) return err(ctx, "Ungültige Farbe: " + color);
-		ModConfig.get().entityEspTypes.put(id, hex);
+		return addEntry(ctx, "entity", ModConfig.get().entityEsp, EntityEsp.resolve(id) != null, id, color, EntityEsp::rebuildFilter);
+	}
+
+	private static int removeBlock(CommandContext<FabricClientCommandSource> ctx) {
+		String id = BlockEsp.normalize(StringArgumentType.getString(ctx, "block").trim());
+		if (ModConfig.get().blockEsp.remove(id) == null) return err(ctx, id + " ist nicht in der Liste.");
 		ModConfig.save();
-		EntityEsp.rebuildFilter();
-		return ok(ctx, id + " hinzugefügt (Farbe #" + hex + ").");
+		BlockEsp.rebuildFilter();
+		return ok(ctx, id + " entfernt.");
 	}
 
 	private static int removeEntity(CommandContext<FabricClientCommandSource> ctx) {
 		String id = BlockEsp.normalize(StringArgumentType.getString(ctx, "entity").trim());
-		if (ModConfig.get().entityEspTypes.remove(id) == null) return err(ctx, id + " ist nicht in der Liste.");
+		if (ModConfig.get().entityEsp.remove(id) == null) return err(ctx, id + " ist nicht in der Liste.");
 		ModConfig.save();
 		EntityEsp.rebuildFilter();
 		return ok(ctx, id + " entfernt.");
 	}
 
-	private static int listEntities(CommandContext<FabricClientCommandSource> ctx) {
-		Map<String, String> types = ModConfig.get().entityEspTypes;
-		if (types.isEmpty()) return ok(ctx, "Keine Entities in der Liste. /erl entityesp add <entity>");
-		ctx.getSource().sendFeedback(Component.literal("Entity-ESP Typen:").withStyle(ChatFormatting.LIGHT_PURPLE));
-		for (Map.Entry<String, String> e : types.entrySet()) {
-			int color = ModConfig.parseColor(e.getValue(), 0xFFFFFFFF);
-			ctx.getSource().sendFeedback(Component.literal(" ■ ").withColor(color & 0xFFFFFF)
-					.append(Component.literal(e.getKey() + " #" + e.getValue()).withStyle(ChatFormatting.GRAY)));
+	private static int listEntries(CommandContext<FabricClientCommandSource> ctx, String title, Map<String, EspEntry> map) {
+		if (map.isEmpty()) return ok(ctx, "Die Liste ist leer.");
+		ctx.getSource().sendFeedback(Component.literal(title).withStyle(ChatFormatting.LIGHT_PURPLE));
+		for (Map.Entry<String, EspEntry> e : map.entrySet()) {
+			EspEntry en = e.getValue();
+			ctx.getSource().sendFeedback(Component.literal(" ■").withColor(en.boxColor() & 0xFFFFFF)
+					.append(Component.literal("━ ").withColor(en.tracerColor() & 0xFFFFFF))
+					.append(Component.literal(e.getKey() + " [" + en.mode().label + "]").withStyle(ChatFormatting.GRAY)));
 		}
 		return 1;
+	}
+
+	private static int listBlocks(CommandContext<FabricClientCommandSource> ctx) {
+		return listEntries(ctx, "Block-ESP Blöcke:", ModConfig.get().blockEsp);
+	}
+
+	private static int listEntities(CommandContext<FabricClientCommandSource> ctx) {
+		return listEntries(ctx, "Entity-ESP Typen:", ModConfig.get().entityEsp);
 	}
 
 	private static int geodeStats(CommandContext<FabricClientCommandSource> ctx) {
@@ -286,16 +359,18 @@ public final class Commands {
 				"/erl toggle <blockesp|entityesp|playeresp|geode|antivanish|hud>",
 				"/erl status",
 				"/erl blockesp add <block> | color <hex> <block> | remove <block> | list | clear",
-				"/erl blockesp range <n> | max <n> | fill | boxes | tracers",
+				"/erl blockesp range <n> | max <n> | fill",
+				"/erl blockesp mode <box|beide|tracer> [block] | tracercolor <hex> <block>",
 				"/erl entityesp add <entity> | color <hex> <entity> | remove <entity> | list | clear",
-				"/erl entityesp range <n> | max <n> | labels | fill | boxes | tracers",
-				"/erl playeresp range <n> | names | fill | boxes | tracers",
-				"/erl geode range <n> | budding | growing | notify | sound | boxes | tracers | stats | reset",
+				"/erl entityesp range <n> | max <n> | labels | fill",
+				"/erl entityesp mode <box|beide|tracer> [entity] | tracercolor <hex> <entity>",
+				"/erl playeresp range <n> | names | fill | mode <box|beide|tracer> | tracercolor <hex>",
+				"/erl geode range <n> | budding | growing | notify | sound | mode <..> | tracercolor <hex> | stats | reset",
 				"/erl antivanish list | clear | command <cmd> | interval <s> | timeout <ms>",
-				"/erl antivanish leave | completion | entity | spectator | sound | boxes | tracers",
+				"/erl antivanish leave | completion | entity | spectator | sound | highlight | mode <..> | tracercolor <hex>",
 				"/erl tracers all <true|false> | width <breite>",
 				"/erl reload",
-				"Tasten (änderbar in Steuerung): F4 Entity-ESP, F6 Block-ESP, F7 Player-ESP, F8 Geoden, F9 Anti-Vanish, F10 HUD"
+				"Tasten: Rechte Shift = GUI, G Freecam, F4 Entity-ESP, F6 Block-ESP, F7 Player-ESP, F8 Geoden, F9 Anti-Vanish, F10 HUD"
 		};
 		for (String l : lines) s.sendFeedback(Component.literal(" " + l).withStyle(ChatFormatting.GRAY));
 		return 1;

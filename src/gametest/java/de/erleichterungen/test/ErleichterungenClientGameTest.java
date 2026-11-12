@@ -1,7 +1,9 @@
 package de.erleichterungen.test;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import de.erleichterungen.config.EspEntry;
 import de.erleichterungen.config.ModConfig;
+import de.erleichterungen.config.RenderMode;
 import de.erleichterungen.feature.Freecam;
 import de.erleichterungen.gui.ClickGuiScreen;
 import de.erleichterungen.gui.ListEditScreen;
@@ -34,7 +36,14 @@ public class ErleichterungenClientGameTest implements FabricClientGameTest {
 			ctx.runOnClient(mc -> {
 				ModConfig c = ModConfig.get();
 				c.blockEspEnabled = true;
-				c.blockEspTracers = true;
+				// Diamanterz: Box & Tracer mit eigener (gelber) Tracer-Farbe
+				EspEntry diamond = c.blockEsp.get("minecraft:diamond_ore");
+				diamond.mode = RenderMode.BOTH;
+				diamond.tracerColor = "FFFF00";
+				// Item Frame: nur Tracer (rot)
+				EspEntry frame = c.entityEsp.get("minecraft:item_frame");
+				frame.mode = RenderMode.TRACER;
+				frame.tracerColor = "FF0000";
 				c.entityEspEnabled = true;
 				c.geodeTrackerEnabled = true;
 				c.hudEnabled = true;
@@ -60,13 +69,34 @@ public class ErleichterungenClientGameTest implements FabricClientGameTest {
 			in.setCursorPos(60 * scale, 57 * scale);
 			in.pressMouse(0);
 			ctx.waitForScreen(ListEditScreen.class);
+			// ersten Eintrag (Diamanterz) zum Bearbeiten auswählen
+			int[] layout = ctx.computeOnClient(mc -> new int[]{mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight()});
+			int totalW = Math.min(440, layout[0] - 16);
+			int leftX = (layout[0] - totalW) / 2;
+			in.setCursorPos((leftX + 40) * scale, (50 + 6) * scale);
+			in.pressMouse(0);
 			in.typeChars("gold");
 			ctx.waitTicks(3);
 			ctx.takeScreenshot("04-liste-bearbeiten");
-			in.pressKey(InputConstants.KEY_ESCAPE);
+			in.pressKey(InputConstants.KEY_ESCAPE); // Suche leeren
+			in.pressKey(InputConstants.KEY_ESCAPE); // zurück
 			ctx.waitForScreen(ClickGuiScreen.class);
-			in.pressKey(InputConstants.KEY_ESCAPE);
+
+			// Suche in der Haupt-GUI
+			in.typeChars("tracer");
+			ctx.waitTicks(3);
+			ctx.takeScreenshot("05-gui-suche");
+			in.pressKey(InputConstants.KEY_ESCAPE); // Suche leeren
+			in.pressKey(InputConstants.KEY_ESCAPE); // GUI schließen
 			ctx.waitForScreen(null);
+
+			// "Alle Tracer aus" muss jeden Modus auf Box setzen
+			ctx.runOnClient(mc -> ModConfig.get().setAllTracers(false));
+			boolean anyTracer = ctx.computeOnClient(mc -> ModConfig.get().blockEsp.values().stream().anyMatch(e -> e.mode().tracer())
+					|| ModConfig.get().entityEsp.values().stream().anyMatch(e -> e.mode().tracer())
+					|| ModConfig.get().playerEspMode.tracer());
+			if (anyTracer) throw new AssertionError("Alle Tracer aus hat nicht alle Tracer entfernt");
+			ctx.runOnClient(mc -> ModConfig.get().setAllTracers(true));
 
 			// ---- Freecam
 			Vec3 before = ctx.computeOnClient(mc -> mc.player.position());
@@ -76,7 +106,7 @@ public class ErleichterungenClientGameTest implements FabricClientGameTest {
 			in.holdKeyFor(o -> o.keyDown, 25);
 			in.holdKeyFor(o -> o.keyJump, 15);
 			ctx.waitTicks(5);
-			ctx.takeScreenshot("05-freecam");
+			ctx.takeScreenshot("06-freecam");
 			Vec3 after = ctx.computeOnClient(mc -> mc.player.position());
 			if (before.distanceTo(after) > 0.5) {
 				throw new AssertionError("Spieler hat sich in Freecam bewegt: " + before + " -> " + after);

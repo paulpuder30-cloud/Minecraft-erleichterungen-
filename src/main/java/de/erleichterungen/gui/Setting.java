@@ -1,5 +1,8 @@
 package de.erleichterungen.gui;
 
+import de.erleichterungen.config.EspEntry;
+import de.erleichterungen.config.RenderMode;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
@@ -10,7 +13,7 @@ import java.util.function.Supplier;
  * Eine Einstellung eines Moduls. Liest/schreibt direkt die Felder der {@link de.erleichterungen.config.ModConfig}.
  */
 public abstract sealed class Setting permits Setting.Bool, Setting.Int, Setting.Dec, Setting.Color, Setting.Text,
-		Setting.ListEdit, Setting.Action {
+		Setting.Mode, Setting.ListEdit, Setting.Action {
 	public final String name;
 	public final String description;
 	/** Wird nach jeder Änderung aufgerufen (z.B. um Filter neu aufzubauen). */
@@ -97,16 +100,32 @@ public abstract sealed class Setting permits Setting.Bool, Setting.Int, Setting.
 		}
 	}
 
+	/** Darstellungs-Modus: Box / Box & Tracer / Nur Tracer (Klick wechselt). */
+	public static final class Mode extends Setting {
+		public final Supplier<RenderMode> get;
+		public final Consumer<RenderMode> set;
+
+		public Mode(String name, String description, Supplier<RenderMode> get, Consumer<RenderMode> set) {
+			super(name, description);
+			this.get = get;
+			this.set = set;
+		}
+	}
+
 	/** Liste von IDs mit Farbe (Blöcke / Entities), bearbeitet in einem eigenen Fenster. */
 	public static final class ListEdit extends Setting {
-		public final Supplier<Map<String, String>> map;
+		public final Supplier<Map<String, EspEntry>> map;
 		/** Alle wählbaren IDs (z.B. Block-Registry). */
 		public final Supplier<Collection<String>> options;
+		/** ID -> lesbarer (übersetzter) Name, z.B. "minecraft:diamond_ore" -> "Diamanterz". */
+		public final java.util.function.Function<String, String> displayName;
 
-		public ListEdit(String name, String description, Supplier<Map<String, String>> map, Supplier<Collection<String>> options) {
+		public ListEdit(String name, String description, Supplier<Map<String, EspEntry>> map, Supplier<Collection<String>> options,
+				java.util.function.Function<String, String> displayName) {
 			super(name, description);
 			this.map = map;
 			this.options = options;
+			this.displayName = displayName;
 		}
 	}
 
