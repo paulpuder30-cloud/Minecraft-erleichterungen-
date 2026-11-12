@@ -16,21 +16,35 @@ Alle Tasten lassen sich unter *Optionen → Steuerung → Erleichterungen* ände
 ## Installation
 
 **Direkter Download (ohne GitHub-Login):**
-https://github.com/paulpuder30-cloud/Minecraft-erleichterungen-/raw/claude/epic-goldberg-fi63ne/download/erleichterungen-1.1.0.jar
+https://github.com/paulpuder30-cloud/Minecraft-erleichterungen-/raw/claude/epic-goldberg-fi63ne/download/erleichterungen-1.2.0.jar
 
 1. [Fabric Loader](https://fabricmc.net/use/) **0.20.1+** für Minecraft **26.3** installieren.
 2. [Fabric API](https://modrinth.com/mod/fabric-api) für 26.3 in den `mods`-Ordner legen.
-3. `erleichterungen-1.1.0.jar` in den `mods`-Ordner legen.
+3. `erleichterungen-1.2.0.jar` in den `mods`-Ordner legen.
 
 Die fertige JAR gibt es unter **Actions → Build → Artifacts** (`erleichterungen-mod`)
 oder selbst bauen:
 
 ```bash
 ./gradlew build      # benötigt Java 25
-# Ergebnis: build/libs/erleichterungen-1.1.0.jar
+# Ergebnis: build/libs/erleichterungen-1.2.0.jar
 ```
 
 ## Module im Detail
+
+### Boxen & Tracer (alle Module)
+Jedes Modul kann **Boxen** (Umrisse durch Wände) und **Tracer** (Linien vom Fadenkreuz zum Ziel)
+zeichnen – beides pro Modul einzeln schaltbar:
+
+| Modul | Boxen (Standard) | Tracer (Standard) | Befehl |
+|---|---|---|---|
+| Block-ESP | an | aus | `/erl blockesp boxes` / `tracers` |
+| Entity-ESP | an | aus | `/erl entityesp boxes` / `tracers` |
+| Player-ESP | an | **an** | `/erl playeresp boxes` / `tracers` |
+| Geoden-Tracker | an | aus (nur zu fertigen Clustern) | `/erl geode boxes` / `tracers` |
+| Anti-Vanish | an | **an** (zu sichtbaren Verdächtigen, auch ohne Player-ESP) | `/erl antivanish boxes` / `tracers` |
+
+Alle Tracer auf einmal: `/erl tracers all true|false`, Linienbreite: `/erl tracers width <0.5-10>`.
 
 ### Anti-Vanish
 Kombiniert vier Erkennungsmethoden (einzeln abschaltbar):
@@ -66,13 +80,14 @@ Kombiniert vier Erkennungsmethoden (einzeln abschaltbar):
 /erl blockesp add <block>              z.B. /erl blockesp add minecraft:gold_ore
 /erl blockesp color <hex> <block>      z.B. /erl blockesp color FFD700 minecraft:gold_ore
 /erl blockesp remove <block> | list | clear
-/erl blockesp range <n> | max <n> | fill
+/erl blockesp range <n> | max <n> | fill | boxes | tracers
 /erl entityesp add <entity> | color <hex> <entity> | remove <entity> | list | clear
-/erl entityesp range <n> | max <n> | labels | fill
-/erl playeresp range <n> | names | fill
-/erl geode range <n> | budding | growing | notify | sound | stats | reset
+/erl entityesp range <n> | max <n> | labels | fill | boxes | tracers
+/erl playeresp range <n> | names | fill | boxes | tracers
+/erl geode range <n> | budding | growing | notify | sound | boxes | tracers | stats | reset
 /erl antivanish list | clear | command <cmd> | interval <s> | timeout <ms>
-/erl antivanish leave | completion | entity | spectator | sound
+/erl antivanish leave | completion | entity | spectator | sound | boxes | tracers
+/erl tracers all <true|false> | width <breite>
 /erl reload
 ```
 
