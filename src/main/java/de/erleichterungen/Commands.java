@@ -86,7 +86,9 @@ public final class Commands {
 						}))
 						.then(intSetting("range", 8, 512, (c, v) -> c.blockEspRange = v))
 						.then(intSetting("max", 10, 20000, (c, v) -> c.blockEspMaxBoxes = v))
-						.then(boolSetting("fill", c -> c.blockEspFill = !c.blockEspFill, c -> c.blockEspFill)))
+						.then(boolSetting("fill", c -> c.blockEspFill = !c.blockEspFill, c -> c.blockEspFill))
+						.then(boolSetting("boxes", c -> c.blockEspBoxes = !c.blockEspBoxes, c -> c.blockEspBoxes))
+						.then(boolSetting("tracers", c -> c.blockEspTracers = !c.blockEspTracers, c -> c.blockEspTracers)))
 				.then(literal("entityesp")
 						.then(literal("add")
 								.then(argument("entity", StringArgumentType.greedyString()).suggests(ENTITY_IDS)
@@ -108,17 +110,23 @@ public final class Commands {
 						.then(intSetting("range", 8, 512, (c, v) -> c.entityEspRange = v))
 						.then(intSetting("max", 10, 20000, (c, v) -> c.entityEspMaxBoxes = v))
 						.then(boolSetting("labels", c -> c.entityEspLabels = !c.entityEspLabels, c -> c.entityEspLabels))
-						.then(boolSetting("fill", c -> c.entityEspFill = !c.entityEspFill, c -> c.entityEspFill)))
+						.then(boolSetting("fill", c -> c.entityEspFill = !c.entityEspFill, c -> c.entityEspFill))
+						.then(boolSetting("boxes", c -> c.entityEspBoxes = !c.entityEspBoxes, c -> c.entityEspBoxes))
+						.then(boolSetting("tracers", c -> c.entityEspTracers = !c.entityEspTracers, c -> c.entityEspTracers)))
 				.then(literal("playeresp")
 						.then(intSetting("range", 8, 1024, (c, v) -> c.playerEspRange = v))
 						.then(boolSetting("names", c -> c.playerEspNames = !c.playerEspNames, c -> c.playerEspNames))
-						.then(boolSetting("fill", c -> c.playerEspFill = !c.playerEspFill, c -> c.playerEspFill)))
+						.then(boolSetting("fill", c -> c.playerEspFill = !c.playerEspFill, c -> c.playerEspFill))
+						.then(boolSetting("boxes", c -> c.playerEspBoxes = !c.playerEspBoxes, c -> c.playerEspBoxes))
+						.then(boolSetting("tracers", c -> c.playerEspTracers = !c.playerEspTracers, c -> c.playerEspTracers)))
 				.then(literal("geode")
 						.then(intSetting("range", 8, 512, (c, v) -> c.geodeRange = v))
 						.then(boolSetting("budding", c -> c.geodeShowBudding = !c.geodeShowBudding, c -> c.geodeShowBudding))
 						.then(boolSetting("growing", c -> c.geodeShowGrowing = !c.geodeShowGrowing, c -> c.geodeShowGrowing))
 						.then(boolSetting("notify", c -> c.geodeNotifyFullyGrown = !c.geodeNotifyFullyGrown, c -> c.geodeNotifyFullyGrown))
 						.then(boolSetting("sound", c -> c.geodeSound = !c.geodeSound, c -> c.geodeSound))
+						.then(boolSetting("boxes", c -> c.geodeBoxes = !c.geodeBoxes, c -> c.geodeBoxes))
+						.then(boolSetting("tracers", c -> c.geodeTracers = !c.geodeTracers, c -> c.geodeTracers))
 						.then(literal("stats").executes(Commands::geodeStats))
 						.then(literal("reset").executes(ctx -> {
 							GeodeTracker.reset();
@@ -142,7 +150,22 @@ public final class Commands {
 						.then(boolSetting("completion", c -> c.antiVanishCompletionCheck = !c.antiVanishCompletionCheck, c -> c.antiVanishCompletionCheck))
 						.then(boolSetting("entity", c -> c.antiVanishEntityCheck = !c.antiVanishEntityCheck, c -> c.antiVanishEntityCheck))
 						.then(boolSetting("spectator", c -> c.antiVanishSpectatorCheck = !c.antiVanishSpectatorCheck, c -> c.antiVanishSpectatorCheck))
-						.then(boolSetting("sound", c -> c.antiVanishSound = !c.antiVanishSound, c -> c.antiVanishSound))));
+						.then(boolSetting("sound", c -> c.antiVanishSound = !c.antiVanishSound, c -> c.antiVanishSound))
+						.then(boolSetting("boxes", c -> c.antiVanishBoxes = !c.antiVanishBoxes, c -> c.antiVanishBoxes))
+						.then(boolSetting("tracers", c -> c.antiVanishTracers = !c.antiVanishTracers, c -> c.antiVanishTracers)))
+				.then(literal("tracers")
+						.then(literal("all").then(argument("an", com.mojang.brigadier.arguments.BoolArgumentType.bool()).executes(ctx -> {
+							boolean on = com.mojang.brigadier.arguments.BoolArgumentType.getBool(ctx, "an");
+							ModConfig c = ModConfig.get();
+							c.blockEspTracers = c.entityEspTracers = c.playerEspTracers = c.geodeTracers = c.antiVanishTracers = on;
+							ModConfig.save();
+							return ok(ctx, "Alle Tracer: " + onOff(on));
+						})))
+						.then(literal("width").then(argument("breite", com.mojang.brigadier.arguments.FloatArgumentType.floatArg(0.5f, 10f)).executes(ctx -> {
+							ModConfig.get().tracerWidth = com.mojang.brigadier.arguments.FloatArgumentType.getFloat(ctx, "breite");
+							ModConfig.save();
+							return ok(ctx, "Tracer-Breite = " + ModConfig.get().tracerWidth);
+						})))));
 	}
 
 	private static com.mojang.brigadier.builder.LiteralArgumentBuilder<FabricClientCommandSource> intSetting(
@@ -263,13 +286,14 @@ public final class Commands {
 				"/erl toggle <blockesp|entityesp|playeresp|geode|antivanish|hud>",
 				"/erl status",
 				"/erl blockesp add <block> | color <hex> <block> | remove <block> | list | clear",
-				"/erl blockesp range <n> | max <n> | fill",
+				"/erl blockesp range <n> | max <n> | fill | boxes | tracers",
 				"/erl entityesp add <entity> | color <hex> <entity> | remove <entity> | list | clear",
-				"/erl entityesp range <n> | max <n> | labels | fill",
-				"/erl playeresp range <n> | names | fill",
-				"/erl geode range <n> | budding | growing | notify | sound | stats | reset",
+				"/erl entityesp range <n> | max <n> | labels | fill | boxes | tracers",
+				"/erl playeresp range <n> | names | fill | boxes | tracers",
+				"/erl geode range <n> | budding | growing | notify | sound | boxes | tracers | stats | reset",
 				"/erl antivanish list | clear | command <cmd> | interval <s> | timeout <ms>",
-				"/erl antivanish leave | completion | entity | spectator | sound",
+				"/erl antivanish leave | completion | entity | spectator | sound | boxes | tracers",
+				"/erl tracers all <true|false> | width <breite>",
 				"/erl reload",
 				"Tasten (änderbar in Steuerung): F4 Entity-ESP, F6 Block-ESP, F7 Player-ESP, F8 Geoden, F9 Anti-Vanish, F10 HUD"
 		};

@@ -1,6 +1,7 @@
 package de.erleichterungen.feature;
 
 import de.erleichterungen.config.ModConfig;
+import de.erleichterungen.util.Tracers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.gizmos.GizmoStyle;
 import net.minecraft.gizmos.Gizmos;
@@ -28,7 +29,11 @@ public final class PlayerEsp {
 	public static void render(Minecraft mc, Vec3 cam, float partialTick) {
 		ModConfig cfg = ModConfig.get();
 		lastRendered = 0;
-		if (!cfg.playerEspEnabled || mc.level == null || mc.player == null) return;
+		if (mc.level == null || mc.player == null) return;
+		boolean all = cfg.playerEspEnabled;
+		// Anti-Vanish markiert sichtbare Verdächtige auch ohne Player-ESP
+		boolean suspects = cfg.antiVanishEnabled && (cfg.antiVanishBoxes || cfg.antiVanishTracers);
+		if (!all && !suspects) return;
 
 		int normal = ModConfig.parseColor(cfg.playerEspColor, 0xFFFF3B3B);
 		int vanished = ModConfig.parseColor(cfg.playerEspVanishedColor, 0xFFFF00FF);
@@ -41,6 +46,9 @@ public final class PlayerEsp {
 			if (distSq > rangeSq) continue;
 
 			boolean suspected = AntiVanish.isSuspected(player);
+			if (!all && !suspected) continue;
+			boolean drawBox = all ? cfg.playerEspBoxes || (suspected && cfg.antiVanishBoxes) : cfg.antiVanishBoxes;
+			boolean drawTracer = all ? cfg.playerEspTracers || (suspected && cfg.antiVanishTracers) : cfg.antiVanishTracers;
 			int color = suspected ? vanished : normal;
 			if (player.isInvisible() && !suspected) {
 				color = (color & 0x00FFFFFF) | 0xA0000000; // unsichtbare Spieler etwas transparenter
@@ -48,12 +56,15 @@ public final class PlayerEsp {
 
 			// Bounding-Box an die interpolierte Position verschieben (flüssige Bewegung)
 			AABB box = player.getBoundingBox().move(pos.subtract(player.position()));
-			GizmoStyle style = cfg.playerEspFill
-					? GizmoStyle.strokeAndFill(color, cfg.playerEspLineWidth, (color & 0x00FFFFFF) | 0x28000000)
-					: GizmoStyle.stroke(color, cfg.playerEspLineWidth);
-			Gizmos.cuboid(box, style).setAlwaysOnTop();
+			if (drawBox) {
+				GizmoStyle style = cfg.playerEspFill
+						? GizmoStyle.strokeAndFill(color, cfg.playerEspLineWidth, (color & 0x00FFFFFF) | 0x28000000)
+						: GizmoStyle.stroke(color, cfg.playerEspLineWidth);
+				Gizmos.cuboid(box, style).setAlwaysOnTop();
+			}
+			if (drawTracer) Tracers.line(box.getCenter(), color);
 
-			if (cfg.playerEspNames) {
+			if (cfg.playerEspNames && (drawBox || drawTracer)) {
 				double dist = Math.sqrt(distSq);
 				String label = player.getGameProfile().name()
 						+ String.format(Locale.ROOT, " [%.0fm]", dist)

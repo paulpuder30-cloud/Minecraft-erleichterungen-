@@ -3,6 +3,7 @@ package de.erleichterungen.feature;
 import de.erleichterungen.config.ModConfig;
 import de.erleichterungen.scan.BlockTracker;
 import de.erleichterungen.scan.ScanManager;
+import de.erleichterungen.util.Tracers;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -98,10 +99,13 @@ public final class BlockEsp {
 			}
 			Integer color = COLORS.get(state.getBlock());
 			if (color == null) return;
-			GizmoStyle style = fill
-					? GizmoStyle.strokeAndFill(color, width, (color & 0x00FFFFFF) | 0x30000000)
-					: GizmoStyle.stroke(color, width);
-			Gizmos.cuboid(bp, style).setAlwaysOnTop();
+			if (cfg.blockEspBoxes) {
+				GizmoStyle style = fill
+						? GizmoStyle.strokeAndFill(color, width, (color & 0x00FFFFFF) | 0x30000000)
+						: GizmoStyle.stroke(color, width);
+				Gizmos.cuboid(bp, style).setAlwaysOnTop();
+			}
+			if (cfg.blockEspTracers) Tracers.line(Vec3.atCenterOf(bp), color);
 			count[0]++;
 		});
 

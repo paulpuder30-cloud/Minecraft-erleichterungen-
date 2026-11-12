@@ -10,6 +10,7 @@ import de.erleichterungen.feature.Hud;
 import de.erleichterungen.feature.PlayerEsp;
 import de.erleichterungen.scan.ScanManager;
 import de.erleichterungen.util.Chat;
+import de.erleichterungen.util.Tracers;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -65,6 +66,8 @@ public class ErleichterungenClient implements ClientModInitializer {
 			if (mc.level == null || mc.player == null) return;
 			Vec3 cam = context.levelState().cameraRenderState.pos;
 			float partialTick = mc.getDeltaTracker().getGameTimeDeltaPartialTick(true);
+			var camState = context.levelState().cameraRenderState;
+			Tracers.setup(cam, camState.xRot, camState.yRot);
 			try (Gizmos.TemporaryCollection ignored = context.levelRenderer().collectPerFrameRenderThreadGizmos()) {
 				BlockEsp.render(mc, cam);
 				GeodeTracker.render(mc, cam);

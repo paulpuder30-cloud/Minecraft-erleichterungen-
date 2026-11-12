@@ -4,6 +4,7 @@ import de.erleichterungen.config.ModConfig;
 import de.erleichterungen.scan.BlockTracker;
 import de.erleichterungen.scan.ScanManager;
 import de.erleichterungen.util.Chat;
+import de.erleichterungen.util.Tracers;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -191,7 +192,7 @@ public final class GeodeTracker {
 						freeFaces++;
 					}
 				}
-				if (cfg.geodeShowBudding) {
+				if (cfg.geodeShowBudding && cfg.geodeBoxes) {
 					Gizmos.cuboid(bp, GizmoStyle.stroke(STAGE_COLORS[STAGE_BUDDING], 1.5f)).setAlwaysOnTop();
 				}
 				return;
@@ -206,10 +207,13 @@ public final class GeodeTracker {
 			AABB shape = state.getShape(level, bp).isEmpty()
 					? new AABB(bp)
 					: state.getShape(level, bp).bounds().move(bp);
-			GizmoStyle style = stage == STAGE_CLUSTER
-					? GizmoStyle.strokeAndFill(color, 2.5f, (color & 0x00FFFFFF) | 0x50000000)
-					: GizmoStyle.stroke(color, 2.0f);
-			Gizmos.cuboid(shape, style).setAlwaysOnTop();
+			if (cfg.geodeBoxes) {
+				GizmoStyle style = stage == STAGE_CLUSTER
+						? GizmoStyle.strokeAndFill(color, 2.5f, (color & 0x00FFFFFF) | 0x50000000)
+						: GizmoStyle.stroke(color, 2.0f);
+				Gizmos.cuboid(shape, style).setAlwaysOnTop();
+			}
+			if (cfg.geodeTracers && stage == STAGE_CLUSTER) Tracers.line(shape.getCenter(), color);
 		});
 
 		for (int i = 0; i < stale.size(); i++) {

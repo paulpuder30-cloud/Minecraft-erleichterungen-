@@ -27,6 +27,9 @@ public final class ModConfig {
 	// ---------- HUD ----------
 	public boolean hudEnabled = true;
 
+	// ---------- Tracer ----------
+	public float tracerWidth = 1.5f;
+
 	// ---------- Block ESP ----------
 	public boolean blockEspEnabled = false;
 	/** Maximale Entfernung (in Blöcken) bis zu der Blöcke markiert werden. */
@@ -34,6 +37,8 @@ public final class ModConfig {
 	/** Maximale Anzahl gleichzeitig gezeichneter Boxen (Performance). */
 	public int blockEspMaxBoxes = 1500;
 	public boolean blockEspFill = true;
+	public boolean blockEspBoxes = true;
+	public boolean blockEspTracers = false;
 	public float blockEspLineWidth = 2.0f;
 	/** Block-ID -> Farbe (Hex, RGB oder ARGB). */
 	public Map<String, String> blockEspBlocks = defaultBlocks();
@@ -45,6 +50,8 @@ public final class ModConfig {
 	/** Name bzw. Gegenstand im Item Frame + Entfernung anzeigen. */
 	public boolean entityEspLabels = true;
 	public boolean entityEspFill = false;
+	public boolean entityEspBoxes = true;
+	public boolean entityEspTracers = false;
 	public float entityEspLineWidth = 2.0f;
 	/** Entity-ID -> Farbe (Hex, RGB oder ARGB). */
 	public Map<String, String> entityEspTypes = defaultEntities();
@@ -54,6 +61,8 @@ public final class ModConfig {
 	public int playerEspRange = 256;
 	public boolean playerEspNames = true;
 	public boolean playerEspFill = false;
+	public boolean playerEspBoxes = true;
+	public boolean playerEspTracers = true;
 	public float playerEspLineWidth = 2.5f;
 	public String playerEspColor = "FF3B3B";
 	public String playerEspVanishedColor = "FF00FF";
@@ -73,6 +82,9 @@ public final class ModConfig {
 	/** Meldet, wenn ein Spieler in den Zuschauermodus wechselt. */
 	public boolean antiVanishSpectatorCheck = true;
 	public boolean antiVanishSound = true;
+	/** Box/Tracer zu sichtbaren Vanish-Verdächtigen (auch wenn Player-ESP aus ist). */
+	public boolean antiVanishBoxes = true;
+	public boolean antiVanishTracers = true;
 
 	// ---------- Geoden-Tracker ----------
 	public boolean geodeTrackerEnabled = false;
@@ -81,6 +93,9 @@ public final class ModConfig {
 	public boolean geodeShowGrowing = true;
 	public boolean geodeNotifyFullyGrown = true;
 	public boolean geodeSound = true;
+	public boolean geodeBoxes = true;
+	/** Tracer zu erntebereiten Clustern. */
+	public boolean geodeTracers = false;
 
 	private static Map<String, String> defaultBlocks() {
 		Map<String, String> map = new LinkedHashMap<>();

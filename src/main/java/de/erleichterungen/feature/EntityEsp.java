@@ -1,6 +1,7 @@
 package de.erleichterungen.feature;
 
 import de.erleichterungen.config.ModConfig;
+import de.erleichterungen.util.Tracers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gizmos.GizmoStyle;
@@ -95,10 +96,13 @@ public final class EntityEsp {
 			AABB box = entity.getBoundingBox().move(pos.subtract(entity.position()));
 			// Sehr flache Boxen (Item Frames, Gemälde) minimal aufdicken, damit sie sichtbar bleiben
 			box = box.inflate(0.02);
-			GizmoStyle style = cfg.entityEspFill
-					? GizmoStyle.strokeAndFill(color, cfg.entityEspLineWidth, (color & 0x00FFFFFF) | 0x30000000)
-					: GizmoStyle.stroke(color, cfg.entityEspLineWidth);
-			Gizmos.cuboid(box, style).setAlwaysOnTop();
+			if (cfg.entityEspBoxes) {
+				GizmoStyle style = cfg.entityEspFill
+						? GizmoStyle.strokeAndFill(color, cfg.entityEspLineWidth, (color & 0x00FFFFFF) | 0x30000000)
+						: GizmoStyle.stroke(color, cfg.entityEspLineWidth);
+				Gizmos.cuboid(box, style).setAlwaysOnTop();
+			}
+			if (cfg.entityEspTracers) Tracers.line(box.getCenter(), color);
 
 			if (cfg.entityEspLabels) {
 				String label = label(entity);
