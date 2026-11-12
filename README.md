@@ -15,6 +15,9 @@ Alle Tasten lassen sich unter *Optionen → Steuerung → Erleichterungen* ände
 
 ## Installation
 
+**Direkter Download (ohne GitHub-Login):**
+https://github.com/paulpuder30-cloud/Minecraft-erleichterungen-/raw/claude/epic-goldberg-fi63ne/download/erleichterungen-1.1.0.jar
+
 1. [Fabric Loader](https://fabricmc.net/use/) **0.20.1+** für Minecraft **26.3** installieren.
 2. [Fabric API](https://modrinth.com/mod/fabric-api) für 26.3 in den `mods`-Ordner legen.
 3. `erleichterungen-1.1.0.jar` in den `mods`-Ordner legen.
