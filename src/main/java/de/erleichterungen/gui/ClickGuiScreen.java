@@ -78,7 +78,7 @@ public class ClickGuiScreen extends Screen {
 		}
 	}
 
-	private enum Kind {HEADER, MODULE, BIND, BOOL, SLIDER, COLOR, COLOR_CHANNEL, TEXT, MODE, LIST, ACTION, PANEL_AREA, SEARCH, SEARCH_CLEAR}
+	private enum Kind {HEADER, MODULE, BIND, BOOL, SLIDER, COLOR, COLOR_CHANNEL, TEXT, MODE, CHOICE, LIST, ACTION, PANEL_AREA, SEARCH, SEARCH_CLEAR}
 
 	private record Hit(Kind kind, int x, int y, int w, int h, Panel panel, Module module, Setting setting, int channel) {
 	}
@@ -407,6 +407,12 @@ public class ClickGuiScreen extends Screen {
 					Theme.textRight(g, font, "< " + md.get.get().label + " >", sx + sw - 2, y + 2, accent);
 					hit(Kind.MODE, p.x, y, PANEL_W, h, clipTop, clipBottom, p, m, s, 0);
 				}
+				case Setting.Choice ch -> {
+					if (hov) Theme.rect(g, p.x, y, PANEL_W, h, Theme.HOVER);
+					Theme.text(g, font, s.name, sx + 2, y + 2, Theme.TEXT);
+					Theme.textRight(g, font, "< " + ch.label() + " >", sx + sw - 2, y + 2, accent);
+					hit(Kind.CHOICE, p.x, y, PANEL_W, h, clipTop, clipBottom, p, m, s, 0);
+				}
 				case Setting.ListEdit l -> {
 					if (hov) Theme.rect(g, p.x, y, PANEL_W, h, Theme.HOVER);
 					Theme.text(g, font, s.name, sx + 2, y + 2, Theme.TEXT);
@@ -501,6 +507,11 @@ public class ClickGuiScreen extends Screen {
 				Setting.Mode md = (Setting.Mode) h.setting;
 				md.set.accept(button == 1 ? md.get.get().prev() : md.get.get().next());
 				md.onChange.run();
+			}
+			case CHOICE -> {
+				Setting.Choice ch = (Setting.Choice) h.setting;
+				ch.cycle(button == 1 ? -1 : 1);
+				ch.onChange.run();
 			}
 			case COLOR -> openColor = openColor == h.setting ? null : (Setting.Color) h.setting;
 			case TEXT -> {

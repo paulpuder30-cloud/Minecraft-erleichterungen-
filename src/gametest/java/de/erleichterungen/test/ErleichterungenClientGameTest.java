@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import de.erleichterungen.config.EspEntry;
 import de.erleichterungen.config.ModConfig;
 import de.erleichterungen.config.RenderMode;
+import de.erleichterungen.feature.Excavator;
 import de.erleichterungen.feature.Freecam;
 import de.erleichterungen.gui.ClickGuiScreen;
 import de.erleichterungen.gui.ListEditScreen;
@@ -11,6 +12,9 @@ import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.TestInput;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -18,6 +22,31 @@ import net.minecraft.world.phys.Vec3;
  * Screenshots landen im Run-Verzeichnis unter screenshots/.
  */
 public class ErleichterungenClientGameTest implements FabricClientGameTest {
+	/** Simulierte 3x3-Spitzhacke (wie ein Server-Plugin): baut die senkrechte 3x3-Fläche quer zur Blickrichtung ab. */
+	private static volatile boolean hammer;
+	private static boolean inHammer;
+	private static volatile int hammerHits;
+
+	private static void registerHammer() {
+		PlayerBlockBreakEvents.AFTER.register((level, player, pos, state, be) -> {
+			if (!hammer || inHammer) return;
+			inHammer = true;
+			try {
+				hammerHits++;
+				Direction facing = player.getDirection();
+				for (int a = -1; a <= 1; a++) {
+					for (int b = -1; b <= 1; b++) {
+						BlockPos p = facing.getAxis() == Direction.Axis.X ? pos.offset(0, a, b) : pos.offset(a, b, 0);
+						if (p.equals(pos) || level.getBlockState(p).isAir() || level.getBlockState(p).getDestroySpeed(level, p) < 0) continue;
+						level.destroyBlock(p, false, player, 512);
+					}
+				}
+			} finally {
+				inHammer = false;
+			}
+		});
+	}
+
 	@Override
 	public void runTest(ClientGameTestContext ctx) {
 		try (TestSingleplayerContext sp = ctx.worldBuilder().create()) {
@@ -114,6 +143,95 @@ public class ErleichterungenClientGameTest implements FabricClientGameTest {
 			in.pressKey(InputConstants.KEY_G);
 			ctx.waitTicks(2);
 			if (ctx.computeOnClient(mc -> Freecam.isActive())) throw new AssertionError("Freecam wurde nicht deaktiviert");
+
+			// ---- Ausheben
+			registerHammer();
+			sp.getServer().runCommand("kill @e[type=!player]");
+			sp.getServer().runCommand("gamemode survival @a");
+			sp.getServer().runCommand("difficulty peaceful");
+			sp.getServer().runCommand("give @a minecraft:netherite_pickaxe[enchantments={efficiency:5}]");
+			BlockPos base = ctx.computeOnClient(mc -> mc.player.blockPosition());
+			int bx = base.getX(), by = base.getY() + 15, bz = base.getZ(); // über dem Grundgestein
+			// Bereich: 5 breit (x), 6 tief (y), 7 lang (z), direkt vor dem Spieler (Blick nach Süden)
+			BlockPos a1 = new BlockPos(bx - 2, by - 6, bz + 1), a2 = new BlockPos(bx + 2, by - 1, bz + 7);
+
+			excavateRun(ctx, sp, bx, by, bz, a1, a2, Excavator.TOOL_NORMAL, "07-ausheben-normal");
+			if (overDig(ctx, a1, a2) > 0) throw new AssertionError("Normal: außerhalb des Bereichs abgebaut: " + overDig(ctx, a1, a2));
+
+			hammer = true;
+			hammerHits = 0;
+			excavateRun(ctx, sp, bx, by, bz, a1, a2, Excavator.TOOL_3X3, "08-ausheben-3x3");
+			hammer = false;
+			int over = overDig(ctx, a1, a2);
+			System.out.println("[Erleichterungen-Test] 3x3: " + hammerHits + " Schläge, außerhalb abgebaut: " + over);
+			if (over > 0) throw new AssertionError("3x3: außerhalb des Bereichs abgebaut: " + over);
+
+			// Ausheben-Einstellungen in der GUI (Rechtsklick auf "Ausheben" im Welt-Fenster)
+			in.pressKey(InputConstants.KEY_RSHIFT);
+			ctx.waitForScreen(ClickGuiScreen.class);
+			in.setCursorPos(190 * scale, 44 * scale);
+			in.pressMouse(1);
+			in.setCursorPos(420 * scale, 200 * scale);
+			ctx.waitTicks(3);
+			ctx.takeScreenshot("09-gui-ausheben");
+			in.pressKey(InputConstants.KEY_ESCAPE);
+			ctx.waitForScreen(null);
 		}
+	}
+
+	/** Boden aufbauen, Bereich auswählen, ausheben und prüfen, dass alles weg ist. */
+	private static void excavateRun(ClientGameTestContext ctx, TestSingleplayerContext sp, int bx, int by, int bz,
+			BlockPos a1, BlockPos a2, int tool, String screenshot) {
+		sp.getServer().runCommand(String.format("fill %d %d %d %d %d %d minecraft:stone", bx - 6, by - 9, bz - 5, bx + 6, by - 1, bz + 13));
+		sp.getServer().runCommand(String.format("fill %d %d %d %d %d %d minecraft:air", bx - 6, by, bz - 5, bx + 6, by + 6, bz + 13));
+		sp.getServer().runCommand(String.format("tp @a %d.5 %d %d.5 0 30", bx, by, bz));
+		ctx.waitTicks(20);
+		ctx.runOnClient(mc -> {
+			ModConfig.get().excavateTool = tool;
+			ModConfig.get().excavateAutoWalk = true;
+			Excavator.setPos1(a1);
+			Excavator.setPos2(a2);
+			Excavator.start();
+		});
+		int volume = 5 * 6 * 7;
+		boolean shot = false;
+		for (int i = 0; i < 400 && ctx.computeOnClient(mc -> Excavator.isActive()); i++) {
+			ctx.waitTicks(5);
+			if (i % 40 == 0) {
+				String st = ctx.computeOnClient(mc -> mc.player.position() + " " + Excavator.hudLine());
+				System.out.println("[Erleichterungen-Test] " + remaining(ctx, a1, a2) + " übrig, " + st);
+			}
+			if (!shot && remaining(ctx, a1, a2) < volume / 2) {
+				ctx.takeScreenshot(screenshot);
+				shot = true;
+			}
+		}
+		int left = remaining(ctx, a1, a2);
+		if (ctx.computeOnClient(mc -> Excavator.isActive())) {
+			ctx.runOnClient(mc -> Excavator.stop(false));
+			throw new AssertionError("Ausheben (" + Excavator.TOOL_LABELS[tool] + ") nicht fertig geworden, übrig: " + left);
+		}
+		if (left > 0) throw new AssertionError("Ausheben (" + Excavator.TOOL_LABELS[tool] + ") hat " + left + " Blöcke übrig gelassen");
+	}
+
+	private static int remaining(ClientGameTestContext ctx, BlockPos a1, BlockPos a2) {
+		return ctx.computeOnClient(mc -> {
+			int n = 0;
+			for (BlockPos p : BlockPos.betweenClosed(a1, a2)) if (!mc.level.getBlockState(p).isAir()) n++;
+			return n;
+		});
+	}
+
+	/** Fehlende Blöcke in der Hülle direkt um den Bereich (unterhalb der Oberfläche). */
+	private static int overDig(ClientGameTestContext ctx, BlockPos a1, BlockPos a2) {
+		return ctx.computeOnClient(mc -> {
+			int n = 0;
+			for (BlockPos p : BlockPos.betweenClosed(a1.offset(-1, -1, -1), new BlockPos(a2.getX() + 1, a2.getY(), a2.getZ() + 1))) {
+				boolean inside = p.getX() >= a1.getX() && p.getX() <= a2.getX() && p.getY() >= a1.getY()
+						&& p.getZ() >= a1.getZ() && p.getZ() <= a2.getZ();
+				if (!inside && mc.level.getBlockState(p).isAir()) n++;
+			}
+			return n;
+		});
 	}
 }

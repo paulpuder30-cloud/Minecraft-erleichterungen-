@@ -37,6 +37,8 @@ public final class Hud {
 			lines.add(new Line("Entity-ESP: " + EntityEsp.lastRendered(), 0xFFFFC04D));
 			for (String s : EntityEsp.topCounts(4)) lines.add(new Line("  " + s, 0xFFDDDDDD));
 		}
+		String excavate = Excavator.hudLine();
+		if (excavate != null) lines.add(new Line(excavate, 0xFFFFC04D));
 		if (de.erleichterungen.feature.Freecam.isActive()) {
 			lines.add(new Line("Freecam aktiv", 0xFF7FFFD4));
 		}

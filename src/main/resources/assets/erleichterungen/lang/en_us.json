@@ -7,5 +7,8 @@
 	"key.erleichterungen.hud": "Toggle HUD",
 	"key.erleichterungen.entity_esp": "Toggle Entity ESP",
 	"key.erleichterungen.freecam": "Toggle Freecam",
+	"key.erleichterungen.excavate": "Toggle excavation",
+	"key.erleichterungen.excavate_pos1": "Excavation: position 1",
+	"key.erleichterungen.excavate_pos2": "Excavation: position 2",
 	"key.erleichterungen.gui": "Open settings GUI"
 }

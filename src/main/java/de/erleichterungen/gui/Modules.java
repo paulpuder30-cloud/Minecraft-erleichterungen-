@@ -7,6 +7,7 @@ import de.erleichterungen.config.RenderMode;
 import de.erleichterungen.feature.AntiVanish;
 import de.erleichterungen.feature.BlockEsp;
 import de.erleichterungen.feature.EntityEsp;
+import de.erleichterungen.feature.Excavator;
 import de.erleichterungen.feature.Freecam;
 import de.erleichterungen.feature.GeodeTracker;
 import de.erleichterungen.gui.Module.Category;
@@ -142,6 +143,27 @@ public final class Modules {
 				.add(new Setting.Bool("Sound", "Ton bei ausgewachsenem Cluster.",
 						() -> c().geodeSound, v -> c().geodeSound = v))
 				.add(new Setting.Action("Statistik zurücksetzen", "Setzt die Wachstums-Statistik zurück.", GeodeTracker::reset)));
+
+		list.add(new Module("excavate", "Ausheben", Category.WORLD,
+				"Gräbt den ausgewählten Bereich aus. Pos 1/2 mit N/M auf den angeschauten Block setzen, "
+						+ "in Grabrichtung schauen und starten. Normal = Block für Block, 3x3 = senkrechte 3x3-Wände.",
+				Excavator::isActive, () -> ErleichterungenClient.toggle("excavate", false), () -> ErleichterungenClient.keyFor("excavate"))
+				.add(new Setting.Choice("Spitzhacke", "Normal: Block für Block. 3x3: Spitzhacke, die eine senkrechte "
+						+ "3x3-Wand abbaut – es wird jeweils der Mittelblock von vorne angeschlagen.",
+						Excavator.TOOL_LABELS, () -> c().excavateTool, v -> c().excavateTool = v))
+				.add(new Setting.Bool("Automatisch laufen", "Selbstständig zur nächsten Stelle laufen (sonst selbst hinlaufen).",
+						() -> c().excavateAutoWalk, v -> c().excavateAutoWalk = v))
+				.add(new Setting.Bool("Lava meiden", "Blöcke neben Lava nicht abbauen.",
+						() -> c().excavateAvoidLava, v -> c().excavateAvoidLava = v))
+				.add(new Setting.Int("Pause (Ticks)", "Zusätzliche Wartezeit nach jedem Block (gegen Anti-Cheat).", 0, 20,
+						() -> c().excavateDelay, v -> c().excavateDelay = v))
+				.add(new Setting.Bool("Bereich anzeigen", "Auswahl und aktuelles Ziel als Box anzeigen.",
+						() -> c().excavateShowArea, v -> c().excavateShowArea = v))
+				.add(new Setting.Color("Farbe", "Farbe des Auswahl-Rahmens.",
+						() -> c().excavateColor, v -> c().excavateColor = v).visibleIf(() -> c().excavateShowArea))
+				.add(new Setting.Action("Pos 1 setzen", "Angeschauter Block wird Ecke 1.", Excavator::setPos1FromLook))
+				.add(new Setting.Action("Pos 2 setzen", "Angeschauter Block wird Ecke 2.", Excavator::setPos2FromLook))
+				.add(new Setting.Action("Auswahl löschen", "Entfernt beide Ecken und stoppt.", Excavator::clearSelection)));
 
 		// ------------------------------------------------------------------ Spieler
 		list.add(new Module("freecam", "Freecam", Category.PLAYER,

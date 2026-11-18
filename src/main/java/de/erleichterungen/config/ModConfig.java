@@ -92,6 +92,18 @@ public final class ModConfig {
 	public RenderMode antiVanishMode = RenderMode.BOTH;
 	public String antiVanishTracerColor = "FF00FF";
 
+	// ---------- Ausheben ----------
+	/** 0 = normale Spitzhacke (Block für Block), 1 = 3x3-Spitzhacke (senkrechte 3x3-Wände). */
+	public int excavateTool = 0;
+	/** Selbstständig zur nächsten Stelle laufen. */
+	public boolean excavateAutoWalk = true;
+	/** Blöcke neben Lava nicht abbauen. */
+	public boolean excavateAvoidLava = true;
+	/** Zusätzliche Pause zwischen zwei Blöcken (Ticks). */
+	public int excavateDelay = 0;
+	public boolean excavateShowArea = true;
+	public String excavateColor = "FFAA00";
+
 	// ---------- Geoden-Tracker ----------
 	public boolean geodeTrackerEnabled = false;
 	public int geodeRange = 64;

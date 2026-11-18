@@ -1,6 +1,6 @@
 # Erleichterungen – Fabric-Client-Mod für Minecraft 26.3
 
-Client-seitige Fabric-Mod mit sechs Modulen und einer Click-GUI (**Rechte Shift-Taste**):
+Client-seitige Fabric-Mod mit sieben Modulen und einer Click-GUI (**Rechte Shift-Taste**):
 
 ![Click-GUI](docs/gui.png)
 
@@ -12,6 +12,7 @@ Client-seitige Fabric-Mod mit sechs Modulen und einer Click-GUI (**Rechte Shift-
 | **Player-ESP** | `F7` | Boxen + Name + Entfernung um alle Spieler, durch Wände sichtbar. Vanish-Verdächtige in Magenta. |
 | **Geoden-Tracker** | `F8` | Findet knospenden Amethyst und alle Knospen, färbt sie nach Wachstumsstufe, erkennt Wachstum live und meldet ausgewachsene Cluster. |
 | **Anti-Vanish** | `F9` | Erkennt Spieler, die per Vanish unsichtbar sind (standardmäßig an). |
+| **Ausheben** | `J` (Pos 1: `N`, Pos 2: `M`) | Gräbt einen ausgewählten Bereich automatisch aus – wahlweise mit einer **normalen Spitzhacke** (Block für Block) oder einer **3x3-Spitzhacke**, die senkrechte 3x3-Wände abbaut. |
 | **Freecam** | `G` | Kamera frei bewegen, der Spieler bleibt stehen. WASD, Leertaste/Shift = hoch/runter, Sprint = schneller. |
 | HUD | `F10` | Info-Overlay oben links. |
 | **Einstellungs-GUI** | `Rechte Shift` | Alle Module und Einstellungen übersichtlich an einem Ort. |
@@ -21,18 +22,18 @@ Alle Tasten lassen sich unter *Optionen → Steuerung → Erleichterungen* ände
 ## Installation
 
 **Direkter Download (ohne GitHub-Login):**
-https://github.com/paulpuder30-cloud/Minecraft-erleichterungen-/raw/claude/epic-goldberg-fi63ne/download/erleichterungen-1.3.0.jar
+https://github.com/paulpuder30-cloud/Minecraft-erleichterungen-/raw/claude/sharp-ramanujan-8l5uv8/download/erleichterungen-1.5.0.jar
 
 1. [Fabric Loader](https://fabricmc.net/use/) **0.20.1+** für Minecraft **26.3** installieren.
 2. [Fabric API](https://modrinth.com/mod/fabric-api) für 26.3 in den `mods`-Ordner legen.
-3. `erleichterungen-1.3.0.jar` in den `mods`-Ordner legen.
+3. `erleichterungen-1.5.0.jar` in den `mods`-Ordner legen.
 
 Die fertige JAR gibt es unter **Actions → Build → Artifacts** (`erleichterungen-mod`)
 oder selbst bauen:
 
 ```bash
 ./gradlew build      # benötigt Java 25
-# Ergebnis: build/libs/erleichterungen-1.3.0.jar
+# Ergebnis: build/libs/erleichterungen-1.5.0.jar
 ```
 
 ## Click-GUI (Rechte Shift-Taste)
@@ -104,11 +105,41 @@ Kombiniert vier Erkennungsmethoden (einzeln abschaltbar):
 - Chat-Meldung + Sound, wenn ein Cluster ausgewachsen ist.
 - Nur Knospen, die wirklich an knospendem Amethyst hängen, werden gezählt.
 
+### Ausheben
+1. Auf eine Ecke des Bereichs schauen und **`N`** drücken (Position 1, grün),
+   auf die gegenüberliegende Ecke schauen und **`M`** drücken (Position 2, blau).
+   Der Bereich wird als orangener Rahmen angezeigt.
+2. In der GUI (Welt → Ausheben, Rechtsklick) die **Spitzhacke** wählen:
+   - **Normal** – Block für Block, Schicht für Schicht von oben nach unten.
+   - **3x3** – für Spitzhacken (z. B. Server-Plugin), die eine **senkrechte 3x3-Fläche quer zur Blickrichtung**
+     abbauen. Der Bereich wird in 3 Blöcke hohe Bänder und 3 Blöcke breite Bahnen aufgeteilt; pro Schlag wird
+     der **mittlere Block** einer 3x3-Wand angeschlagen, die Spitzhacke nimmt die übrigen 8 mit.
+     Die Schläge werden so gewählt, dass **nichts außerhalb des Bereichs** mit abgebaut wird.
+     Die Bänder werden abwechselnd hin und zurück gegraben, den Einstieg ins nächste Band schlägt der
+     Spieler von oben.
+3. In die **Richtung schauen, in die gegraben werden soll** (am besten vom Rand des Bereichs aus) und
+   **`J`** drücken. Nochmal `J` stoppt.
+
+Einstellungen: *Automatisch laufen* (läuft selbst zur nächsten Stelle), *Lava meiden* (Blöcke neben Lava
+werden übersprungen), *Pause (Ticks)* zwischen zwei Blöcken, Rahmen an/aus und Farbe.
+Das HUD zeigt den Fortschritt, Menüs und Freecam pausieren das Ausheben.
+
+| Einstellungen | 3x3-Ausheben |
+|---|---|
+| ![Ausheben-Einstellungen](docs/gui-ausheben.png) | ![3x3-Ausheben](docs/ausheben-3x3.png) |
+
+> **3x3-Modus:** Höhe und Breite (quer zur Grabrichtung) sollten **keine 3n+1** sein (also nicht 1, 4, 7, 10 …),
+> ideal sind Vielfache von 3. Sonst lässt sich die letzte Reihe nur mit Überstand abbauen und die Spitzhacke
+> bricht dort eine Reihe außerhalb mit ab – die Mod warnt beim Start.
+
 ## Befehle (`/erl`)
 
 ```
-/erl toggle <blockesp|entityesp|playeresp|geode|antivanish|hud|freecam>
+/erl toggle <blockesp|entityesp|playeresp|geode|antivanish|hud|freecam|ausheben>
 /erl status
+/erl ausheben [start|stop]             ohne Argument = umschalten
+/erl ausheben pos1 [x y z] | pos2 [x y z] | clear    ohne Koordinaten = angeschauter Block
+/erl ausheben modus <normal|3x3> | laufen | lava | pause <ticks>
 /erl blockesp add <block>              z.B. /erl blockesp add minecraft:gold_ore
 /erl blockesp color <hex> <block>      Box-Farbe, z.B. /erl blockesp color FFD700 minecraft:gold_ore
 /erl blockesp tracercolor <hex> <block>
@@ -132,7 +163,8 @@ Nutzung auf eigene Verantwortung – im Einzelspieler bzw. auf eigenen Servern u
 ## Automatischer Test
 
 `./gradlew runClientGameTest` startet Minecraft, erstellt eine Testwelt, platziert Erz/Geode/Item Frame/
-Rüstungsständer, öffnet die GUI und den Listen-Editor, testet Freecam (Spieler darf sich nicht bewegen)
+Rüstungsständer, öffnet die GUI und den Listen-Editor, testet Freecam (Spieler darf sich nicht bewegen),
+hebt einen 5×6×7-Bereich normal und mit einer simulierten 3x3-Spitzhacke aus
 und speichert Screenshots unter `build/run/clientGameTest/screenshots/`.
 
 ## Technik

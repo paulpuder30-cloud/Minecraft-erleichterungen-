@@ -7,5 +7,8 @@
 	"key.erleichterungen.hud": "HUD umschalten",
 	"key.erleichterungen.entity_esp": "Entity-ESP umschalten",
 	"key.erleichterungen.freecam": "Freecam umschalten",
+	"key.erleichterungen.excavate": "Ausheben starten/stoppen",
+	"key.erleichterungen.excavate_pos1": "Ausheben: Position 1",
+	"key.erleichterungen.excavate_pos2": "Ausheben: Position 2",
 	"key.erleichterungen.gui": "Einstellungs-GUI öffnen"
 }

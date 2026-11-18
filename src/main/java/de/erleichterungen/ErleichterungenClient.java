@@ -5,6 +5,7 @@ import de.erleichterungen.config.ModConfig;
 import de.erleichterungen.feature.AntiVanish;
 import de.erleichterungen.feature.BlockEsp;
 import de.erleichterungen.feature.EntityEsp;
+import de.erleichterungen.feature.Excavator;
 import de.erleichterungen.feature.Freecam;
 import de.erleichterungen.gui.ClickGuiScreen;
 import de.erleichterungen.feature.GeodeTracker;
@@ -46,6 +47,9 @@ public class ErleichterungenClient implements ClientModInitializer {
 	private static KeyMapping keyHud;
 	private static KeyMapping keyFreecam;
 	private static KeyMapping keyGui;
+	private static KeyMapping keyExcavate;
+	private static KeyMapping keyExcavatePos1;
+	private static KeyMapping keyExcavatePos2;
 
 	@Override
 	public void onInitializeClient() {
@@ -63,6 +67,9 @@ public class ErleichterungenClient implements ClientModInitializer {
 		keyHud = key("hud", InputConstants.KEY_F10);
 		keyFreecam = key("freecam", InputConstants.KEY_G);
 		keyGui = key("gui", InputConstants.KEY_RSHIFT);
+		keyExcavate = key("excavate", InputConstants.KEY_J);
+		keyExcavatePos1 = key("excavate_pos1", InputConstants.KEY_N);
+		keyExcavatePos2 = key("excavate_pos2", InputConstants.KEY_M);
 
 		ClientTickEvents.END_CLIENT_TICK.register(ErleichterungenClient::onTick);
 
@@ -79,6 +86,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 				GeodeTracker.render(mc, cam);
 				EntityEsp.render(mc, cam, partialTick);
 				PlayerEsp.render(mc, cam, partialTick);
+				Excavator.render(mc);
 			} catch (Exception e) {
 				LOGGER.error("Fehler beim Rendern", e);
 			}
@@ -94,11 +102,12 @@ public class ErleichterungenClient implements ClientModInitializer {
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> client.execute(() -> {
 			AntiVanish.reset();
 			Freecam.disable();
+			Excavator.stop(false);
 		}));
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> Commands.register(dispatcher));
 
-		LOGGER.info("Erleichterungen geladen: Anti-Vanish, Block-ESP, Entity-ESP, Player-ESP, Geoden-Tracker");
+		LOGGER.info("Erleichterungen geladen: Anti-Vanish, Block-ESP, Entity-ESP, Player-ESP, Geoden-Tracker, Ausheben");
 	}
 
 	public static KeyMapping keyFor(String module) {
@@ -111,6 +120,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 			case "hud" -> keyHud;
 			case "freecam" -> keyFreecam;
 			case "gui" -> keyGui;
+			case "excavate" -> keyExcavate;
 			default -> null;
 		};
 	}
@@ -132,7 +142,12 @@ public class ErleichterungenClient implements ClientModInitializer {
 			if (mc.gui.screen() == null) mc.setScreenAndShow(new ClickGuiScreen());
 		}
 
+		while (keyExcavate.consumeClick()) toggle("excavate");
+		while (keyExcavatePos1.consumeClick()) Excavator.setPos1FromLook();
+		while (keyExcavatePos2.consumeClick()) Excavator.setPos2FromLook();
+
 		Freecam.tick(mc);
+		Excavator.tick(mc);
 
 		ScanManager.tick(mc);
 		AntiVanish.tick(mc);
@@ -164,6 +179,11 @@ public class ErleichterungenClient implements ClientModInitializer {
 				Freecam.toggle();
 				state = Freecam.isActive();
 				label = "Freecam";
+			}
+			case "excavate", "ausheben" -> {
+				// Start/Stopp meldet Excavator selbst im Chat
+				Excavator.toggle();
+				return Excavator.isActive();
 			}
 			default -> {
 				return null;

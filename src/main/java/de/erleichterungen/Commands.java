@@ -11,6 +11,7 @@ import de.erleichterungen.config.RenderMode;
 import de.erleichterungen.feature.AntiVanish;
 import de.erleichterungen.feature.BlockEsp;
 import de.erleichterungen.feature.EntityEsp;
+import de.erleichterungen.feature.Excavator;
 import de.erleichterungen.feature.GeodeTracker;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
@@ -46,7 +47,7 @@ public final class Commands {
 	private static final SuggestionProvider<FabricClientCommandSource> CONFIGURED_ENTITIES = (ctx, builder) ->
 			SharedSuggestionProvider.suggest(ModConfig.get().entityEsp.keySet(), builder);
 
-	private static final String[] MODULES = {"blockesp", "entityesp", "playeresp", "geode", "antivanish", "hud"};
+	private static final String[] MODULES = {"blockesp", "entityesp", "playeresp", "geode", "antivanish", "hud", "ausheben"};
 
 	public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
 		dispatcher.register(literal("erl")
@@ -156,6 +157,31 @@ public final class Commands {
 						.then(boolSetting("highlight", c -> c.antiVanishHighlight = !c.antiVanishHighlight, c -> c.antiVanishHighlight))
 						.then(modeCommand((c, m) -> c.antiVanishMode = m))
 						.then(tracerColorCommand((c, v) -> c.antiVanishTracerColor = v)))
+				.then(literal("ausheben")
+						.executes(ctx -> {
+							Excavator.toggle();
+							return 1;
+						})
+						.then(posCommand("pos1", true))
+						.then(posCommand("pos2", false))
+						.then(literal("start").executes(ctx -> {
+							if (!Excavator.isActive()) Excavator.start();
+							return 1;
+						}))
+						.then(literal("stop").executes(ctx -> {
+							Excavator.stop(true);
+							return 1;
+						}))
+						.then(literal("clear").executes(ctx -> {
+							Excavator.clearSelection();
+							return 1;
+						}))
+						.then(literal("modus")
+								.then(literal("normal").executes(ctx -> setTool(ctx, Excavator.TOOL_NORMAL)))
+								.then(literal("3x3").executes(ctx -> setTool(ctx, Excavator.TOOL_3X3))))
+						.then(boolSetting("laufen", c -> c.excavateAutoWalk = !c.excavateAutoWalk, c -> c.excavateAutoWalk))
+						.then(boolSetting("lava", c -> c.excavateAvoidLava = !c.excavateAvoidLava, c -> c.excavateAvoidLava))
+						.then(intSetting("pause", 0, 20, (c, v) -> c.excavateDelay = v)))
 				.then(literal("tracers")
 						.then(literal("all").then(argument("an", com.mojang.brigadier.arguments.BoolArgumentType.bool()).executes(ctx -> {
 							boolean on = com.mojang.brigadier.arguments.BoolArgumentType.getBool(ctx, "an");
@@ -168,6 +194,31 @@ public final class Commands {
 							ModConfig.save();
 							return ok(ctx, "Tracer-Breite = " + ModConfig.get().tracerWidth);
 						})))));
+	}
+
+	/** /erl ausheben pos1 [x y z] – ohne Koordinaten der angeschaute Block. */
+	private static com.mojang.brigadier.builder.LiteralArgumentBuilder<FabricClientCommandSource> posCommand(String name, boolean first) {
+		return literal(name)
+				.executes(ctx -> {
+					if (first) Excavator.setPos1FromLook();
+					else Excavator.setPos2FromLook();
+					return 1;
+				})
+				.then(argument("x", IntegerArgumentType.integer())
+						.then(argument("y", IntegerArgumentType.integer())
+								.then(argument("z", IntegerArgumentType.integer()).executes(ctx -> {
+									net.minecraft.core.BlockPos p = new net.minecraft.core.BlockPos(IntegerArgumentType.getInteger(ctx, "x"),
+											IntegerArgumentType.getInteger(ctx, "y"), IntegerArgumentType.getInteger(ctx, "z"));
+									if (first) Excavator.setPos1(p);
+									else Excavator.setPos2(p);
+									return 1;
+								}))));
+	}
+
+	private static int setTool(CommandContext<FabricClientCommandSource> ctx, int tool) {
+		ModConfig.get().excavateTool = tool;
+		ModConfig.save();
+		return ok(ctx, "Ausheben-Spitzhacke: " + Excavator.TOOL_LABELS[tool]);
 	}
 
 	private static com.mojang.brigadier.builder.LiteralArgumentBuilder<FabricClientCommandSource> intSetting(
@@ -344,7 +395,7 @@ public final class Commands {
 		ModConfig c = ModConfig.get();
 		ok(ctx, "Block-ESP: " + onOff(c.blockEspEnabled) + " | Entity-ESP: " + onOff(c.entityEspEnabled) + " | Player-ESP: " + onOff(c.playerEspEnabled)
 				+ " | Geoden: " + onOff(c.geodeTrackerEnabled) + " | Anti-Vanish: " + onOff(c.antiVanishEnabled)
-				+ " | HUD: " + onOff(c.hudEnabled));
+				+ " | HUD: " + onOff(c.hudEnabled) + " | Ausheben: " + onOff(Excavator.isActive()));
 		return 1;
 	}
 
@@ -356,8 +407,10 @@ public final class Commands {
 		FabricClientCommandSource s = ctx.getSource();
 		s.sendFeedback(Component.literal("Erleichterungen – Befehle:").withStyle(ChatFormatting.LIGHT_PURPLE));
 		String[] lines = {
-				"/erl toggle <blockesp|entityesp|playeresp|geode|antivanish|hud>",
+				"/erl toggle <blockesp|entityesp|playeresp|geode|antivanish|hud|ausheben>",
 				"/erl status",
+				"/erl ausheben [start|stop] | pos1 [x y z] | pos2 [x y z] | clear",
+				"/erl ausheben modus <normal|3x3> | laufen | lava | pause <ticks>",
 				"/erl blockesp add <block> | color <hex> <block> | remove <block> | list | clear",
 				"/erl blockesp range <n> | max <n> | fill",
 				"/erl blockesp mode <box|beide|tracer> [block] | tracercolor <hex> <block>",

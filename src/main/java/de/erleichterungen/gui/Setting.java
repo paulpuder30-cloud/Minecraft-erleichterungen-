@@ -13,7 +13,7 @@ import java.util.function.Supplier;
  * Eine Einstellung eines Moduls. Liest/schreibt direkt die Felder der {@link de.erleichterungen.config.ModConfig}.
  */
 public abstract sealed class Setting permits Setting.Bool, Setting.Int, Setting.Dec, Setting.Color, Setting.Text,
-		Setting.Mode, Setting.ListEdit, Setting.Action {
+		Setting.Mode, Setting.Choice, Setting.ListEdit, Setting.Action {
 	public final String name;
 	public final String description;
 	/** Wird nach jeder Änderung aufgerufen (z.B. um Filter neu aufzubauen). */
@@ -109,6 +109,34 @@ public abstract sealed class Setting permits Setting.Bool, Setting.Int, Setting.
 			super(name, description);
 			this.get = get;
 			this.set = set;
+		}
+	}
+
+	/** Auswahl aus festen Optionen (Klick wechselt, Rechtsklick zurück). */
+	public static final class Choice extends Setting {
+		public final String[] labels;
+		public final java.util.function.IntSupplier get;
+		public final java.util.function.IntConsumer set;
+
+		public Choice(String name, String description, String[] labels, java.util.function.IntSupplier get,
+				java.util.function.IntConsumer set) {
+			super(name, description);
+			this.labels = labels;
+			this.get = get;
+			this.set = set;
+		}
+
+		public int index() {
+			int i = get.getAsInt();
+			return i < 0 || i >= labels.length ? 0 : i;
+		}
+
+		public String label() {
+			return labels[index()];
+		}
+
+		public void cycle(int dir) {
+			set.accept(Math.floorMod(index() + dir, labels.length));
 		}
 	}
 
