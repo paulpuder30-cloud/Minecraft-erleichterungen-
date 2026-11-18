@@ -1,0 +1,12 @@
+{
+	"item.werkzeuge.pickaxe_3x3": "3x3-Spitzhacke",
+	"item.werkzeuge.pickaxe_3x3.desc1": "Baut eine senkrechte 3x3-Fläche ab.",
+	"item.werkzeuge.pickaxe_3x3.desc2": "Schleichen: nur ein Block",
+	"item.werkzeuge.hyperion": "Hyperion",
+	"item.werkzeuge.hyperion.ability": "Fähigkeit: Wither Impact  RECHTSKLICK",
+	"item.werkzeuge.hyperion.desc1": "Teleportiert dich 10 Blöcke nach vorne",
+	"item.werkzeuge.hyperion.desc2": "und implodiert: 50 Schaden an allen Gegnern",
+	"item.werkzeuge.hyperion.desc3": "im Umkreis von 10 Blöcken. Wither-Schild:",
+	"item.werkzeuge.hyperion.desc4": "Absorption + 10% weniger Schaden für 5s.",
+	"item.werkzeuge.hyperion.hit": "Implosion traf %s Gegner für %s Schaden."
+}

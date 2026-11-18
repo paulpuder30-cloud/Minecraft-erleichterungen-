@@ -19,6 +19,9 @@ Client-seitige Fabric-Mod mit sieben Modulen und einer Click-GUI (**Rechte Shift
 
 Alle Tasten lassen sich unter *Optionen → Steuerung → Erleichterungen* ändern.
 
+> **Neu:** Die separate Mod **[Erleichterungen Werkzeuge](werkzeuge-mod/README.md)** fügt eine 3x3-Spitzhacke und
+> das Schwert *Hyperion* (Wither Impact: Teleport, Implosion, Wither-Schild) hinzu.
+
 ## Installation
 
 **Direkter Download (ohne GitHub-Login):**

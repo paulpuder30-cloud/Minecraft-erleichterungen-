@@ -17,8 +17,16 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Build
         run: ./gradlew build
+      - name: Build Werkzeuge-Mod
+        run: ./gradlew build
+        working-directory: werkzeuge-mod
       - name: Upload mod jar
         uses: actions/upload-artifact@v4
         with:
           name: erleichterungen-mod
           path: build/libs/*.jar
+      - name: Upload Werkzeuge jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: erleichterungen-werkzeuge
+          path: werkzeuge-mod/build/libs/*.jar

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "N": "minecraft:netherite_ingot",
+    "S": "minecraft:netherite_sword",
+    "W": "minecraft:nether_star"
+  },
+  "pattern": [
+    " W ",
+    "NSN",
+    " N "
+  ],
+  "result": {
+    "id": "werkzeuge:hyperion"
+  }
+}

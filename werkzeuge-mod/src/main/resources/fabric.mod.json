@@ -1,0 +1,23 @@
+{
+	"schemaVersion": 1,
+	"id": "werkzeuge",
+	"version": "${version}",
+	"name": "Erleichterungen Werkzeuge",
+	"description": "3x3-Spitzhacke und Hyperion-Schwert (Wither Impact: Teleport, Implosion, Wither-Schild).",
+	"authors": ["paulpuder30-cloud"],
+	"contact": {
+		"sources": "https://github.com/paulpuder30-cloud/Minecraft-erleichterungen-"
+	},
+	"license": "MIT",
+	"environment": "*",
+	"entrypoints": {
+		"main": ["de.erleichterungen.werkzeuge.WerkzeugeMod"]
+	},
+	"mixins": ["werkzeuge.mixins.json"],
+	"depends": {
+		"fabricloader": ">=0.20.1",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}

@@ -1,0 +1,12 @@
+{
+	"item.werkzeuge.pickaxe_3x3": "3x3 Pickaxe",
+	"item.werkzeuge.pickaxe_3x3.desc1": "Mines a vertical 3x3 area.",
+	"item.werkzeuge.pickaxe_3x3.desc2": "Sneak: single block",
+	"item.werkzeuge.hyperion": "Hyperion",
+	"item.werkzeuge.hyperion.ability": "Ability: Wither Impact  RIGHT CLICK",
+	"item.werkzeuge.hyperion.desc1": "Teleports you 10 blocks ahead and",
+	"item.werkzeuge.hyperion.desc2": "implodes, dealing 50 damage to all enemies",
+	"item.werkzeuge.hyperion.desc3": "within 10 blocks. Wither Shield: absorption",
+	"item.werkzeuge.hyperion.desc4": "and 10% less damage taken for 5s.",
+	"item.werkzeuge.hyperion.hit": "Your Implosion hit %s enemies for %s damage."
+}
