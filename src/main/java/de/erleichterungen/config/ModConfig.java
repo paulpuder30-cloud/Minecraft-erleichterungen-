@@ -86,6 +86,32 @@ public final class ModConfig {
 	// ---------- NoHurtCam ----------
 	public boolean noHurtCamEnabled = false;
 
+	// ---------- Storage-ESP ----------
+	public boolean storageEspEnabled = false;
+	public int storageEspRange = 128;
+	public int storageEspMaxBoxes = 2000;
+	public RenderMode storageEspMode = RenderMode.BOX;
+	public boolean storageEspFill = true;
+	public float storageEspLineWidth = 2.0f;
+	public boolean storageEspLabels = false;
+
+	// ---------- Portal-ESP ----------
+	public boolean portalEspEnabled = false;
+	public int portalEspRange = 256;
+	public int portalEspMaxBoxes = 2000;
+	public RenderMode portalEspMode = RenderMode.BOTH;
+	public String portalEspColor = "B14DFF";
+	public String portalEspTracerColor = "B14DFF";
+	public boolean portalEspFill = true;
+	public float portalEspLineWidth = 2.0f;
+
+	// ---------- Chunk-Borders ----------
+	public boolean chunkBordersEnabled = false;
+	public String chunkBordersColor = "FFFF55";
+	public int chunkBordersRadius = 1;
+	public float chunkBordersLineWidth = 1.5f;
+	public int chunkBordersHeight = 128;
+
 	// ---------- Tracer ----------
 	public float tracerWidth = 1.5f;
 

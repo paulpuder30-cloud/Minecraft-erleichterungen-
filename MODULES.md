@@ -3,10 +3,10 @@
 > **Automatisch generiert** aus dem Quellcode mit `tools/generate_modules_md.py`.
 > Nicht von Hand bearbeiten – stattdessen das Skript erneut ausführen.
 
-**Module gesamt:** 18  
+**Module gesamt:** 21  
 **Setting-Typen:** Bool (An/Aus), Int (Ganzzahl), Dec (Dezimal), Color (Hex), Text, Mode (Darstellung), ListEdit (ID-Liste mit Farbe), Action (Knopf).
 
-**Pro Kategorie:** Render: 10  Bewegung: 2  Welt: 1  Spieler: 2  Sonstiges: 1  Client: 2
+**Pro Kategorie:** Render: 10  Bewegung: 2  Welt: 4  Spieler: 2  Sonstiges: 1  Client: 2
 
 Dieser Client gruppiert Einstellungen **flach pro Modul** (keine Unter-Gruppen wie bei Meteor); die Spalte „Feld" nennt das zugehörige Config-Feld in `ModConfig`.
 
@@ -157,6 +157,43 @@ Zeigt Amethyst-Knospen nach Wachstumsstufe und meldet fertige Cluster.
 | Benachrichtigung | Bool | An | An / Aus | `geodeNotifyFullyGrown` |
 | Sound | Bool | An | An / Aus | `geodeSound` |
 | Statistik zurücksetzen | Action | — | Aktion (Knopf) | `—` |
+
+### Storage-ESP  
+`id: storageesp` · Kategorie: **Welt** · An/Aus-Modul  
+Markiert Behälter (Truhen, Shulker, Öfen, Hopper, ...) – ideal zum Basen-Finden.
+
+| Einstellung | Typ | Standard | Bereich / Werte | Feld |
+|---|---|---|---|---|
+| Reichweite | Int | 128 | 16 … 512 | `storageEspRange` |
+| Max. Boxen | Int | 2000 | 10 … 20000 | `storageEspMaxBoxes` |
+| Modus | Mode | Box | Box / Box & Tracer / Nur Tracer | `storageEspMode` |
+| Füllung | Bool | An | An / Aus | `storageEspFill` |
+| Linienbreite | Dec | 2.0 | 0.5 … 6 (Schritt 0.5) | `storageEspLineWidth` |
+| Beschriftung | Bool | Aus | An / Aus | `storageEspLabels` |
+
+### Portal-ESP  
+`id: portalesp` · Kategorie: **Welt** · An/Aus-Modul  
+Markiert Nether-/End-Portale, Portalrahmen und Gateways.
+
+| Einstellung | Typ | Standard | Bereich / Werte | Feld |
+|---|---|---|---|---|
+| Reichweite | Int | 256 | 16 … 512 | `portalEspRange` |
+| Modus | Mode | Box & Tracer | Box / Box & Tracer / Nur Tracer | `portalEspMode` |
+| Box-Farbe | Color | #B14DFF | Hex-Farbe (RRGGBB) | `portalEspColor` |
+| Tracer-Farbe | Color | #B14DFF | Hex-Farbe (RRGGBB) | `portalEspTracerColor` |
+| Füllung | Bool | An | An / Aus | `portalEspFill` |
+| Linienbreite | Dec | 2.0 | 0.5 … 6 (Schritt 0.5) | `portalEspLineWidth` |
+
+### Chunk-Borders  
+`id: chunkborders` · Kategorie: **Welt** · An/Aus-Modul  
+Zeichnet das Chunk-Raster um dich herum.
+
+| Einstellung | Typ | Standard | Bereich / Werte | Feld |
+|---|---|---|---|---|
+| Radius (Chunks) | Int | 1 | 0 … 8 | `chunkBordersRadius` |
+| Höhe | Int | 128 | 16 … 512 | `chunkBordersHeight` |
+| Linienbreite | Dec | 1.5 | 0.5 … 6 (Schritt 0.5) | `chunkBordersLineWidth` |
+| Farbe | Color | #FFFF55 | Hex-Farbe (RRGGBB) | `chunkBordersColor` |
 
 
 ## Spieler  

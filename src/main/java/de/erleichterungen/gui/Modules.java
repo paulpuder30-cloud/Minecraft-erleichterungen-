@@ -203,6 +203,47 @@ public final class Modules {
 						() -> c().geodeSound, v -> c().geodeSound = v))
 				.add(new Setting.Action("Statistik zurücksetzen", "Setzt die Wachstums-Statistik zurück.", GeodeTracker::reset)));
 
+		list.add(toggleable("storageesp", "Storage-ESP", Category.WORLD,
+				"Markiert Behälter (Truhen, Shulker, Öfen, Hopper, ...) – ideal zum Basen-Finden.", () -> c().storageEspEnabled)
+				.add(new Setting.Int("Reichweite", "Maximale Entfernung in Blöcken.", 16, 512,
+						() -> c().storageEspRange, v -> c().storageEspRange = v))
+				.add(new Setting.Int("Max. Boxen", "Obergrenze gleichzeitig gezeichneter Behälter.", 10, 20000,
+						() -> c().storageEspMaxBoxes, v -> c().storageEspMaxBoxes = v))
+				.add(new Setting.Mode("Modus", "Box, Box & Tracer oder nur Tracer.",
+						() -> c().storageEspMode, v -> c().storageEspMode = v))
+				.add(new Setting.Bool("Füllung", "Boxen halbtransparent füllen.",
+						() -> c().storageEspFill, v -> c().storageEspFill = v).visibleIf(() -> c().storageEspMode.box()))
+				.add(new Setting.Dec("Linienbreite", "Breite der Box-Umrisse.", 0.5f, 6f, 0.5f,
+						() -> c().storageEspLineWidth, v -> c().storageEspLineWidth = v).visibleIf(() -> c().storageEspMode.box()))
+				.add(new Setting.Bool("Beschriftung", "Behälter-Namen anzeigen.",
+						() -> c().storageEspLabels, v -> c().storageEspLabels = v)));
+
+		list.add(toggleable("portalesp", "Portal-ESP", Category.WORLD,
+				"Markiert Nether-/End-Portale, Portalrahmen und Gateways.", () -> c().portalEspEnabled)
+				.add(new Setting.Int("Reichweite", "Maximale Entfernung in Blöcken.", 16, 512,
+						() -> c().portalEspRange, v -> c().portalEspRange = v))
+				.add(new Setting.Mode("Modus", "Box, Box & Tracer oder nur Tracer.",
+						() -> c().portalEspMode, v -> c().portalEspMode = v))
+				.add(new Setting.Color("Box-Farbe", "Farbe der Boxen.",
+						() -> c().portalEspColor, v -> c().portalEspColor = v).visibleIf(() -> c().portalEspMode.box()))
+				.add(new Setting.Color("Tracer-Farbe", "Farbe der Tracer-Linien.",
+						() -> c().portalEspTracerColor, v -> c().portalEspTracerColor = v).visibleIf(() -> c().portalEspMode.tracer()))
+				.add(new Setting.Bool("Füllung", "Boxen halbtransparent füllen.",
+						() -> c().portalEspFill, v -> c().portalEspFill = v).visibleIf(() -> c().portalEspMode.box()))
+				.add(new Setting.Dec("Linienbreite", "Breite der Box-Umrisse.", 0.5f, 6f, 0.5f,
+						() -> c().portalEspLineWidth, v -> c().portalEspLineWidth = v).visibleIf(() -> c().portalEspMode.box())));
+
+		list.add(toggleable("chunkborders", "Chunk-Borders", Category.WORLD,
+				"Zeichnet das Chunk-Raster um dich herum.", () -> c().chunkBordersEnabled)
+				.add(new Setting.Int("Radius (Chunks)", "Wie viele Chunks in jede Richtung.", 0, 8,
+						() -> c().chunkBordersRadius, v -> c().chunkBordersRadius = v))
+				.add(new Setting.Int("Höhe", "Halbe Höhe der senkrechten Linien (Blöcke).", 16, 512,
+						() -> c().chunkBordersHeight, v -> c().chunkBordersHeight = v))
+				.add(new Setting.Dec("Linienbreite", "Breite der Linien.", 0.5f, 6f, 0.5f,
+						() -> c().chunkBordersLineWidth, v -> c().chunkBordersLineWidth = v))
+				.add(new Setting.Color("Farbe", "Farbe der Rasterlinien.",
+						() -> c().chunkBordersColor, v -> c().chunkBordersColor = v)));
+
 		// ------------------------------------------------------------------ Spieler
 		list.add(new Module("freecam", "Freecam", Category.PLAYER,
 				"Kamera frei bewegen, der Spieler bleibt stehen. WASD, Leertaste/Shift hoch/runter, Sprint = schneller.",

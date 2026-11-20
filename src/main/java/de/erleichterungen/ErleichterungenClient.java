@@ -8,6 +8,7 @@ import de.erleichterungen.feature.AutoSprint;
 import de.erleichterungen.feature.AutoWalk;
 import de.erleichterungen.feature.BlockEsp;
 import de.erleichterungen.feature.BlockHighlight;
+import de.erleichterungen.feature.ChunkBorders;
 import de.erleichterungen.feature.EntityEsp;
 import de.erleichterungen.feature.Freecam;
 import de.erleichterungen.feature.Fullbright;
@@ -17,6 +18,8 @@ import de.erleichterungen.feature.Hud;
 import de.erleichterungen.feature.ItemEsp;
 import de.erleichterungen.feature.Nametags;
 import de.erleichterungen.feature.PlayerEsp;
+import de.erleichterungen.feature.PortalEsp;
+import de.erleichterungen.feature.StorageEsp;
 import de.erleichterungen.feature.Zoom;
 import de.erleichterungen.scan.ScanManager;
 import de.erleichterungen.util.Chat;
@@ -63,6 +66,8 @@ public class ErleichterungenClient implements ClientModInitializer {
 		BlockEsp.init();
 		GeodeTracker.init();
 		EntityEsp.init();
+		StorageEsp.init();
+		PortalEsp.init();
 
 		keyBlockEsp = key("block_esp", InputConstants.KEY_F6);
 		keyEntityEsp = key("entity_esp", InputConstants.KEY_F4);
@@ -92,6 +97,9 @@ public class ErleichterungenClient implements ClientModInitializer {
 				ItemEsp.render(mc, cam, partialTick);
 				Nametags.render(mc, cam, partialTick);
 				BlockHighlight.render(mc, cam, partialTick);
+				StorageEsp.render(mc, cam);
+				PortalEsp.render(mc, cam);
+				ChunkBorders.render(mc, cam);
 			} catch (Exception e) {
 				LOGGER.error("Fehler beim Rendern", e);
 			}
@@ -192,6 +200,9 @@ public class ErleichterungenClient implements ClientModInitializer {
 			case "itemesp" -> { state = c.itemEspEnabled = !c.itemEspEnabled; label = "Item-ESP"; }
 			case "blockhighlight" -> { state = c.blockHighlightEnabled = !c.blockHighlightEnabled; label = "Block-Highlight"; }
 			case "nohurtcam" -> { state = c.noHurtCamEnabled = !c.noHurtCamEnabled; label = "NoHurtCam"; }
+			case "storageesp" -> { state = c.storageEspEnabled = !c.storageEspEnabled; label = "Storage-ESP"; }
+			case "portalesp" -> { state = c.portalEspEnabled = !c.portalEspEnabled; label = "Portal-ESP"; }
+			case "chunkborders" -> { state = c.chunkBordersEnabled = !c.chunkBordersEnabled; label = "Chunk-Borders"; }
 			default -> {
 				return null;
 			}
