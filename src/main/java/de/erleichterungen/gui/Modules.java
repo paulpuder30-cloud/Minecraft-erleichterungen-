@@ -124,6 +124,66 @@ public final class Modules {
 				.add(new Setting.Action("Alle Tracer an", "Box → Box & Tracer, für alle Module und Listeneinträge.", () -> c().setAllTracers(true)))
 				.add(new Setting.Action("Alle Tracer aus", "Alles auf nur Box – entfernt sämtliche Tracer.", () -> c().setAllTracers(false))));
 
+		list.add(new Module("zoom", "Zoom", Category.RENDER,
+				"Verringert das Sichtfeld, solange die Zoom-Taste gehalten wird.", null, null,
+				() -> ErleichterungenClient.keyFor("zoom"))
+				.add(new Setting.Int("Zoom-FOV", "Sichtfeld beim Zoomen (kleiner = stärker herangezoomt).", 30, 110,
+						() -> c().zoomFov, v -> c().zoomFov = v)));
+
+		list.add(toggleable("fullbright", "Fullbright", Category.RENDER,
+				"Setzt die Helligkeit (Gamma) auf das Maximum.", () -> c().fullbrightEnabled));
+
+		list.add(toggleable("nametags", "Nametags", Category.RENDER,
+				"Name, Gesundheit und Entfernung über allen Spielern.", () -> c().nametagsEnabled)
+				.add(new Setting.Int("Reichweite", "Maximale Entfernung in Blöcken.", 16, 512,
+						() -> c().nametagsRange, v -> c().nametagsRange = v))
+				.add(new Setting.Bool("Gesundheit", "Aktuelle/maximale HP anzeigen.",
+						() -> c().nametagsHealth, v -> c().nametagsHealth = v))
+				.add(new Setting.Bool("Entfernung", "Entfernung in Metern anzeigen.",
+						() -> c().nametagsDistance, v -> c().nametagsDistance = v))
+				.add(new Setting.Dec("Größe", "Skalierung der Schrift.", 0.5f, 3f, 0.1f,
+						() -> c().nametagsScale, v -> c().nametagsScale = v))
+				.add(new Setting.Color("Farbe", "Textfarbe.",
+						() -> c().nametagsColor, v -> c().nametagsColor = v)));
+
+		list.add(toggleable("itemesp", "Item-ESP", Category.RENDER,
+				"Markiert am Boden liegende Gegenstände mit Box, Name und Anzahl.", () -> c().itemEspEnabled)
+				.add(new Setting.Int("Reichweite", "Maximale Entfernung in Blöcken.", 8, 512,
+						() -> c().itemEspRange, v -> c().itemEspRange = v))
+				.add(new Setting.Mode("Modus", "Box, Box & Tracer oder nur Tracer.",
+						() -> c().itemEspMode, v -> c().itemEspMode = v))
+				.add(new Setting.Color("Box-Farbe", "Farbe der Boxen und Beschriftung.",
+						() -> c().itemEspColor, v -> c().itemEspColor = v).visibleIf(() -> c().itemEspMode.box()))
+				.add(new Setting.Color("Tracer-Farbe", "Farbe der Tracer-Linien.",
+						() -> c().itemEspTracerColor, v -> c().itemEspTracerColor = v).visibleIf(() -> c().itemEspMode.tracer()))
+				.add(new Setting.Bool("Füllung", "Boxen halbtransparent füllen.",
+						() -> c().itemEspFill, v -> c().itemEspFill = v).visibleIf(() -> c().itemEspMode.box()))
+				.add(new Setting.Dec("Linienbreite", "Breite der Box-Umrisse.", 0.5f, 6f, 0.5f,
+						() -> c().itemEspLineWidth, v -> c().itemEspLineWidth = v).visibleIf(() -> c().itemEspMode.box()))
+				.add(new Setting.Bool("Beschriftung", "Name und Anzahl anzeigen.",
+						() -> c().itemEspLabels, v -> c().itemEspLabels = v)));
+
+		list.add(toggleable("blockhighlight", "Block-Highlight", Category.RENDER,
+				"Hebt den Block hervor, auf den du schaust.", () -> c().blockHighlightEnabled)
+				.add(new Setting.Color("Farbe", "Farbe der Hervorhebung.",
+						() -> c().blockHighlightColor, v -> c().blockHighlightColor = v))
+				.add(new Setting.Bool("Füllung", "Block halbtransparent füllen.",
+						() -> c().blockHighlightFill, v -> c().blockHighlightFill = v))
+				.add(new Setting.Bool("Durch Wände", "Auch durch Wände sichtbar.",
+						() -> c().blockHighlightThroughWalls, v -> c().blockHighlightThroughWalls = v))
+				.add(new Setting.Dec("Linienbreite", "Breite der Umrisse.", 0.5f, 6f, 0.5f,
+						() -> c().blockHighlightLineWidth, v -> c().blockHighlightLineWidth = v)));
+
+		list.add(toggleable("nohurtcam", "NoHurtCam", Category.RENDER,
+				"Unterdrückt das Kamera-Wackeln beim Schadennehmen.", () -> c().noHurtCamEnabled));
+
+		// ------------------------------------------------------------------ Bewegung
+		list.add(toggleable("autosprint", "Auto-Sprint", Category.MOVEMENT,
+				"Sprintet automatisch, sobald du vorwärts läufst.", () -> c().autoSprintEnabled));
+
+		list.add(toggleable("autowalk", "Auto-Walk", Category.MOVEMENT,
+				"Hält automatisch die Vorwärtstaste gedrückt.", () -> c().autoWalkEnabled));
+
 		// ------------------------------------------------------------------ Welt
 		list.add(toggleable("geode", "Geoden-Tracker", Category.WORLD,
 				"Zeigt Amethyst-Knospen nach Wachstumsstufe und meldet fertige Cluster.", () -> c().geodeTrackerEnabled)
@@ -149,6 +209,11 @@ public final class Modules {
 				Freecam::isActive, () -> ErleichterungenClient.toggle("freecam", false), () -> ErleichterungenClient.keyFor("freecam"))
 				.add(new Setting.Dec("Geschwindigkeit", "Blöcke pro Tick (mit Sprint x2.5).", 0.1f, 5f, 0.1f,
 						() -> c().freecamSpeed, v -> c().freecamSpeed = v)));
+
+		list.add(toggleable("autorespawn", "Auto-Respawn", Category.PLAYER,
+				"Belebt dich nach dem Tod automatisch wieder.", () -> c().autoRespawnEnabled)
+				.add(new Setting.Int("Verzögerung (ms)", "Wartezeit nach dem Tod bis zum Wiederbeleben.", 0, 5000,
+						() -> c().autoRespawnDelayMs, v -> c().autoRespawnDelayMs = v)));
 
 		// ------------------------------------------------------------------ Sonstiges
 		list.add(toggleable("antivanish", "Anti-Vanish", Category.MISC,
@@ -186,7 +251,13 @@ public final class Modules {
 
 		// ------------------------------------------------------------------ Client
 		list.add(toggleable("hud", "HUD", Category.CLIENT,
-				"Info-Overlay oben links.", () -> c().hudEnabled));
+				"Info-Overlay oben links.", () -> c().hudEnabled)
+				.add(new Setting.Bool("Koordinaten", "XYZ-Position anzeigen.",
+						() -> c().hudCoords, v -> c().hudCoords = v))
+				.add(new Setting.Bool("Blickrichtung", "Himmelsrichtung anzeigen.",
+						() -> c().hudDirection, v -> c().hudDirection = v))
+				.add(new Setting.Bool("FPS", "Bilder pro Sekunde anzeigen.",
+						() -> c().hudFps, v -> c().hudFps = v)));
 		list.add(new Module("gui", "GUI", Category.CLIENT,
 				"Aussehen dieser Oberfläche.", null, null, () -> ErleichterungenClient.keyFor("gui"))
 				.add(new Setting.Color("Akzentfarbe", "Hauptfarbe der Oberfläche.",

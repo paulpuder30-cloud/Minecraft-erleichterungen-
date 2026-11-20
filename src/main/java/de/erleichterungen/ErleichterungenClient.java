@@ -3,13 +3,21 @@ package de.erleichterungen;
 import com.mojang.blaze3d.platform.InputConstants;
 import de.erleichterungen.config.ModConfig;
 import de.erleichterungen.feature.AntiVanish;
+import de.erleichterungen.feature.AutoRespawn;
+import de.erleichterungen.feature.AutoSprint;
+import de.erleichterungen.feature.AutoWalk;
 import de.erleichterungen.feature.BlockEsp;
+import de.erleichterungen.feature.BlockHighlight;
 import de.erleichterungen.feature.EntityEsp;
 import de.erleichterungen.feature.Freecam;
+import de.erleichterungen.feature.Fullbright;
 import de.erleichterungen.gui.ClickGuiScreen;
 import de.erleichterungen.feature.GeodeTracker;
 import de.erleichterungen.feature.Hud;
+import de.erleichterungen.feature.ItemEsp;
+import de.erleichterungen.feature.Nametags;
 import de.erleichterungen.feature.PlayerEsp;
+import de.erleichterungen.feature.Zoom;
 import de.erleichterungen.scan.ScanManager;
 import de.erleichterungen.util.Chat;
 import de.erleichterungen.util.Tracers;
@@ -46,6 +54,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 	private static KeyMapping keyHud;
 	private static KeyMapping keyFreecam;
 	private static KeyMapping keyGui;
+	private static KeyMapping keyZoom;
 
 	@Override
 	public void onInitializeClient() {
@@ -63,6 +72,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 		keyHud = key("hud", InputConstants.KEY_F10);
 		keyFreecam = key("freecam", InputConstants.KEY_G);
 		keyGui = key("gui", InputConstants.KEY_RSHIFT);
+		keyZoom = key("zoom", InputConstants.KEY_C);
 
 		ClientTickEvents.END_CLIENT_TICK.register(ErleichterungenClient::onTick);
 
@@ -79,6 +89,9 @@ public class ErleichterungenClient implements ClientModInitializer {
 				GeodeTracker.render(mc, cam);
 				EntityEsp.render(mc, cam, partialTick);
 				PlayerEsp.render(mc, cam, partialTick);
+				ItemEsp.render(mc, cam, partialTick);
+				Nametags.render(mc, cam, partialTick);
+				BlockHighlight.render(mc, cam, partialTick);
 			} catch (Exception e) {
 				LOGGER.error("Fehler beim Rendern", e);
 			}
@@ -111,6 +124,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 			case "hud" -> keyHud;
 			case "freecam" -> keyFreecam;
 			case "gui" -> keyGui;
+			case "zoom" -> keyZoom;
 			default -> null;
 		};
 	}
@@ -133,6 +147,11 @@ public class ErleichterungenClient implements ClientModInitializer {
 		}
 
 		Freecam.tick(mc);
+		Zoom.tick(mc, keyZoom);
+		Fullbright.tick(mc);
+		AutoSprint.tick(mc);
+		AutoWalk.tick(mc);
+		AutoRespawn.tick(mc);
 
 		ScanManager.tick(mc);
 		AntiVanish.tick(mc);
@@ -165,6 +184,14 @@ public class ErleichterungenClient implements ClientModInitializer {
 				state = Freecam.isActive();
 				label = "Freecam";
 			}
+			case "fullbright" -> { state = c.fullbrightEnabled = !c.fullbrightEnabled; label = "Fullbright"; }
+			case "autosprint" -> { state = c.autoSprintEnabled = !c.autoSprintEnabled; label = "Auto-Sprint"; }
+			case "autowalk" -> { state = c.autoWalkEnabled = !c.autoWalkEnabled; label = "Auto-Walk"; }
+			case "autorespawn" -> { state = c.autoRespawnEnabled = !c.autoRespawnEnabled; label = "Auto-Respawn"; }
+			case "nametags" -> { state = c.nametagsEnabled = !c.nametagsEnabled; label = "Nametags"; }
+			case "itemesp" -> { state = c.itemEspEnabled = !c.itemEspEnabled; label = "Item-ESP"; }
+			case "blockhighlight" -> { state = c.blockHighlightEnabled = !c.blockHighlightEnabled; label = "Block-Highlight"; }
+			case "nohurtcam" -> { state = c.noHurtCamEnabled = !c.noHurtCamEnabled; label = "NoHurtCam"; }
 			default -> {
 				return null;
 			}

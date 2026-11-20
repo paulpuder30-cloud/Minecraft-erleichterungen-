@@ -27,6 +27,9 @@ public final class ModConfig {
 
 	// ---------- HUD ----------
 	public boolean hudEnabled = true;
+	public boolean hudCoords = true;
+	public boolean hudDirection = true;
+	public boolean hudFps = true;
 
 	// ---------- GUI ----------
 	public String guiAccent = "8A5CFF";
@@ -35,6 +38,53 @@ public final class ModConfig {
 
 	// ---------- Freecam ----------
 	public float freecamSpeed = 1.0f;
+
+	// ---------- Zoom ----------
+	/** Sichtfeld (FOV) beim Zoomen – kleiner = stärker herangezoomt. */
+	public int zoomFov = 30;
+
+	// ---------- Fullbright ----------
+	public boolean fullbrightEnabled = false;
+
+	// ---------- Auto-Sprint ----------
+	public boolean autoSprintEnabled = false;
+
+	// ---------- Auto-Walk ----------
+	public boolean autoWalkEnabled = false;
+
+	// ---------- Auto-Respawn ----------
+	public boolean autoRespawnEnabled = false;
+	/** Wartezeit (ms) nach dem Tod bis zum automatischen Wiederbeleben. */
+	public int autoRespawnDelayMs = 100;
+
+	// ---------- Nametags ----------
+	public boolean nametagsEnabled = false;
+	public int nametagsRange = 128;
+	public String nametagsColor = "FFFFFF";
+	public boolean nametagsHealth = true;
+	public boolean nametagsDistance = true;
+	public float nametagsScale = 1.0f;
+
+	// ---------- Item-ESP ----------
+	public boolean itemEspEnabled = false;
+	public int itemEspRange = 96;
+	public int itemEspMaxBoxes = 1000;
+	public RenderMode itemEspMode = RenderMode.BOX;
+	public String itemEspColor = "55FFFF";
+	public String itemEspTracerColor = "55FFFF";
+	public boolean itemEspFill = false;
+	public float itemEspLineWidth = 2.0f;
+	public boolean itemEspLabels = true;
+
+	// ---------- Block-Highlight ----------
+	public boolean blockHighlightEnabled = false;
+	public String blockHighlightColor = "FFFFFF";
+	public boolean blockHighlightFill = false;
+	public boolean blockHighlightThroughWalls = false;
+	public float blockHighlightLineWidth = 2.0f;
+
+	// ---------- NoHurtCam ----------
+	public boolean noHurtCamEnabled = false;
 
 	// ---------- Tracer ----------
 	public float tracerWidth = 1.5f;

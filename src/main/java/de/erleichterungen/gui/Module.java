@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 public final class Module {
 	public enum Category {
 		RENDER("Render"),
+		MOVEMENT("Bewegung"),
 		WORLD("Welt"),
 		PLAYER("Spieler"),
 		MISC("Sonstiges"),
