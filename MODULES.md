@@ -3,12 +3,29 @@
 > **Automatisch generiert** aus dem Quellcode mit `tools/generate_modules_md.py`.
 > Nicht von Hand bearbeiten – stattdessen das Skript erneut ausführen.
 
-**Module gesamt:** 21  
+**Module gesamt:** 23  
 **Setting-Typen:** Bool (An/Aus), Int (Ganzzahl), Dec (Dezimal), Color (Hex), Text, Mode (Darstellung), ListEdit (ID-Liste mit Farbe), Action (Knopf).
 
-**Pro Kategorie:** Render: 10  Bewegung: 2  Welt: 4  Spieler: 2  Sonstiges: 1  Client: 2
+**Pro Kategorie:** Kampf: 2  Render: 10  Bewegung: 2  Welt: 4  Spieler: 2  Sonstiges: 1  Client: 2
 
 Dieser Client gruppiert Einstellungen **flach pro Modul** (keine Unter-Gruppen wie bei Meteor); die Spalte „Feld" nennt das zugehörige Config-Feld in `ModConfig`.
+
+
+## Kampf  
+
+### AutoTotem  
+`id: autototem` · Kategorie: **Kampf** · An/Aus-Modul  
+Legt automatisch ein Totem der Unsterblichkeit in die Nebenhand.
+
+| Einstellung | Typ | Standard | Bereich / Werte | Feld |
+|---|---|---|---|---|
+| Nur bei leerer Nebenhand | Bool | Aus | An / Aus | `autoTotemOnlyWhenEmpty` |
+
+### Ziel-Info  
+`id: targetinfo` · Kategorie: **Kampf** · An/Aus-Modul  
+Zeigt Name, Gesundheit und Entfernung des anvisierten Gegners unter dem Fadenkreuz.
+
+_Keine Einstellungen._
 
 
 ## Render  

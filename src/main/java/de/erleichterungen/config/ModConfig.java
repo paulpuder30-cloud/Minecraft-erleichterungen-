@@ -86,6 +86,13 @@ public final class ModConfig {
 	// ---------- NoHurtCam ----------
 	public boolean noHurtCamEnabled = false;
 
+	// ---------- AutoTotem ----------
+	public boolean autoTotemEnabled = false;
+	public boolean autoTotemOnlyWhenEmpty = false;
+
+	// ---------- Ziel-Info ----------
+	public boolean targetInfoEnabled = false;
+
 	// ---------- Storage-ESP ----------
 	public boolean storageEspEnabled = false;
 	public int storageEspRange = 128;

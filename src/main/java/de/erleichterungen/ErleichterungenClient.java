@@ -5,6 +5,7 @@ import de.erleichterungen.config.ModConfig;
 import de.erleichterungen.feature.AntiVanish;
 import de.erleichterungen.feature.AutoRespawn;
 import de.erleichterungen.feature.AutoSprint;
+import de.erleichterungen.feature.AutoTotem;
 import de.erleichterungen.feature.AutoWalk;
 import de.erleichterungen.feature.BlockEsp;
 import de.erleichterungen.feature.BlockHighlight;
@@ -20,6 +21,7 @@ import de.erleichterungen.feature.Nametags;
 import de.erleichterungen.feature.PlayerEsp;
 import de.erleichterungen.feature.PortalEsp;
 import de.erleichterungen.feature.StorageEsp;
+import de.erleichterungen.feature.TargetInfo;
 import de.erleichterungen.feature.Zoom;
 import de.erleichterungen.scan.ScanManager;
 import de.erleichterungen.util.Chat;
@@ -106,6 +108,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 		});
 
 		HudElementRegistry.addLast(Identifier.fromNamespaceAndPath(MOD_ID, "hud"), Hud::render);
+		HudElementRegistry.addLast(Identifier.fromNamespaceAndPath(MOD_ID, "target_info"), TargetInfo::render);
 
 		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
 			if (!overlay) AntiVanish.onGameMessage(message);
@@ -160,6 +163,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 		AutoSprint.tick(mc);
 		AutoWalk.tick(mc);
 		AutoRespawn.tick(mc);
+		AutoTotem.tick(mc);
 
 		ScanManager.tick(mc);
 		AntiVanish.tick(mc);
@@ -203,6 +207,8 @@ public class ErleichterungenClient implements ClientModInitializer {
 			case "storageesp" -> { state = c.storageEspEnabled = !c.storageEspEnabled; label = "Storage-ESP"; }
 			case "portalesp" -> { state = c.portalEspEnabled = !c.portalEspEnabled; label = "Portal-ESP"; }
 			case "chunkborders" -> { state = c.chunkBordersEnabled = !c.chunkBordersEnabled; label = "Chunk-Borders"; }
+			case "autototem" -> { state = c.autoTotemEnabled = !c.autoTotemEnabled; label = "AutoTotem"; }
+			case "targetinfo" -> { state = c.targetInfoEnabled = !c.targetInfoEnabled; label = "Ziel-Info"; }
 			default -> {
 				return null;
 			}

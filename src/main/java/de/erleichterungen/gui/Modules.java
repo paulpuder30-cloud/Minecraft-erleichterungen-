@@ -65,6 +65,15 @@ public final class Modules {
 		if (all != null) return all;
 		List<Module> list = new ArrayList<>();
 
+		// ------------------------------------------------------------------ Kampf
+		list.add(toggleable("autototem", "AutoTotem", Category.COMBAT,
+				"Legt automatisch ein Totem der Unsterblichkeit in die Nebenhand.", () -> c().autoTotemEnabled)
+				.add(new Setting.Bool("Nur bei leerer Nebenhand", "Nur tauschen, wenn die Nebenhand leer ist (sonst wird z.B. ein Schild ersetzt).",
+						() -> c().autoTotemOnlyWhenEmpty, v -> c().autoTotemOnlyWhenEmpty = v)));
+
+		list.add(toggleable("targetinfo", "Ziel-Info", Category.COMBAT,
+				"Zeigt Name, Gesundheit und Entfernung des anvisierten Gegners unter dem Fadenkreuz.", () -> c().targetInfoEnabled));
+
 		// ------------------------------------------------------------------ Render
 		list.add(toggleable("blockesp", "Block-ESP", Category.RENDER,
 				"Markiert ausgewählte Blöcke (Erze, Spawner, ...) durch Wände.", () -> c().blockEspEnabled)
