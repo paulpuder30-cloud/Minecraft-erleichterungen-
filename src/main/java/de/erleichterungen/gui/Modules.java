@@ -74,6 +74,21 @@ public final class Modules {
 		list.add(toggleable("targetinfo", "Ziel-Info", Category.COMBAT,
 				"Zeigt Name, Gesundheit und Entfernung des anvisierten Gegners unter dem Fadenkreuz.", () -> c().targetInfoEnabled));
 
+		list.add(toggleable("triggerbot", "TriggerBot", Category.COMBAT,
+				"Greift automatisch das anvisierte Ziel an, wenn die Angriffsleiste voll ist.", () -> c().triggerBotEnabled)
+				.add(new Setting.Bool("Monster", "Feindliche Mobs angreifen.",
+						() -> c().triggerBotHostile, v -> c().triggerBotHostile = v))
+				.add(new Setting.Bool("Tiere", "Passive Tiere angreifen.",
+						() -> c().triggerBotPassive, v -> c().triggerBotPassive = v))
+				.add(new Setting.Bool("Spieler", "Andere Spieler angreifen.",
+						() -> c().triggerBotPlayers, v -> c().triggerBotPlayers = v))
+				.add(new Setting.Bool("Sonstige", "Andere Lebewesen angreifen (z.B. Dorfbewohner).",
+						() -> c().triggerBotOther, v -> c().triggerBotOther = v))
+				.add(new Setting.Bool("Nur voll aufgeladen", "Nur angreifen, wenn die Angriffsleiste voll ist.",
+						() -> c().triggerBotRequireCharged, v -> c().triggerBotRequireCharged = v))
+				.add(new Setting.Int("Verzögerung (Ticks)", "Zusätzliche Pause zwischen Angriffen.", 0, 40,
+						() -> c().triggerBotDelayTicks, v -> c().triggerBotDelayTicks = v)));
+
 		// ------------------------------------------------------------------ Render
 		list.add(toggleable("blockesp", "Block-ESP", Category.RENDER,
 				"Markiert ausgewählte Blöcke (Erze, Spawner, ...) durch Wände.", () -> c().blockEspEnabled)

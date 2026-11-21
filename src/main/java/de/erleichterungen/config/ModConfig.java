@@ -93,6 +93,15 @@ public final class ModConfig {
 	// ---------- Ziel-Info ----------
 	public boolean targetInfoEnabled = false;
 
+	// ---------- TriggerBot ----------
+	public boolean triggerBotEnabled = false;
+	public boolean triggerBotHostile = true;
+	public boolean triggerBotPassive = false;
+	public boolean triggerBotPlayers = false;
+	public boolean triggerBotOther = false;
+	public boolean triggerBotRequireCharged = true;
+	public int triggerBotDelayTicks = 0;
+
 	// ---------- Storage-ESP ----------
 	public boolean storageEspEnabled = false;
 	public int storageEspRange = 128;

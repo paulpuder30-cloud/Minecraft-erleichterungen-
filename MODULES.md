@@ -3,10 +3,10 @@
 > **Automatisch generiert** aus dem Quellcode mit `tools/generate_modules_md.py`.
 > Nicht von Hand bearbeiten – stattdessen das Skript erneut ausführen.
 
-**Module gesamt:** 23  
+**Module gesamt:** 24  
 **Setting-Typen:** Bool (An/Aus), Int (Ganzzahl), Dec (Dezimal), Color (Hex), Text, Mode (Darstellung), ListEdit (ID-Liste mit Farbe), Action (Knopf).
 
-**Pro Kategorie:** Kampf: 2  Render: 10  Bewegung: 2  Welt: 4  Spieler: 2  Sonstiges: 1  Client: 2
+**Pro Kategorie:** Kampf: 3  Render: 10  Bewegung: 2  Welt: 4  Spieler: 2  Sonstiges: 1  Client: 2
 
 Dieser Client gruppiert Einstellungen **flach pro Modul** (keine Unter-Gruppen wie bei Meteor); die Spalte „Feld" nennt das zugehörige Config-Feld in `ModConfig`.
 
@@ -26,6 +26,19 @@ Legt automatisch ein Totem der Unsterblichkeit in die Nebenhand.
 Zeigt Name, Gesundheit und Entfernung des anvisierten Gegners unter dem Fadenkreuz.
 
 _Keine Einstellungen._
+
+### TriggerBot  
+`id: triggerbot` · Kategorie: **Kampf** · An/Aus-Modul  
+Greift automatisch das anvisierte Ziel an, wenn die Angriffsleiste voll ist.
+
+| Einstellung | Typ | Standard | Bereich / Werte | Feld |
+|---|---|---|---|---|
+| Monster | Bool | An | An / Aus | `triggerBotHostile` |
+| Tiere | Bool | Aus | An / Aus | `triggerBotPassive` |
+| Spieler | Bool | Aus | An / Aus | `triggerBotPlayers` |
+| Sonstige | Bool | Aus | An / Aus | `triggerBotOther` |
+| Nur voll aufgeladen | Bool | An | An / Aus | `triggerBotRequireCharged` |
+| Verzögerung (Ticks) | Int | 0 | 0 … 40 | `triggerBotDelayTicks` |
 
 
 ## Render  

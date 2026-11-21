@@ -22,6 +22,7 @@ import de.erleichterungen.feature.PlayerEsp;
 import de.erleichterungen.feature.PortalEsp;
 import de.erleichterungen.feature.StorageEsp;
 import de.erleichterungen.feature.TargetInfo;
+import de.erleichterungen.feature.TriggerBot;
 import de.erleichterungen.feature.Zoom;
 import de.erleichterungen.scan.ScanManager;
 import de.erleichterungen.util.Chat;
@@ -164,6 +165,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 		AutoWalk.tick(mc);
 		AutoRespawn.tick(mc);
 		AutoTotem.tick(mc);
+		TriggerBot.tick(mc);
 
 		ScanManager.tick(mc);
 		AntiVanish.tick(mc);
@@ -209,6 +211,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 			case "chunkborders" -> { state = c.chunkBordersEnabled = !c.chunkBordersEnabled; label = "Chunk-Borders"; }
 			case "autototem" -> { state = c.autoTotemEnabled = !c.autoTotemEnabled; label = "AutoTotem"; }
 			case "targetinfo" -> { state = c.targetInfoEnabled = !c.targetInfoEnabled; label = "Ziel-Info"; }
+			case "triggerbot" -> { state = c.triggerBotEnabled = !c.triggerBotEnabled; label = "TriggerBot"; }
 			default -> {
 				return null;
 			}
