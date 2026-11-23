@@ -76,13 +76,17 @@ Wechselt auf einen **Speer mit Lunge**, führt einen Jab aus (Lunge-Dash nach vo
 ### MaceAura
 
 Schlägt automatisch mit dem Streitkolben zu, sobald du tief genug fällst und ein Gegner in Reichweite ist: Wechsel auf
-den Mace, Smash, Wechsel zurück. Pro Fall gibt es einen Schlag. Schilde blocken den Smash; solche Ziele lässt MaceAura
+den Mace, Schläge, Wechsel zurück. Pro Fall kommt eine zufällige Anzahl Schläge (Standard 2–6) mit zufälligen kurzen
+Pausen, solange du in der Luft und der Gegner in Reichweite ist. Der erste Schlag ist der Smash mit dem Fallbonus; danach
+setzt der Server die Fallhöhe zurück, die weiteren Schläge sind normale Treffer. Schilde blocken den Smash; solche Ziele lässt MaceAura
 standardmäßig aus (dafür gibt es StunSlam).
 
 | Einstellung | Bedeutung | Standard |
 |---|---|---|
 | `min-fall-height` | Mindest-Fallhöhe in Blöcken (Smash braucht > 1,5) | 3 |
 | `range` | Reichweite bis zur Hitbox des Ziels | 3 |
+| `min-hits` / `max-hits` | Zufällige Anzahl Schläge pro Fall | 2 / 6 |
+| `min-hit-delay` / `max-hit-delay` | Zufällige Pause zwischen zwei Schlägen in Ticks (0 = gleicher Tick) | 1 / 3 |
 | `only-players` | Nur Spieler als Ziel | an |
 | `skip-blocking` | Ziele überspringen, deren Schild zu dir zeigt | an |
 | `rotate` | Zum Ziel drehen. Aus: nur das Ziel unter dem Fadenkreuz | an |

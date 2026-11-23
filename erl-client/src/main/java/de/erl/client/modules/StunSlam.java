@@ -252,9 +252,10 @@ public class StunSlam extends Module {
         }
     }
 
+    /** Sofort ausführen (vor dem Bewegungspaket), Rotation läuft nebenher – siehe ErlCombatUtils#attackNow. */
     private void runRotated(LivingEntity entity, Runnable action) {
-        if (rotate.get()) Rotations.rotate(Rotations.getYaw(entity), Rotations.getPitch(entity, Target.Body), 60, action);
-        else action.run();
+        if (rotate.get()) Rotations.rotate(Rotations.getYaw(entity), Rotations.getPitch(entity, Target.Body), 60);
+        action.run();
     }
 
     /** Gleiche Bedingung wie {@code MaceItem#canSmashAttack}. */

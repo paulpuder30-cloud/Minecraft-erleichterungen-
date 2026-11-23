@@ -13,17 +13,18 @@ import de.erl.client.settings.*;
 import de.erl.client.systems.modules.Module;
 import de.erl.client.utils.ErlCombatUtils;
 import de.erl.client.utils.entity.SortPriority;
-import de.erl.client.utils.entity.Target;
 import de.erl.client.utils.entity.TargetUtils;
 import de.erl.client.utils.player.InvUtils;
-import de.erl.client.utils.player.Rotations;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.MaceItem;
 import net.minecraft.world.item.enchantment.Enchantments;
 
+import java.util.Random;
+
 /**
- * Schlägt automatisch mit dem Streitkolben zu, sobald man tief genug fällt und ein Gegner in Reichweite ist.
+ * Schlägt automatisch mit dem Streitkolben zu, sobald man tief genug fällt und ein Gegner in Reichweite ist –
+ * pro Fall eine zufällige Anzahl Schläge (Standard 2–6) mit zufälligen kurzen Pausen.
  *
  * <p>Vanilla 26.3 ({@code MaceItem}): Smash ab {@code fallDistance > 1,5}, nicht beim Elytra-Flug. Bonusschaden
  * 4/Block für die ersten 3 Blöcke, 2/Block bis 8, danach 1/Block, plus Density. Der Bonus skaliert nicht mit der
@@ -73,6 +74,42 @@ public class MaceAura extends Module {
         .build()
     );
 
+    private final Setting<Integer> minHits = sgGeneral.add(new IntSetting.Builder()
+        .name("min-hits")
+        .description("Minimum number of mace hits per fall (the actual number is random between min and max).")
+        .defaultValue(2)
+        .range(1, 10)
+        .sliderRange(1, 10)
+        .build()
+    );
+
+    private final Setting<Integer> maxHits = sgGeneral.add(new IntSetting.Builder()
+        .name("max-hits")
+        .description("Maximum number of mace hits per fall.")
+        .defaultValue(6)
+        .range(1, 10)
+        .sliderRange(1, 10)
+        .build()
+    );
+
+    private final Setting<Integer> minDelay = sgGeneral.add(new IntSetting.Builder()
+        .name("min-hit-delay")
+        .description("Minimum ticks between two hits (random between min and max). 0 = same tick.")
+        .defaultValue(1)
+        .range(0, 20)
+        .sliderRange(0, 10)
+        .build()
+    );
+
+    private final Setting<Integer> maxDelay = sgGeneral.add(new IntSetting.Builder()
+        .name("max-hit-delay")
+        .description("Maximum ticks between two hits.")
+        .defaultValue(3)
+        .range(0, 20)
+        .sliderRange(0, 10)
+        .build()
+    );
+
     private final Setting<Boolean> preferDensity = sgSwap.add(new BoolSetting.Builder()
         .name("prefer-density")
         .description("Prefers the mace with the highest Density level if you carry several.")
@@ -97,7 +134,13 @@ public class MaceAura extends Module {
         .build()
     );
 
-    private boolean hitThisFall;
+    private final Random random = new Random();
+
+    /** Wie viele Schläge in diesem Fall noch kommen; -1 = Fall noch nicht begonnen. */
+    private int hitsLeft = -1;
+    private int hitTimer;
+    /** Schläge im aktuellen bzw. letzten Fall (für Anzeige und Test). */
+    private int hitsDone;
     private int backTimer;
     private int previousSlot = -1;
 
@@ -125,14 +168,27 @@ public class MaceAura extends Module {
             previousSlot = -1;
         }
 
-        // Neuer Fall erst nach dem Landen
+        // Gelandet: Fall vorbei, sofort zurückwechseln
         if (mc.player.onGround() || mc.player.isInWater() || mc.player.isFallFlying()) {
-            hitThisFall = false;
+            if (hitsLeft >= 0) {
+                if (swapBack.get()) restoreSlot();
+                previousSlot = -1;
+                backTimer = 0;
+            }
+            hitsLeft = -1;
+            hitTimer = 0;
             return;
         }
 
-        if (hitThisFall || backTimer > 0 || mc.player.isDeadOrDying() || mc.player.isSpectator()) return;
-        if (!canSmash() || mc.player.fallDistance < minFallHeight.get()) return;
+        if (mc.player.isDeadOrDying() || mc.player.isSpectator()) return;
+        if (hitsLeft == 0) return;
+        if (hitTimer > 0) {
+            hitTimer--;
+            return;
+        }
+
+        // Erster Schlag erst ab der Mindest-Fallhöhe, danach solange man fällt
+        if (hitsLeft == -1 && (!canSmash() || mc.player.fallDistance < minFallHeight.get())) return;
 
         int maceSlot = findMace();
         if (maceSlot == -1) return;
@@ -140,18 +196,40 @@ public class MaceAura extends Module {
         LivingEntity target = findTarget();
         if (target == null) return;
 
-        hitThisFall = true;
+        if (hitsLeft == -1) {
+            hitsDone = 0;
+            int lo = Math.min(minHits.get(), maxHits.get());
+            int hi = Math.max(minHits.get(), maxHits.get());
+            hitsLeft = lo + random.nextInt(hi - lo + 1);
+        }
+
         int selected = mc.player.getInventory().getSelectedSlot();
         if (maceSlot != selected) {
-            previousSlot = selected;
+            if (previousSlot == -1) previousSlot = selected;
             InvUtils.swap(maceSlot, false);
         }
 
-        if (rotate.get()) Rotations.rotate(Rotations.getYaw(target), Rotations.getPitch(target, Target.Body), 60, () -> ErlCombatUtils.attack(target));
-        else ErlCombatUtils.attack(target);
+        backTimer = 0;
 
-        if (swapBack.get() && previousSlot != -1) backTimer = swapBackDelay.get();
-        else previousSlot = -1;
+        // Sofort schlagen (vor dem Bewegungspaket): der Server kennt uns dann noch als fallend.
+        // Pause 0 = nächster Schlag noch im selben Tick.
+        int delay;
+        do {
+            ErlCombatUtils.attackNow(target, rotate.get());
+            hitsDone++;
+            hitsLeft--;
+            int lo = Math.min(minDelay.get(), maxDelay.get());
+            int hi = Math.max(minDelay.get(), maxDelay.get());
+            delay = lo + random.nextInt(hi - lo + 1);
+        } while (hitsLeft > 0 && delay == 0);
+
+        if (hitsLeft > 0) {
+            hitTimer = delay - 1;
+        } else if (swapBack.get() && previousSlot != -1) {
+            backTimer = swapBackDelay.get();
+        } else {
+            previousSlot = -1;
+        }
     }
 
     /** Gleiche Bedingung wie {@code MaceItem#canSmashAttack}. */
@@ -188,9 +266,14 @@ public class MaceAura extends Module {
     }
 
     private void reset() {
-        hitThisFall = false;
+        hitsLeft = -1;
+        hitTimer = 0;
         backTimer = 0;
         previousSlot = -1;
+    }
+
+    public int getHitsLastFall() {
+        return hitsDone;
     }
 
     @Override

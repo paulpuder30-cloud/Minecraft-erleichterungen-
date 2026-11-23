@@ -7,6 +7,8 @@ package de.erl.client.utils;
 
 import de.erl.client.systems.friends.Friends;
 import de.erl.client.utils.Utils;
+import de.erl.client.utils.entity.Target;
+import de.erl.client.utils.player.Rotations;
 import de.erl.client.utils.player.SwingMode;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceKey;
@@ -178,6 +180,18 @@ public final class ErlCombatUtils {
     }
 
     // Angriff
+
+    /**
+     * Schlägt <b>sofort</b> zu (noch vor dem Bewegungspaket dieses Ticks) und dreht optional zum Ziel.
+     *
+     * <p>Wichtig für Mace-Smashes: Der Server prüft {@code fallDistance} beim Eintreffen des Angriffspakets. Ein Schlag
+     * erst im Rotations-Callback (nach dem Bewegungspaket) kommt zu spät, wenn man in diesem Tick landet – der Server
+     * hat die Fallhöhe dann schon auf 0 gesetzt. Die Rotation selbst prüft der Server für Nahkampf nicht.
+     */
+    public static void attackNow(Entity target, boolean rotate) {
+        if (rotate) Rotations.rotate(Rotations.getYaw(target), Rotations.getPitch(target, Target.Body), 60);
+        attack(target);
+    }
 
     /** Normaler Nahkampftreffer wie bei einem Linksklick (Paket + Schwung). */
     public static void attack(Entity target) {

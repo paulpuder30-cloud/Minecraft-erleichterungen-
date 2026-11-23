@@ -13,10 +13,8 @@ import de.erl.client.events.world.TickEvent;
 import de.erl.client.settings.*;
 import de.erl.client.systems.modules.Module;
 import de.erl.client.utils.entity.SortPriority;
-import de.erl.client.utils.entity.Target;
 import de.erl.client.utils.entity.TargetUtils;
 import de.erl.client.utils.player.InvUtils;
-import de.erl.client.utils.player.Rotations;
 import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -180,14 +178,10 @@ public class ShieldBreaker extends Module {
         LivingEntity hitTarget = target;
         cooldown = 10;
 
-        if (rotate.get()) {
-            Rotations.rotate(Rotations.getYaw(hitTarget), Rotations.getPitch(hitTarget, Target.Body), 50, () -> ErlCombatUtils.attack(hitTarget));
-        } else {
-            ErlCombatUtils.attack(hitTarget);
-        }
+        ErlCombatUtils.attackNow(hitTarget, rotate.get());
 
         if (swapBack.get() && previousSlot != -1 && previousSlot != mc.player.getInventory().getSelectedSlot()) {
-            // Zurückwechseln frühestens im nächsten Tick, damit der Treffer (ggf. erst im Rotations-Callback) sicher mit der Axt passiert
+            // Zurückwechseln frühestens im nächsten Tick
             timer = Math.max(1, swapBackDelay.get());
             state = State.WaitingForSwapBack;
         } else {

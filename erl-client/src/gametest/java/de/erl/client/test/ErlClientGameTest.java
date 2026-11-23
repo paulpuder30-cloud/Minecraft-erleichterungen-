@@ -300,11 +300,42 @@ public class ErlClientGameTest implements FabricClientGameTest {
         setActive(ctx, MaceAura.class, false);
 
         float healthAfter = server.computeOnServer(s -> dummy.getHealth());
-        log("MaceAura: Dummy-Leben " + healthBefore + " -> " + healthAfter);
+        int hits = ctx.computeOnClient(mc -> Modules.get().get(MaceAura.class).getHitsLastFall());
+        log("MaceAura (2-6 zufällig): " + hits + " Schläge, Dummy-Leben " + healthBefore + " -> " + healthAfter);
+        check(hits >= 1 && hits <= 6, "MaceAura: Anzahl Schläge außerhalb 1..6: " + hits);
         check(healthBefore - healthAfter >= 10, "MaceAura: kein Smash (" + (healthBefore - healthAfter) + ")");
         check(ctx.computeOnClient(mc -> mc.player.getInventory().getSelectedSlot()) == SWORD, "MaceAura hat nicht zurückgewechselt");
-
         removeDummy(ctx, server, dummy);
+
+        // Feste Werte: genau 4 Schläge im selben Tick
+        resetPlayer(ctx, server, base.getX() + 0.5, base.getY(), base.getZ() - 4.5);
+        ShieldDummy dummy2 = spawnDummy(ctx, server, "AuraDummy2", base.getX() + 0.5, base.getZ() + 2.5);
+        int id2 = server.computeOnServer(s -> dummy2.getId());
+        server.runOnServer(s -> dummy2.lowerShield());
+        ctx.waitFor(mc -> mc.level.getEntity(id2) instanceof LivingEntity le && !le.isUsingItem(), 40);
+        setMaceAuraHits(ctx, 4, 4, 0, 0);
+        setActive(ctx, MaceAura.class, true);
+        server.runCommand("tp @a %d.5 %d %d.0 0 60".formatted(base.getX(), base.getY() + 11, base.getZ() + 1));
+        ctx.waitFor(mc -> mc.player.getY() > base.getY() + 8, 40);
+        ctx.waitFor(mc -> mc.player.onGround() && mc.player.getY() < base.getY() + 1, 100);
+        ctx.waitTicks(5);
+        setActive(ctx, MaceAura.class, false);
+        int fixedHits = ctx.computeOnClient(mc -> Modules.get().get(MaceAura.class).getHitsLastFall());
+        log("MaceAura (fest 4, Pause 0): " + fixedHits + " Schläge");
+        check(fixedHits == 4, "MaceAura: erwartet 4 Schläge, waren " + fixedHits);
+        setMaceAuraHits(ctx, 2, 6, 1, 3);
+        removeDummy(ctx, server, dummy2);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void setMaceAuraHits(ClientGameTestContext ctx, int minHits, int maxHits, int minDelay, int maxDelay) {
+        ctx.runOnClient(mc -> {
+            MaceAura aura = Modules.get().get(MaceAura.class);
+            ((Setting<Integer>) aura.settings.get("min-hits")).set(minHits);
+            ((Setting<Integer>) aura.settings.get("max-hits")).set(maxHits);
+            ((Setting<Integer>) aura.settings.get("min-hit-delay")).set(minDelay);
+            ((Setting<Integer>) aura.settings.get("max-hit-delay")).set(maxDelay);
+        });
     }
 
     // ------------------------------------------------------------------ LungeSwap
