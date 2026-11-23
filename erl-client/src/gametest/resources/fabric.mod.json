@@ -8,6 +8,7 @@
   "entrypoints": {
     "fabric-client-gametest": ["de.erl.client.test.ErlClientGameTest"]
   },
+  "mixins": ["erl-client-test.mixins.json"],
   "depends": {
     "erl-client": "*"
   }

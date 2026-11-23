@@ -26,13 +26,17 @@ import net.fabricmc.fabric.api.client.gametest.v1.TestInput;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Startet eine Testwelt und prüft ERL-Client: Branding, Click-GUI, Keybinds und die drei ERL-Module gegen einen
@@ -87,6 +91,8 @@ public class ErlClientGameTest implements FabricClientGameTest {
             setUpArena(server);
             sp.getConnection().waitForChunksRender();
 
+            testNoMeteorTracesForServer(ctx);
+
             testClickGuiAndKeybinds(ctx);
             testShieldBreaker(ctx, server);
             testStunSlam(ctx, server);
@@ -117,6 +123,57 @@ public class ErlClientGameTest implements FabricClientGameTest {
         server.runCommand("item replace entity @a hotbar.3 with minecraft:mace");
         server.runCommand("item replace entity @a hotbar.4 with minecraft:iron_spear[minecraft:enchantments={\"minecraft:lunge\":3}]");
         server.runCommand("effect give @a minecraft:resistance infinite 4 true");
+    }
+
+    // ------------------------------------------------------------------ Spuren für den Server
+
+    /**
+     * Prüft alles, was ein Server über den Client erfahren kann: Custom-Payloads und Known Packs (serverseitig
+     * mitgeschnitten), sowie Übersetzungs- und Keybind-Abfragen per Schild/Amboss ({"translate":…}, {"keybind":…}).
+     */
+    private void testNoMeteorTracesForServer(ClientGameTestContext ctx) {
+        // 1) Was der Server empfangen hat
+        for (String entry : ServerTrace.RECEIVED) log("Server empfing: " + entry);
+        check(!ServerTrace.RECEIVED.isEmpty(), "Server-Mitschnitt ist leer (Mixin nicht aktiv?)");
+        for (String entry : ServerTrace.RECEIVED) check(!entry.toLowerCase().contains("meteor"), "Server sieht Meteor: " + entry);
+
+        ctx.runOnClient(mc -> {
+            // 2) Alle geladenen Übersetzungen (Server können jeden Schlüssel abfragen)
+            Map<String, String> storage = translationStorage();
+            long hits = storage.entrySet().stream().filter(e -> (e.getKey() + "=" + e.getValue()).toLowerCase().contains("meteor")).count();
+            log("Übersetzungen geladen: " + storage.size() + ", davon mit 'meteor': " + hits);
+            storage.entrySet().stream().filter(e -> (e.getKey() + "=" + e.getValue()).toLowerCase().contains("meteor")).limit(10).forEach(e -> log("  Treffer: " + e));
+            check(hits == 0, "Übersetzungen enthalten 'meteor'");
+
+            // 3) Alle Tastenbelegungen (Keybind-Komponenten lösen nur existierende Namen auf)
+            for (KeyMapping mapping : mc.options.keyMappings) {
+                String id = mapping.getName() + " / " + mapping.getCategory().id();
+                check(!id.toLowerCase().contains("meteor"), "Tastenbelegung verrät Meteor: " + id);
+            }
+
+            // 4) So sieht ein Server die Antwort auf typische Erkennungs-Abfragen
+            for (String key : List.of("key.meteor-client.open-gui", "key.erl-client.open-gui")) {
+                String translated = Component.translatable(key).getString();
+                String keybind = Component.keybind(key).getString();
+                log("Abfrage " + key + ": translate='" + translated + "', keybind='" + keybind + "'");
+                if (key.contains("meteor")) {
+                    check(translated.equals(key), "translate löst Meteor-Schlüssel auf: " + translated);
+                    check(keybind.equals(key), "keybind löst Meteor-Schlüssel auf: " + keybind);
+                }
+            }
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<String, String> translationStorage() {
+        try {
+            Language language = Language.getInstance();
+            Field field = language.getClass().getDeclaredField("storage");
+            field.setAccessible(true);
+            return (Map<String, String>) field.get(language);
+        } catch (ReflectiveOperationException e) {
+            throw new AssertionError("Übersetzungen nicht lesbar: " + e);
+        }
     }
 
     // ------------------------------------------------------------------ Click-GUI & Keybinds
