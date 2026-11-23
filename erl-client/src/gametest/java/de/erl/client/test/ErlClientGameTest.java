@@ -10,6 +10,7 @@ import de.erl.client.ErlExtras;
 import de.erl.client.modules.LungeSwap;
 import de.erl.client.modules.ShieldBreaker;
 import de.erl.client.modules.StunSlam;
+import de.erl.client.utils.ErlCombatUtils;
 import de.erl.client.ErlClient;
 import de.erl.client.gui.GuiThemes;
 import de.erl.client.gui.tabs.TabScreen;
@@ -140,8 +141,9 @@ public class ErlClientGameTest implements FabricClientGameTest {
         resetPlayer(ctx, server, base.getX() + 0.5, base.getY(), base.getZ() + 0.5);
         ShieldDummy dummy = spawnDummy(ctx, server, "ShieldDummy", base.getX() + 0.5, base.getZ() + 2.5);
 
-        int axeDamageBefore = itemDamage(server, NETHERITE_AXE);
-        int ironAxeDamageBefore = itemDamage(server, IRON_AXE);
+        // Axt-Priorität: "Best" muss Netherite (Slot 3) vor Eisen (Slot 2) wählen, "Worst" umgekehrt
+        check(ctx.computeOnClient(mc -> ErlCombatUtils.findShieldDisabler(ErlCombatUtils.AxePriority.Best, true)) == NETHERITE_AXE, "Axt-Priorität Best wählt nicht Netherite");
+        check(ctx.computeOnClient(mc -> ErlCombatUtils.findShieldDisabler(ErlCombatUtils.AxePriority.Worst, true)) == IRON_AXE, "Axt-Priorität Worst wählt nicht Eisen");
 
         setActive(ctx, ShieldBreaker.class, true);
         int ticks = server.waitFor(s -> dummy.isShieldDisabled(), 60);
@@ -150,8 +152,8 @@ public class ErlClientGameTest implements FabricClientGameTest {
         setActive(ctx, ShieldBreaker.class, false);
 
         check(ctx.computeOnClient(mc -> mc.player.getInventory().getSelectedSlot()) == SWORD, "ShieldBreaker hat nicht auf das Schwert zurückgewechselt");
-        check(itemDamage(server, NETHERITE_AXE) > axeDamageBefore, "Nicht mit der Netherite-Axt (beste Axt) geschlagen");
-        check(itemDamage(server, IRON_AXE) == ironAxeDamageBefore, "Falsche Axt benutzt (Eisen statt Netherite)");
+        // Geblockte Treffer kosten in Vanilla keine Haltbarkeit – der deaktivierte Schild belegt den Axt-Treffer
+        check(ticks >= 0 && server.computeOnServer(srv -> dummy.isShieldDisabled()), "ShieldBreaker: Schild nicht deaktiviert");
         log("ShieldBreaker: Schild nach " + ticks + " Ticks deaktiviert, zurück auf Slot 1");
 
         removeDummy(ctx, server, dummy);
@@ -268,10 +270,6 @@ public class ErlClientGameTest implements FabricClientGameTest {
             Module module = Modules.get().get(type);
             if (module.isActive() != active) module.toggle();
         });
-    }
-
-    private static int itemDamage(TestServerContext server, int slot) {
-        return server.computeOnServer(s -> player(s).getInventory().getItem(slot).getDamageValue());
     }
 
     private static ServerPlayer player(MinecraftServer s) {
