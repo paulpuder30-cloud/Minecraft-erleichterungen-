@@ -27,6 +27,9 @@ public final class ModConfig {
 
 	// ---------- HUD ----------
 	public boolean hudEnabled = true;
+	public boolean hudCoords = true;
+	public boolean hudDirection = true;
+	public boolean hudFps = true;
 
 	// ---------- GUI ----------
 	public String guiAccent = "8A5CFF";
@@ -35,6 +38,122 @@ public final class ModConfig {
 
 	// ---------- Freecam ----------
 	public float freecamSpeed = 1.0f;
+
+	// ---------- Zoom ----------
+	/** Sichtfeld (FOV) beim Zoomen – kleiner = stärker herangezoomt. */
+	public int zoomFov = 30;
+
+	// ---------- Fullbright ----------
+	public boolean fullbrightEnabled = false;
+
+	// ---------- Auto-Sprint ----------
+	public boolean autoSprintEnabled = false;
+
+	// ---------- Auto-Walk ----------
+	public boolean autoWalkEnabled = false;
+
+	// ---------- Auto-Respawn ----------
+	public boolean autoRespawnEnabled = false;
+	/** Wartezeit (ms) nach dem Tod bis zum automatischen Wiederbeleben. */
+	public int autoRespawnDelayMs = 100;
+
+	// ---------- Nametags ----------
+	public boolean nametagsEnabled = false;
+	public int nametagsRange = 128;
+	public String nametagsColor = "FFFFFF";
+	public boolean nametagsHealth = true;
+	public boolean nametagsDistance = true;
+	public float nametagsScale = 1.0f;
+
+	// ---------- Item-ESP ----------
+	public boolean itemEspEnabled = false;
+	public int itemEspRange = 96;
+	public int itemEspMaxBoxes = 1000;
+	public RenderMode itemEspMode = RenderMode.BOX;
+	public String itemEspColor = "55FFFF";
+	public String itemEspTracerColor = "55FFFF";
+	public boolean itemEspFill = false;
+	public float itemEspLineWidth = 2.0f;
+	public boolean itemEspLabels = true;
+
+	// ---------- Block-Highlight ----------
+	public boolean blockHighlightEnabled = false;
+	public String blockHighlightColor = "FFFFFF";
+	public boolean blockHighlightFill = false;
+	public boolean blockHighlightThroughWalls = false;
+	public float blockHighlightLineWidth = 2.0f;
+
+	// ---------- NoHurtCam ----------
+	public boolean noHurtCamEnabled = false;
+
+	// ---------- AutoTotem ----------
+	public boolean autoTotemEnabled = false;
+	public boolean autoTotemOnlyWhenEmpty = false;
+
+	// ---------- Ziel-Info ----------
+	public boolean targetInfoEnabled = false;
+
+	// ---------- KillAura ----------
+	public boolean killAuraEnabled = false;
+	public float killAuraRange = 3.0f;
+	public boolean killAuraHostile = true;
+	public boolean killAuraPassive = false;
+	public boolean killAuraPlayers = false;
+	public boolean killAuraOther = false;
+	public boolean killAuraRotate = true;
+	public boolean killAuraRequireCharged = true;
+	public boolean killAuraPrioritizeLowHealth = false;
+	public int killAuraMaxTargets = 1;
+	public int killAuraDelayTicks = 0;
+
+	// ---------- TriggerBot ----------
+	public boolean triggerBotEnabled = false;
+	public boolean triggerBotHostile = true;
+	public boolean triggerBotPassive = false;
+	public boolean triggerBotPlayers = false;
+	public boolean triggerBotOther = false;
+	public boolean triggerBotRequireCharged = true;
+	public int triggerBotDelayTicks = 0;
+
+	// ---------- AntiKnockback ----------
+	public boolean antiKnockbackEnabled = false;
+
+	// ---------- Shieldbreaker ----------
+	public boolean shieldbreakerRequireMace = true;
+	public int shieldbreakerMinCps = 8;
+	public int shieldbreakerMaxCps = 14;
+
+	// ---------- Auto-StunSlam ----------
+	public float autoStunSlamRange = 5.0f;
+	public int autoStunSlamGapTicks = 2;
+	public boolean autoStunSlamRotate = true;
+	public boolean autoStunSlamPlayersOnly = true;
+
+	// ---------- Storage-ESP ----------
+	public boolean storageEspEnabled = false;
+	public int storageEspRange = 128;
+	public int storageEspMaxBoxes = 2000;
+	public RenderMode storageEspMode = RenderMode.BOX;
+	public boolean storageEspFill = true;
+	public float storageEspLineWidth = 2.0f;
+	public boolean storageEspLabels = false;
+
+	// ---------- Portal-ESP ----------
+	public boolean portalEspEnabled = false;
+	public int portalEspRange = 256;
+	public int portalEspMaxBoxes = 2000;
+	public RenderMode portalEspMode = RenderMode.BOTH;
+	public String portalEspColor = "B14DFF";
+	public String portalEspTracerColor = "B14DFF";
+	public boolean portalEspFill = true;
+	public float portalEspLineWidth = 2.0f;
+
+	// ---------- Chunk-Borders ----------
+	public boolean chunkBordersEnabled = false;
+	public String chunkBordersColor = "FFFF55";
+	public int chunkBordersRadius = 1;
+	public float chunkBordersLineWidth = 1.5f;
+	public int chunkBordersHeight = 128;
 
 	// ---------- Tracer ----------
 	public float tracerWidth = 1.5f;

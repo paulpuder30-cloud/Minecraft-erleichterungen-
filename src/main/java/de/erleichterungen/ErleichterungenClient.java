@@ -3,13 +3,31 @@ package de.erleichterungen;
 import com.mojang.blaze3d.platform.InputConstants;
 import de.erleichterungen.config.ModConfig;
 import de.erleichterungen.feature.AntiVanish;
+import de.erleichterungen.feature.AutoRespawn;
+import de.erleichterungen.feature.AutoSprint;
+import de.erleichterungen.feature.AutoStunSlam;
+import de.erleichterungen.feature.AutoTotem;
+import de.erleichterungen.feature.AutoWalk;
 import de.erleichterungen.feature.BlockEsp;
+import de.erleichterungen.feature.BlockHighlight;
+import de.erleichterungen.feature.ChunkBorders;
 import de.erleichterungen.feature.EntityEsp;
 import de.erleichterungen.feature.Freecam;
+import de.erleichterungen.feature.Fullbright;
 import de.erleichterungen.gui.ClickGuiScreen;
 import de.erleichterungen.feature.GeodeTracker;
 import de.erleichterungen.feature.Hud;
+import de.erleichterungen.feature.ItemEsp;
+import de.erleichterungen.feature.KillAura;
+import de.erleichterungen.feature.LungeSwap;
+import de.erleichterungen.feature.Nametags;
 import de.erleichterungen.feature.PlayerEsp;
+import de.erleichterungen.feature.PortalEsp;
+import de.erleichterungen.feature.Shieldbreaker;
+import de.erleichterungen.feature.StorageEsp;
+import de.erleichterungen.feature.TargetInfo;
+import de.erleichterungen.feature.TriggerBot;
+import de.erleichterungen.feature.Zoom;
 import de.erleichterungen.scan.ScanManager;
 import de.erleichterungen.util.Chat;
 import de.erleichterungen.util.Tracers;
@@ -46,6 +64,10 @@ public class ErleichterungenClient implements ClientModInitializer {
 	private static KeyMapping keyHud;
 	private static KeyMapping keyFreecam;
 	private static KeyMapping keyGui;
+	private static KeyMapping keyZoom;
+	private static KeyMapping keyLungeSwap;
+	private static KeyMapping keyShieldbreaker;
+	private static KeyMapping keyStunSlam;
 
 	@Override
 	public void onInitializeClient() {
@@ -54,6 +76,8 @@ public class ErleichterungenClient implements ClientModInitializer {
 		BlockEsp.init();
 		GeodeTracker.init();
 		EntityEsp.init();
+		StorageEsp.init();
+		PortalEsp.init();
 
 		keyBlockEsp = key("block_esp", InputConstants.KEY_F6);
 		keyEntityEsp = key("entity_esp", InputConstants.KEY_F4);
@@ -63,6 +87,10 @@ public class ErleichterungenClient implements ClientModInitializer {
 		keyHud = key("hud", InputConstants.KEY_F10);
 		keyFreecam = key("freecam", InputConstants.KEY_G);
 		keyGui = key("gui", InputConstants.KEY_RSHIFT);
+		keyZoom = key("zoom", InputConstants.KEY_C);
+		keyLungeSwap = key("lungeswap", InputConstants.KEY_R);
+		keyShieldbreaker = key("shieldbreaker", InputConstants.KEY_X);
+		keyStunSlam = key("stunslam", InputConstants.KEY_V);
 
 		ClientTickEvents.END_CLIENT_TICK.register(ErleichterungenClient::onTick);
 
@@ -79,12 +107,19 @@ public class ErleichterungenClient implements ClientModInitializer {
 				GeodeTracker.render(mc, cam);
 				EntityEsp.render(mc, cam, partialTick);
 				PlayerEsp.render(mc, cam, partialTick);
+				ItemEsp.render(mc, cam, partialTick);
+				Nametags.render(mc, cam, partialTick);
+				BlockHighlight.render(mc, cam, partialTick);
+				StorageEsp.render(mc, cam);
+				PortalEsp.render(mc, cam);
+				ChunkBorders.render(mc, cam);
 			} catch (Exception e) {
 				LOGGER.error("Fehler beim Rendern", e);
 			}
 		});
 
 		HudElementRegistry.addLast(Identifier.fromNamespaceAndPath(MOD_ID, "hud"), Hud::render);
+		HudElementRegistry.addLast(Identifier.fromNamespaceAndPath(MOD_ID, "target_info"), TargetInfo::render);
 
 		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
 			if (!overlay) AntiVanish.onGameMessage(message);
@@ -111,6 +146,10 @@ public class ErleichterungenClient implements ClientModInitializer {
 			case "hud" -> keyHud;
 			case "freecam" -> keyFreecam;
 			case "gui" -> keyGui;
+			case "zoom" -> keyZoom;
+			case "lungeswap" -> keyLungeSwap;
+			case "shieldbreaker" -> keyShieldbreaker;
+			case "stunslam" -> keyStunSlam;
 			default -> null;
 		};
 	}
@@ -131,8 +170,20 @@ public class ErleichterungenClient implements ClientModInitializer {
 		while (keyGui.consumeClick()) {
 			if (mc.gui.screen() == null) mc.setScreenAndShow(new ClickGuiScreen());
 		}
+		while (keyLungeSwap.consumeClick()) LungeSwap.trigger(mc);
+		while (keyStunSlam.consumeClick()) AutoStunSlam.start(mc);
 
 		Freecam.tick(mc);
+		Zoom.tick(mc, keyZoom);
+		Fullbright.tick(mc);
+		AutoSprint.tick(mc);
+		AutoWalk.tick(mc);
+		AutoRespawn.tick(mc);
+		AutoTotem.tick(mc);
+		KillAura.tick(mc);
+		TriggerBot.tick(mc);
+		Shieldbreaker.tick(mc, keyShieldbreaker);
+		AutoStunSlam.tick(mc);
 
 		ScanManager.tick(mc);
 		AntiVanish.tick(mc);
@@ -165,6 +216,22 @@ public class ErleichterungenClient implements ClientModInitializer {
 				state = Freecam.isActive();
 				label = "Freecam";
 			}
+			case "fullbright" -> { state = c.fullbrightEnabled = !c.fullbrightEnabled; label = "Fullbright"; }
+			case "autosprint" -> { state = c.autoSprintEnabled = !c.autoSprintEnabled; label = "Auto-Sprint"; }
+			case "autowalk" -> { state = c.autoWalkEnabled = !c.autoWalkEnabled; label = "Auto-Walk"; }
+			case "autorespawn" -> { state = c.autoRespawnEnabled = !c.autoRespawnEnabled; label = "Auto-Respawn"; }
+			case "nametags" -> { state = c.nametagsEnabled = !c.nametagsEnabled; label = "Nametags"; }
+			case "itemesp" -> { state = c.itemEspEnabled = !c.itemEspEnabled; label = "Item-ESP"; }
+			case "blockhighlight" -> { state = c.blockHighlightEnabled = !c.blockHighlightEnabled; label = "Block-Highlight"; }
+			case "nohurtcam" -> { state = c.noHurtCamEnabled = !c.noHurtCamEnabled; label = "NoHurtCam"; }
+			case "storageesp" -> { state = c.storageEspEnabled = !c.storageEspEnabled; label = "Storage-ESP"; }
+			case "portalesp" -> { state = c.portalEspEnabled = !c.portalEspEnabled; label = "Portal-ESP"; }
+			case "chunkborders" -> { state = c.chunkBordersEnabled = !c.chunkBordersEnabled; label = "Chunk-Borders"; }
+			case "autototem" -> { state = c.autoTotemEnabled = !c.autoTotemEnabled; label = "AutoTotem"; }
+			case "targetinfo" -> { state = c.targetInfoEnabled = !c.targetInfoEnabled; label = "Ziel-Info"; }
+			case "triggerbot" -> { state = c.triggerBotEnabled = !c.triggerBotEnabled; label = "TriggerBot"; }
+			case "killaura" -> { state = c.killAuraEnabled = !c.killAuraEnabled; label = "KillAura"; }
+			case "antiknockback" -> { state = c.antiKnockbackEnabled = !c.antiKnockbackEnabled; label = "AntiKnockback"; }
 			default -> {
 				return null;
 			}

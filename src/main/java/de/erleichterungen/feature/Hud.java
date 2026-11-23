@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -30,6 +31,16 @@ public final class Hud {
 
 		List<Line> lines = new ArrayList<>();
 		lines.add(new Line("Erleichterungen", 0xFFD58CFF));
+		if (cfg.hudCoords) {
+			lines.add(new Line(String.format(Locale.ROOT, "XYZ: %.0f %.0f %.0f",
+					mc.player.getX(), mc.player.getY(), mc.player.getZ()), 0xFFB0E0FF));
+		}
+		if (cfg.hudDirection) {
+			lines.add(new Line("Blick: " + directionName(mc.player.getDirection()), 0xFFB0E0FF));
+		}
+		if (cfg.hudFps) {
+			lines.add(new Line("FPS: " + mc.getFps(), 0xFFB0FFB0));
+		}
 		if (cfg.blockEspEnabled) {
 			lines.add(new Line("Block-ESP: " + BlockEsp.lastRendered() + " / " + BlockEsp.TRACKER.size(), 0xFF7FE8FF));
 		}
@@ -83,6 +94,16 @@ public final class Hud {
 			graphics.text(font, l.text(), x, y, l.color(), true);
 			y += font.lineHeight + 1;
 		}
+	}
+
+	private static String directionName(net.minecraft.core.Direction dir) {
+		return switch (dir) {
+			case NORTH -> "Norden (-Z)";
+			case SOUTH -> "Süden (+Z)";
+			case WEST -> "Westen (-X)";
+			case EAST -> "Osten (+X)";
+			default -> dir.getName();
+		};
 	}
 
 	private static String formatAgo(long ms) {
