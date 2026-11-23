@@ -1,0 +1,13 @@
+{
+  "required": false,
+  "package": "de.erl.client.mixin.lithium",
+  "compatibilityLevel": "JAVA_21",
+  "plugin": "de.erl.client.MixinPlugin",
+  "client": [
+    "ChunkAwareBlockCollisionSweeperMixin",
+    "LithiumEntityCollisionsMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

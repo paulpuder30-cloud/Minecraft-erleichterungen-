@@ -1,0 +1,118 @@
+/*
+ * This file is part of the Meteor Client distribution (https://github.com/MeteorDevelopment/meteor-client).
+ * Copyright (c) Meteor Development.
+ */
+
+package de.erl.client.gui.utils;
+
+import de.erl.client.gui.GuiTheme;
+import de.erl.client.gui.renderer.GuiRenderer;
+import de.erl.client.gui.widgets.input.WTextBox;
+import de.erl.client.systems.hud.elements.TextHud;
+import de.erl.client.utils.misc.ErlStarscript;
+import de.erl.client.utils.render.color.Color;
+import de.erl.client.lib.starscript.utils.SemanticToken;
+import de.erl.client.lib.starscript.utils.SemanticTokenProvider;
+import de.erl.client.lib.starscript.utils.SemanticTokenType;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class StarscriptTextBoxRenderer implements WTextBox.Renderer {
+    private static final Color RED = new Color(225, 25, 25);
+
+    private final List<SemanticToken> tokens = new ArrayList<>();
+    private final List<Section> sections = new ArrayList<>();
+
+    private String lastText;
+
+    @Override
+    public void render(GuiRenderer renderer, double x, double y, String text, Color color) {
+        // Generate
+        if (lastText == null || !lastText.equals(text)) {
+            lastText = text;
+
+            SemanticTokenProvider.get(text, tokens);
+            convertTokensToSections(renderer.theme);
+        }
+
+        // Render
+        for (Section section : sections) {
+            renderer.text(section.text, x, y, section.color, false);
+            x += renderer.theme.textWidth(section.text);
+        }
+    }
+
+    @Override
+    public List<String> getCompletions(String text, int position) {
+        List<String> completions = new ArrayList<>();
+
+        ErlStarscript.ss.getCompletions(text, position, (completion, function) -> {
+            completions.add(function ? completion + "(" : completion);
+        });
+
+        completions.sort(String::compareToIgnoreCase);
+
+        return completions;
+    }
+
+    private void convertTokensToSections(GuiTheme theme) {
+        sections.clear();
+
+        int start = 0;
+
+        for (SemanticToken token : tokens) {
+            if (start != token.start) {
+                sections.add(new Section(
+                    lastText.substring(start, token.start),
+                    theme.starscriptTextColor()
+                ));
+            }
+
+            String text = lastText.substring(token.start, token.end);
+
+            sections.add(new Section(
+                text,
+                getColorForToken(theme, token.type, text)
+            ));
+
+            start = token.end;
+        }
+
+        if (start < lastText.length()) {
+            sections.add(new Section(
+                lastText.substring(start),
+                theme.starscriptTextColor()
+            ));
+        }
+    }
+
+    private static Color getColorForToken(GuiTheme theme, SemanticTokenType type, String text) {
+        return switch (type) {
+            case Dot -> theme.starscriptDotColor();
+            case Comma -> theme.starscriptCommaColor();
+            case Operator -> theme.starscriptOperatorColor();
+            case String -> theme.starscriptStringColor();
+            case Number -> theme.starscriptNumberColor();
+            case Keyword -> theme.starscriptKeywordColor();
+            case Paren -> theme.starscriptParenthesisColor();
+            case Brace -> theme.starscriptBraceColor();
+            case Identifier -> theme.starscriptTextColor();
+            case Map -> theme.starscriptAccessedObjectColor();
+            case Section -> {
+                if (text.startsWith("#")) {
+                    text = text.substring(1);
+                }
+
+                try {
+                    yield TextHud.getSectionColor(Integer.parseInt(text));
+                } catch (NumberFormatException _) {}
+
+                yield theme.starscriptTextColor();
+            }
+            case Error -> RED;
+        };
+    }
+
+    private record Section(String text, Color color) {}
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "erl-client-test",
+  "version": "1.0.0",
+  "name": "ERL-Client Client-Test",
+  "environment": "client",
+  "license": "GPL-3.0",
+  "entrypoints": {
+    "fabric-client-gametest": ["de.erl.client.test.ErlClientGameTest"]
+  },
+  "mixins": ["erl-client-test.mixins.json"],
+  "depends": {
+    "erl-client": "*"
+  }
+}

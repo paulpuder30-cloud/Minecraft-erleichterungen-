@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "name": "ERL-Client",
+  "id": "erl-client",
+  "version": "${version}",
+  "description": "ERL-Client – Utility-Client für Minecraft 26.3.",
+  "authors": [
+    "holyfricc"
+  ],
+  "contact": {
+    "homepage": "https://github.com/paulpuder30-cloud/Minecraft-erleichterungen-",
+    "issues": "https://github.com/paulpuder30-cloud/Minecraft-erleichterungen-/issues",
+    "sources": "https://github.com/paulpuder30-cloud/Minecraft-erleichterungen-"
+  },
+  "license": "GPL-3.0",
+  "icon": "assets/erl-client/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "de.erl.client.ErlClient"
+    ],
+    "modmenu": [
+      "de.erl.client.modintegration.ModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "erl-client.mixins.json",
+    "erl-client-baritone.mixins.json",
+    "erl-client-indigo.mixins.json",
+    "erl-client-sodium.mixins.json",
+    "erl-client-lithium.mixins.json",
+    "erl-client-metallum.mixins.json"
+  ],
+  "accessWidener": "erl-client.classtweaker",
+  "custom": {
+    "erl-client:build_number": "${build_number}",
+    "erl-client:color": "40,160,255",
+    "erl-client:commit": "${commit}",
+    "badoptimizations:cache_hooks": {
+      "lightmap": "de.erl.client.modintegration.BadOptimizationsHook"
+    }
+  },
+  "depends": {
+    "java": ">=${jdk_version}",
+    "minecraft": "${minecraft_version}",
+    "fabricloader": ">=${loader_version}"
+  },
+  "breaks": {
+    "optifabric": "*",
+    "feather": "*",
+    "origins": "*",
+    "sodium": "<0.9.1",
+    "morechathistory": "*",
+    "lithium": "<0.22.1"
+  }
+}

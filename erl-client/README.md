@@ -1,0 +1,190 @@
+<p align="center">
+<img src="src/main/resources/assets/erl-client/icon.png" alt="ERL-Client-Logo" width="96"/>
+</p>
+
+<h1 align="center">ERL-Client</h1>
+<p align="center">Utility-Client für <b>Minecraft Java 26.3</b> (Fabric).</p>
+
+![Click-GUI](docs/click-gui.png)
+
+## Features
+
+- **Umfangreiche Utility-Module**: Module (Combat, Player, Movement, Render, World, Misc), HUD-Editor, Befehle
+  (Prefix `.`), Freunde, Makros, Profile, Waypoints, Baritone-Integration, Addon-Schnittstelle.
+- **Eigene Kategorie „ERL“** mit vier neuen Modulen (siehe unten).
+- **Branding**: Fenstertitel `ERL-Client <Version> - Minecraft 26.3`, Click-GUI-Titel, Chat-Prefix `[ERL]`,
+  eigene Splash-Texte, Titelbildschirm-Credits („ERL-Client by holyfricc“), eigenes Icon.
+- **Config-Ordner**: `.minecraft/erl-client/`
+- **Addons**: über den Entrypoint `erl` und die Klasse `de.erl.client.addons.ErlAddon`.
+- Keine Telemetrie: keine Online-Statistik-Pings, keine Capes oder Rich-Presence über fremde Server.
+
+## ERL-Module
+
+Alle vier Module findest du in der Click-GUI (**Rechte Shift**) in der Kategorie **ERL**. Wie jedes Modul
+lassen sie sich per Mittelklick (oder in den Moduleinstellungen unter *Bind*) auf eine Taste legen.
+
+| Einstellungen | | |
+|---|---|---|
+| ![ShieldBreaker](docs/einstellungen-shieldbreaker.png) | ![StunSlam](docs/einstellungen-stunslam.png) | ![LungeSwap](docs/einstellungen-lungeswap.png) |
+
+### ShieldBreaker
+
+Erkennt ein Ziel, das **mit dem Schild in deine Richtung** blockt. ShieldBreaker wechselt dann automatisch auf eine Axt
+in der Hotbar, schlägt zu (der Schild ist 5 Sekunden deaktiviert) und wechselt zurück.
+
+| Einstellung | Bedeutung | Standard |
+|---|---|---|
+| `range` | Reichweite bis zur Hitbox des Ziels | 3 |
+| `only-players` | Nur Spieler als Ziel | an |
+| `rotate` | Zum Ziel drehen. Aus: nur das Ziel unter dem Fadenkreuz | an |
+| `axe-priority` | `Best` (Netherite > Diamant > Eisen > Kupfer > Stein > Gold > Holz), `Worst`, `FirstSlot` | Best |
+| `anti-break` | Äxte mit ≤ 10 Haltbarkeit ignorieren | an |
+| `delay` | Ticks zwischen Axt-Wechsel und Schlag (0 = gleicher Tick) | 0 |
+| `swap-back` / `swap-back-delay` | Zurückwechseln und Ticks bis dahin | an / 1 |
+
+### StunSlam
+
+Kombo aus Axt und Streitkolben: Sobald ein Ziel in Reichweite blockt, deaktiviert ein Axt-Treffer den Schild (Stun),
+und im selben Tick folgt der Mace-Treffer. Fällst du dabei, wird daraus ein voller Smash-Angriff. Im Stehen macht der
+Mace direkt nach der Axt nur wenig Schaden (etwa 1–2), weil Vanilla nach jedem Treffer die Angriffsladung zurücksetzt;
+der Smash-Bonus aus dem Fall hängt davon nicht ab. Pro Fall wird nur eine Kombo ausgeführt.
+
+| Einstellung | Bedeutung | Standard |
+|---|---|---|
+| `require-fall` | Nur aus dem Fall auslösen | aus |
+| `min-fall-height` | Mindest-Fallhöhe in Blöcken bei `require-fall` (Smash braucht > 1,5) | 3 |
+| `range` | Reichweite bis zur Hitbox des Ziels | 3 |
+| `only-when-blocking` | Nur auslösen, wenn das Ziel blockt. Aus: beim Fallen auch ohne Schild direkt Mace-Smash | an |
+| `only-players` / `rotate` | wie bei ShieldBreaker | an / an |
+| `tick-gap` | Ticks zwischen Axt- und Mace-Treffer (0 = gleicher Tick, am schnellsten) | 0 |
+| `axe-priority` | Welche Axt | Best |
+| `prefer-density` | Bei mehreren Maces den mit höchster Dichte nehmen | an |
+| `swap-back` | Danach auf den vorherigen Slot zurückwechseln | an |
+
+### LungeSwap
+
+Wechselt auf einen **Speer mit Lunge**, führt einen Jab aus (Lunge-Dash nach vorn) und wechselt zurück.
+
+| Einstellung | Bedeutung | Standard |
+|---|---|---|
+| `trigger` | `Keybind` (eigene Taste `lunge-key`) oder `OnAttack` (jeder Linksklick, der keinen Block trifft) | Keybind |
+| `lunge-key` | Taste für den Lunge (nur bei `Keybind`) | – |
+| `prefer-highest-level` | Höchstes Lunge-Level (weiter) statt niedrigstes (weniger Hunger) | an |
+| `min-hunger` | Pausiert unter diesem Hungerwert (7–20) | 7 |
+| `swap-back` / `swap-back-delay` | Zurückwechseln und Ticks bis dahin | an / 1 |
+
+### MaceAura
+
+Schlägt automatisch mit dem Streitkolben zu, sobald du tief genug fällst und ein Gegner in Reichweite ist: Wechsel auf
+den Mace, Schläge, Wechsel zurück. Pro Fall kommt eine zufällige Anzahl Schläge (Standard 2–6) mit zufälligen kurzen
+Pausen, solange du in der Luft und der Gegner in Reichweite ist. Der erste Schlag ist der Smash mit dem Fallbonus; danach
+setzt der Server die Fallhöhe zurück, die weiteren Schläge sind normale Treffer. Schilde blocken den Smash; solche Ziele lässt MaceAura
+standardmäßig aus (dafür gibt es StunSlam).
+
+| Einstellung | Bedeutung | Standard |
+|---|---|---|
+| `min-fall-height` | Mindest-Fallhöhe in Blöcken (Smash braucht > 1,5) | 3 |
+| `range` | Reichweite bis zur Hitbox des Ziels | 3 |
+| `min-hits` / `max-hits` | Zufällige Anzahl Schläge pro Fall | 2 / 6 |
+| `min-hit-delay` / `max-hit-delay` | Zufällige Pause zwischen zwei Schlägen in Ticks (0 = gleicher Tick) | 1 / 3 |
+| `only-players` | Nur Spieler als Ziel | an |
+| `skip-blocking` | Ziele überspringen, deren Schild zu dir zeigt | an |
+| `rotate` | Zum Ziel drehen. Aus: nur das Ziel unter dem Fadenkreuz | an |
+| `prefer-density` | Bei mehreren Maces den mit höchster Dichte nehmen | an |
+| `swap-back` / `swap-back-delay` | Zurückwechseln und Ticks bis dahin | an / 1 |
+
+## Vanilla-Mechaniken in 26.3 (am Quellcode geprüft)
+
+- **Schild-Deaktivierung** (`Player#blockUsingItem`): Nur **Spieler** verlieren ihren Schild. Das passiert, wenn sie
+  einen Nahkampftreffer blocken und die Waffe des Angreifers eine `minecraft:weapon`-Komponente mit
+  `disable_blocking_for_seconds > 0` hat (alle Äxte: 5 s). Geblockt wird nur innerhalb von 90° um die Blickrichtung
+  und erst 5 Ticks nach dem Hochnehmen des Schilds. Die Module prüfen beides, bevor sie wechseln. Mobs mit Schild
+  blocken zwar, ihr Schild wird aber nie deaktiviert.
+- **Mace-Smash** (`MaceItem`): ab `fallDistance > 1,5`, nicht beim Elytra-Flug. Der Fallbonus skaliert **nicht** mit
+  der Angriffsladung, deshalb kostet der schnelle Wechsel kaum Schaden. Ein komplett geblockter Axt-Treffer setzt beim
+  Gegner `lastHurt = 0`, daher trifft der Mace trotz Unverwundbarkeitsfenster mit vollem Schaden.
+- **Speer-Jab & Lunge** (`lunge.json`, `PiercingWeapon`): Der Jab (Linksklick) löst Lunge aus. Der Dash beträgt
+  0,458 × Stufe, kostet 4 × Stufe Erschöpfung und 1 Haltbarkeit. Er wirkt nur mit **≥ 7 Hunger** (außer im
+  Kreativmodus), nicht im Wasser, nicht beim Elytra-Flug und nicht auf Reittieren. Ein Speer braucht **volle
+  Angriffsladung**. Der Server prüft beim Jab aber noch die Ladung der vorherigen Waffe. LungeSwap wartet deshalb,
+  bis die aktuelle Waffe voll geladen ist, und wechselt dann und jabbt im selben Tick.
+
+> ⚠️ Viele Server verbieten Clients mit Kampf-Automatisierung. Nutze ERL-Client nur dort, wo es erlaubt ist
+> (z. B. Singleplayer, eigene Server, Anarchy-Server).
+
+## Installation
+
+**Direkter Download:**
+https://github.com/paulpuder30-cloud/Minecraft-erleichterungen-/raw/claude/sharp-goodall-pscdz5/download/erl-client-1.0.0-mc26.3.jar
+
+1. [Fabric Loader](https://fabricmc.net/use/) **0.20.1 oder neuer** für Minecraft **26.3** installieren.
+2. `erl-client-1.0.0-mc26.3.jar` in den `mods`-Ordner legen (`.minecraft/mods`).
+3. Die Fabric API ist **nicht** nötig (die benötigten Module sind eingebettet), stört aber auch nicht.
+4. Keine anderen Utility-Clients gleichzeitig installieren (Mixin-Konflikte).
+5. Minecraft mit dem Fabric-Profil starten, Click-GUI mit **Rechte Shift** öffnen.
+
+## Selbst bauen
+
+Voraussetzung: **JDK 25**.
+
+```bash
+cd erl-client
+./gradlew build
+# Ergebnis: build/libs/erl-client-1.0.0-mc26.3.jar
+```
+
+Entwicklungs-Client starten:
+
+```bash
+./gradlew runClient
+```
+
+Automatischer Client-Test (erstellt eine Welt, prüft Branding, Click-GUI, Keybinds und alle drei ERL-Module gegen einen
+Schild blockenden Test-Gegner, prüft die Tastenbelegungs-Schlüssel und macht Screenshots unter
+`build/run/clientGameTest/screenshots/`):
+
+```bash
+./gradlew runClientGameTest
+```
+
+Ohne Bildschirm (z. B. CI-Server mit Mesa) über Xvfb und EGL:
+
+```bash
+SDL_VIDEO_FORCE_EGL=1 xvfb-run -a -s "-screen 0 1280x720x24" ./gradlew runClientGameTest
+```
+
+### Toolchain
+
+| | Version |
+|---|---|
+| Minecraft | 26.3 (seit 26.1 nicht mehr obfuskiert, offizielle Mojang-Namen) |
+| Fabric Loader | 0.20.1 |
+| Fabric API | 0.167.0+26.3 (eingebettet: `fabric-api-base`, `fabric-resource-loader-v1`) |
+| Loom | 1.19.4 |
+| Gradle | 9.9.2 |
+| Java | 25 |
+
+Die Versionen stehen in `gradle/libs.versions.toml`, die Mod-Version in `gradle.properties`.
+
+## Projektstruktur
+
+- `src/main/java/de/erl/client/` – gesamter Client. `ErlClient` ist der Einstiegspunkt (Mod-Initialisierung),
+  dazu `systems/`, `gui/`, `mixin/` usw.
+- ERL-eigene Erweiterungen: `ErlExtras` (Kategorie „ERL“, Registrierung), `modules/` (ShieldBreaker, StunSlam,
+  LungeSwap) und `utils/ErlCombatUtils`.
+- `src/gametest/` – Fabric-Client-Gametest.
+
+## Credits
+
+- [Cabaletta](https://github.com/cabaletta) und [WagYourTail](https://github.com/wagyourtail) für [Baritone](https://github.com/cabaletta/baritone).
+- Das [Fabric-Team](https://github.com/FabricMC) für [Fabric](https://github.com/FabricMC/fabric-loader).
+
+## Lizenz
+
+ERL-Client steht unter der [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.de.html)
+(siehe [LICENSE](LICENSE)). Der Code basiert auf einem GPL-3.0-lizenzierten Open-Source-Projekt von
+MeteorDevelopment; die Copyright-Hinweise in den Quelldateien bleiben deshalb erhalten, wie es die Lizenz verlangt.
+Wer Code daraus verwendet, muss den Quellcode offenlegen und dieselbe Lizenz verwenden.
+
+Die eingebetteten Bibliotheken unter `de.erl.client.lib` (Event-Bus und Skript-Sprache) stehen unter der MIT-Lizenz;
+ihre Lizenztexte liegen unter `src/main/resources/licenses/` und werden ins JAR übernommen.

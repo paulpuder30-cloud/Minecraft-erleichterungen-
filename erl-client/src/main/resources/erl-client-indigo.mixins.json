@@ -1,0 +1,12 @@
+{
+  "required": false,
+  "package": "de.erl.client.mixin.indigo",
+  "compatibilityLevel": "JAVA_21",
+  "plugin": "de.erl.client.MixinPlugin",
+  "client": [
+    "AltModelBlockRendererImplMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
