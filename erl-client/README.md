@@ -91,6 +91,9 @@ Wechselt auf einen **Speer mit Lunge**, führt einen Jab aus (Lunge-Dash nach vo
 
 ## Installation
 
+**Direkter Download:**
+https://github.com/paulpuder30-cloud/Minecraft-erleichterungen-/raw/claude/sharp-goodall-pscdz5/download/erl-client-1.0.0-mc26.3.jar
+
 1. [Fabric Loader](https://fabricmc.net/use/) **0.20.1 oder neuer** für Minecraft **26.3** installieren.
 2. `erl-client-1.0.0-mc26.3.jar` in den `mods`-Ordner legen (`.minecraft/mods`).
 3. Die Fabric API ist **nicht** nötig (die benötigten Module sind eingebettet), stört aber auch nicht.
