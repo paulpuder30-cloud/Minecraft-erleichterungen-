@@ -115,6 +115,9 @@ public final class ModConfig {
 	public boolean triggerBotRequireCharged = true;
 	public int triggerBotDelayTicks = 0;
 
+	// ---------- AntiKnockback ----------
+	public boolean antiKnockbackEnabled = false;
+
 	// ---------- Storage-ESP ----------
 	public boolean storageEspEnabled = false;
 	public int storageEspRange = 128;

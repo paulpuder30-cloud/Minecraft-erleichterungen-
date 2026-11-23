@@ -215,6 +215,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 			case "targetinfo" -> { state = c.targetInfoEnabled = !c.targetInfoEnabled; label = "Ziel-Info"; }
 			case "triggerbot" -> { state = c.triggerBotEnabled = !c.triggerBotEnabled; label = "TriggerBot"; }
 			case "killaura" -> { state = c.killAuraEnabled = !c.killAuraEnabled; label = "KillAura"; }
+			case "antiknockback" -> { state = c.antiKnockbackEnabled = !c.antiKnockbackEnabled; label = "AntiKnockback"; }
 			default -> {
 				return null;
 			}

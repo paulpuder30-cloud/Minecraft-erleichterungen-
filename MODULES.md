@@ -3,10 +3,10 @@
 > **Automatisch generiert** aus dem Quellcode mit `tools/generate_modules_md.py`.
 > Nicht von Hand bearbeiten – stattdessen das Skript erneut ausführen.
 
-**Module gesamt:** 25  
+**Module gesamt:** 26  
 **Setting-Typen:** Bool (An/Aus), Int (Ganzzahl), Dec (Dezimal), Color (Hex), Text, Mode (Darstellung), ListEdit (ID-Liste mit Farbe), Action (Knopf).
 
-**Pro Kategorie:** Kampf: 4  Render: 10  Bewegung: 2  Welt: 4  Spieler: 2  Sonstiges: 1  Client: 2
+**Pro Kategorie:** Kampf: 5  Render: 10  Bewegung: 2  Welt: 4  Spieler: 2  Sonstiges: 1  Client: 2
 
 Dieser Client gruppiert Einstellungen **flach pro Modul** (keine Unter-Gruppen wie bei Meteor); die Spalte „Feld" nennt das zugehörige Config-Feld in `ModConfig`.
 
@@ -56,6 +56,12 @@ Greift automatisch das anvisierte Ziel an, wenn die Angriffsleiste voll ist.
 | Sonstige | Bool | Aus | An / Aus | `triggerBotOther` |
 | Nur voll aufgeladen | Bool | An | An / Aus | `triggerBotRequireCharged` |
 | Verzögerung (Ticks) | Int | 0 | 0 … 40 | `triggerBotDelayTicks` |
+
+### AntiKnockback  
+`id: antiknockback` · Kategorie: **Kampf** · An/Aus-Modul  
+Unterdrückt den vom Server geschickten Rückstoß (z.B. durch Treffer).
+
+_Keine Einstellungen._
 
 
 ## Render  

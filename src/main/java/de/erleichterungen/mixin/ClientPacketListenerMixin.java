@@ -1,5 +1,6 @@
 package de.erleichterungen.mixin;
 
+import de.erleichterungen.config.ModConfig;
 import de.erleichterungen.feature.AntiVanish;
 import de.erleichterungen.scan.ScanManager;
 import net.minecraft.client.Minecraft;
@@ -9,6 +10,7 @@ import net.minecraft.network.protocol.game.ClientboundCommandSuggestionsPacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 import net.minecraft.network.protocol.game.ClientboundSectionBlocksUpdatePacket;
+import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -49,5 +51,13 @@ public abstract class ClientPacketListenerMixin {
 		ci.cancel();
 		ClientPacketListener self = (ClientPacketListener) (Object) this;
 		Minecraft.getInstance().execute(() -> AntiVanish.onCommandSuggestions(self, packet));
+	}
+
+	/** AntiKnockback: verwirft die vom Server geschickte Geschwindigkeit für den eigenen Spieler. */
+	@Inject(method = "handleSetEntityMotion", at = @At("HEAD"), cancellable = true)
+	private void erleichterungen$antiKnockback(ClientboundSetEntityMotionPacket packet, CallbackInfo ci) {
+		if (!ModConfig.get().antiKnockbackEnabled) return;
+		var player = Minecraft.getInstance().player;
+		if (player != null && packet.id() == player.getId()) ci.cancel();
 	}
 }

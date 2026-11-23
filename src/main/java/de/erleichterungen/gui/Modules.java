@@ -112,6 +112,9 @@ public final class Modules {
 				.add(new Setting.Int("Verzögerung (Ticks)", "Zusätzliche Pause zwischen Angriffen.", 0, 40,
 						() -> c().triggerBotDelayTicks, v -> c().triggerBotDelayTicks = v)));
 
+		list.add(toggleable("antiknockback", "AntiKnockback", Category.COMBAT,
+				"Unterdrückt den vom Server geschickten Rückstoß (z.B. durch Treffer).", () -> c().antiKnockbackEnabled));
+
 		// ------------------------------------------------------------------ Render
 		list.add(toggleable("blockesp", "Block-ESP", Category.RENDER,
 				"Markiert ausgewählte Blöcke (Erze, Spawner, ...) durch Wände.", () -> c().blockEspEnabled)
