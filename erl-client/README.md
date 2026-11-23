@@ -3,31 +3,20 @@
 </p>
 
 <h1 align="center">ERL-Client</h1>
-<p align="center">Utility-Client für <b>Minecraft Java 26.3</b> (Fabric) – basiert auf <a href="https://github.com/MeteorDevelopment/meteor-client">Meteor Client</a>.</p>
-
-> **ERL-Client ist ein Fork von [Meteor Client](https://github.com/MeteorDevelopment/meteor-client) von
-> [MeteorDevelopment](https://github.com/MeteorDevelopment).** Sämtliche Meteor-Funktionen stammen von deren Team und
-> stehen wie dieses Projekt unter der [GPL-3.0](LICENSE). Basis: Meteor `master`, Commit
-> [`ec8cdb0`](https://github.com/MeteorDevelopment/meteor-client/commit/ec8cdb088af88582bade7cd3b0dfbe71ccd2285c).
-> Bitte melde Fehler in ERL-Client **nicht** bei Meteor.
+<p align="center">Utility-Client für <b>Minecraft Java 26.3</b> (Fabric).</p>
 
 ![Click-GUI](docs/click-gui.png)
 
 ## Features
 
-- **Alle Features von Meteor Client**: Module (Combat, Player, Movement, Render, World, Misc), HUD-Editor, Befehle
+- **Umfangreiche Utility-Module**: Module (Combat, Player, Movement, Render, World, Misc), HUD-Editor, Befehle
   (Prefix `.`), Freunde, Makros, Profile, Waypoints, Baritone-Integration, Addon-Schnittstelle.
 - **Eigene Kategorie „ERL“** mit drei neuen Modulen (siehe unten).
 - **Branding**: Fenstertitel `ERL-Client <Version> - Minecraft 26.3`, Click-GUI-Titel, Chat-Prefix `[ERL]`,
   eigene Splash-Texte, Titelbildschirm-Credits („ERL-Client by holyfricc“), eigenes Icon.
 - **Config-Ordner**: `.minecraft/erl-client/`
-- **Komplett umbenannt**: Packages (`de.erl.client`), Klassen (`ErlClient`, `ErlAddon`, Theme „ERL“ …),
-  Starscript-Variablen (`{erl.name}`, `{erl.version}` …), Texte und Ressourcen. Übrig bleiben nur die von der
-  GPL-3.0 vorgeschriebenen Copyright-Hinweise und Credits, die Packages der externen MeteorDevelopment-Bibliotheken
-  (Orbit, Starscript, Discord-IPC) sowie Links zu Meteors Wiki, Cape-Server und Discord-App.
-- **Addons**: Addons nutzen den Entrypoint `erl` und die Klasse `de.erl.client.addons.ErlAddon`. Fertige
-  Meteor-Addons sind wegen der Umbenennung **nicht** kompatibel.
-- Keine Online-Statistik-Pings an meteorclient.com; Discord-Rich-Presence ist standardmäßig aus.
+- **Addons**: über den Entrypoint `erl` und die Klasse `de.erl.client.addons.ErlAddon`.
+- Keine Telemetrie: keine Online-Statistik-Pings, keine Capes oder Rich-Presence über fremde Server.
 
 ## ERL-Module
 
@@ -105,7 +94,7 @@ Wechselt auf einen **Speer mit Lunge**, führt einen Jab aus (Lunge-Dash nach vo
 1. [Fabric Loader](https://fabricmc.net/use/) **0.20.1 oder neuer** für Minecraft **26.3** installieren.
 2. `erl-client-1.0.0-mc26.3.jar` in den `mods`-Ordner legen (`.minecraft/mods`).
 3. Die Fabric API ist **nicht** nötig (die benötigten Module sind eingebettet), stört aber auch nicht.
-4. **Nicht** zusammen mit Meteor Client installieren (gleiche Mixins, Konflikte).
+4. Keine anderen Utility-Clients gleichzeitig installieren (Mixin-Konflikte).
 5. Minecraft mit dem Fabric-Profil starten, Click-GUI mit **Rechte Shift** öffnen.
 
 ## Selbst bauen
@@ -147,21 +136,19 @@ Die Versionen stehen in `gradle/libs.versions.toml`, die Mod-Version in `gradle.
 ## Projektstruktur
 
 - `src/main/java/de/erl/client/` – gesamter Client. `ErlClient` ist der Einstiegspunkt (Mod-Initialisierung),
-  `systems/`, `gui/`, `mixin/` usw. stammen aus Meteor Client.
+  dazu `systems/`, `gui/`, `mixin/` usw.
 - ERL-eigene Erweiterungen: `ErlExtras` (Kategorie „ERL“, Registrierung), `modules/` (ShieldBreaker, StunSlam,
   LungeSwap) und `utils/ErlCombatUtils`.
-- Hinweis: Durch die komplette Umbenennung lassen sich künftige Meteor-Updates nur noch mit Aufwand übernehmen.
 - `src/gametest/` – Fabric-Client-Gametest.
 
 ## Credits
 
-- **[Meteor Client](https://github.com/MeteorDevelopment/meteor-client)** von **MeteorDevelopment**
-  (MineGame159, squidoodly, seasnail und alle Mitwirkenden) – die gesamte Basis dieses Clients.
 - [Cabaletta](https://github.com/cabaletta) und [WagYourTail](https://github.com/wagyourtail) für [Baritone](https://github.com/cabaletta/baritone).
 - Das [Fabric-Team](https://github.com/FabricMC) für [Fabric](https://github.com/FabricMC/fabric-loader).
 
 ## Lizenz
 
-ERL-Client steht wie Meteor Client unter der
-[GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.de.html) (siehe [LICENSE](LICENSE)).
-Wer Code daraus verwendet, muss den Quellcode offenlegen, die Herkunft deutlich angeben und dieselbe Lizenz verwenden.
+ERL-Client steht unter der [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.de.html)
+(siehe [LICENSE](LICENSE)). Der Code basiert auf einem GPL-3.0-lizenzierten Open-Source-Projekt von
+MeteorDevelopment; die Copyright-Hinweise in den Quelldateien bleiben deshalb erhalten, wie es die Lizenz verlangt.
+Wer Code daraus verwendet, muss den Quellcode offenlegen und dieselbe Lizenz verwenden.

@@ -17,7 +17,7 @@ import net.minecraft.world.level.material.FluidState;
  * calculates whether there is enough space to fit your bounding box if you change into that pose. This method ends up
  * calling {@link LivingEntity#canStandOnFluid(FluidState)}, causing this event to fire
  * again and leading to a stack overflow crash. Introduced in
- * <a href="https://github.com/MeteorDevelopment/meteor-client/pull/5449">this pull request</a>
+ * the original pull request
  */
 public class CanWalkOnFluidEvent {
     private static final CanWalkOnFluidEvent INSTANCE = new CanWalkOnFluidEvent();

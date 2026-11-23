@@ -1,5 +1,5 @@
 /*
- * This file is part of ERL-Client, a fork of Meteor Client (https://github.com/MeteorDevelopment/meteor-client).
+ * This file is part of ERL-Client.
  * Licensed under the GNU General Public License v3.0.
  */
 

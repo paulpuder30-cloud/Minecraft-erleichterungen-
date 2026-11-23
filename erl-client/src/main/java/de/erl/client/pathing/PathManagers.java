@@ -19,15 +19,6 @@ public class PathManagers {
 
     @PreInit
     public static void init() {
-        if (exists("meteordevelopment.voyager.PathManager")) {
-            try {
-                INSTANCE = (IPathManager) Class.forName("meteordevelopment.voyager.PathManager").getConstructor().newInstance();
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                     NoSuchMethodException | ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
         if (exists("baritone.api.BaritoneAPI")) {
             BaritoneUtils.IS_AVAILABLE = true;
 

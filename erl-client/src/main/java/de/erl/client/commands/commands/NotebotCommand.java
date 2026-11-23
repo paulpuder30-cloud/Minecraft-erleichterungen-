@@ -48,11 +48,6 @@ public class NotebotCommand extends Command {
 
     @Override
     public void build(LiteralArgumentBuilder<ClientSuggestionProvider> builder) {
-        builder.then(literal("help").executes(_ -> {
-            Blaze3D.openUri(URI.create("https://github.com/MeteorDevelopment/meteor-client/wiki/Notebot-Guide"));
-            return SINGLE_SUCCESS;
-        }));
-
         builder.then(literal("status").executes(_ -> {
             Notebot notebot = Modules.get().get(Notebot.class);
             info(notebot.getStatus());

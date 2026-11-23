@@ -21,8 +21,7 @@ Alle Tasten lassen sich unter *Optionen → Steuerung → Erleichterungen* ände
 ## ERL-Client (separates Projekt)
 
 Im Ordner [`erl-client/`](erl-client/) liegt **ERL-Client**, ein eigenständiger Utility-Client für Minecraft 26.3.
-Er basiert auf [Meteor Client](https://github.com/MeteorDevelopment/meteor-client) von MeteorDevelopment und steht
-deshalb unter der **GPL-3.0** ([`erl-client/LICENSE`](erl-client/LICENSE)). Die MIT-Lizenz im Root gilt nur für die
+Er steht unter der **GPL-3.0** ([`erl-client/LICENSE`](erl-client/LICENSE)); die MIT-Lizenz im Root gilt nur für die
 Erleichterungen-Mod. Details, Module und Build-Anleitung stehen in der [ERL-Client-README](erl-client/README.md).
 
 ## Installation

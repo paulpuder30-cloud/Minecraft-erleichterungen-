@@ -19,7 +19,7 @@ base {
 
 repositories {
     maven {
-        name = "orbit-starscript-baritone"  // Bibliotheken von MeteorDevelopment
+        name = "orbit-starscript-baritone"
         url = uri("https://maven.meteordev.org/releases")
     }
     maven {
@@ -90,7 +90,6 @@ dependencies {
     // Libraries (JAR-in-JAR)
     jij(libs.orbit)
     jij(libs.starscript)
-    jij(libs.discord.ipc)
     jij(libs.reflections)
     jij(libs.netty.handler.proxy) { isTransitive = false }
     jij(libs.netty.codec.socks) { isTransitive = false }

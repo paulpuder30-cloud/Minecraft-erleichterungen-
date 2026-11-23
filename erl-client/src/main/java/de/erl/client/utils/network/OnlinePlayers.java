@@ -14,8 +14,7 @@ public class OnlinePlayers {
     public static void update() {
         long time = System.currentTimeMillis();
 
-        // ERL-Client: Meteors Online-Zähler (meteorclient.com/api/online) wird bewusst nicht angepingt,
-        // da dieser Fork nicht als Meteor-Client-Nutzer gezählt werden soll.
+        // ERL-Client sendet keine Online-Statistik an externe Server.
         lastPingTime = time;
     }
 
