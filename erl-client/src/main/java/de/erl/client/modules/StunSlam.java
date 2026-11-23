@@ -37,12 +37,20 @@ public class StunSlam extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgSwap = settings.createGroup("Swap");
 
+    private final Setting<Boolean> requireFall = sgGeneral.add(new BoolSetting.Builder()
+        .name("require-fall")
+        .description("Only triggers while falling. When off, the combo fires as soon as a target blocks; while falling the mace hit becomes a full smash.")
+        .defaultValue(false)
+        .build()
+    );
+
     private final Setting<Double> minFallHeight = sgGeneral.add(new DoubleSetting.Builder()
         .name("min-fall-height")
         .description("Minimum fall distance in blocks before the combo triggers. The mace smash itself needs more than 1.5.")
         .defaultValue(3)
         .min(1.6)
         .sliderRange(1.6, 20)
+        .visible(requireFall::get)
         .build()
     );
 
@@ -78,8 +86,8 @@ public class StunSlam extends Module {
 
     private final Setting<Integer> hitGap = sgSwap.add(new IntSetting.Builder()
         .name("tick-gap")
-        .description("Ticks between the axe hit and the mace hit. 0 = both in the same tick.")
-        .defaultValue(1)
+        .description("Ticks between the axe hit and the mace hit. 0 = both in the same tick (fastest).")
+        .defaultValue(0)
         .range(0, 10)
         .sliderRange(0, 5)
         .build()
@@ -117,9 +125,10 @@ public class StunSlam extends Module {
     private LivingEntity target;
     private int timer;
     private int previousSlot = -1;
+    private int cooldown;
 
     public StunSlam() {
-        super(ErlExtras.CATEGORY, "stun-slam", "Axe + mace combo: disables the target's shield with an axe, then smashes with a mace while falling.");
+        super(ErlExtras.CATEGORY, "stun-slam", "Axe + mace combo: breaks the target's shield with an axe and instantly follows up with a mace hit (full smash while falling).");
     }
 
     @Override
@@ -136,13 +145,14 @@ public class StunSlam extends Module {
     @EventHandler
     private void onTick(TickEvent.Pre event) {
         if (mc.player == null || mc.level == null || mc.gameMode == null) return;
+        if (cooldown > 0) cooldown--;
 
         switch (state) {
             case Idle -> tryStart();
             case WaitingForMace -> {
                 if (--timer > 0) return;
 
-                if (canSmash() && isTargetValid(target, false)) maceHit(true);
+                if ((!requireFall.get() || canSmash()) && isTargetValid(target, false)) maceHit(true);
                 else {
                     // Gelandet oder Ziel weg: Kombo abbrechen
                     restoreSlot();
@@ -167,8 +177,10 @@ public class StunSlam extends Module {
     }
 
     private void tryStart() {
-        if (mc.player.isDeadOrDying() || mc.player.isSpectator()) return;
-        if (!canSmash() || mc.player.fallDistance < minFallHeight.get()) return;
+        if (cooldown > 0 || mc.player.isDeadOrDying() || mc.player.isSpectator()) return;
+
+        boolean falling = canSmash() && (!requireFall.get() || mc.player.fallDistance >= minFallHeight.get());
+        if (requireFall.get() && !falling) return;
 
         int maceSlot = findMace();
         if (maceSlot == -1) return;
@@ -176,10 +188,15 @@ public class StunSlam extends Module {
         LivingEntity newTarget = findTarget();
         if (newTarget == null) return;
 
+        boolean blocking = ErlCombatUtils.isBlockingTowardsUs(newTarget);
+        // Im Stehen nur gegen blockende Ziele (sonst wäre es nur Dauer-Klicken mit dem Mace)
+        if (!blocking && !falling) return;
+
         target = newTarget;
         previousSlot = mc.player.getInventory().getSelectedSlot();
+        cooldown = 10;
 
-        if (ErlCombatUtils.isBlockingTowardsUs(target)) {
+        if (blocking) {
             int axeSlot = ErlCombatUtils.findShieldDisabler(axePriority.get(), true);
             if (axeSlot == -1) {
                 reset();

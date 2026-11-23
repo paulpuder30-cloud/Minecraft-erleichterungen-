@@ -95,6 +95,7 @@ public class ErlClientGameTest implements FabricClientGameTest {
 
             testClickGuiAndKeybinds(ctx);
             testShieldBreaker(ctx, server);
+            testStunSlamGround(ctx, server);
             testStunSlam(ctx, server);
             testLungeSwap(ctx, server);
         }
@@ -231,6 +232,27 @@ public class ErlClientGameTest implements FabricClientGameTest {
     }
 
     // ------------------------------------------------------------------ StunSlam
+
+    /** Im Stehen: Ziel blockt -> Axt bricht den Schild, Mace trifft sofort hinterher. */
+    private void testStunSlamGround(ClientGameTestContext ctx, TestServerContext server) {
+        resetPlayer(ctx, server, base.getX() + 0.5, base.getY(), base.getZ() + 0.5);
+        ShieldDummy dummy = spawnDummy(ctx, server, "GroundDummy", base.getX() + 0.5, base.getZ() + 2.5);
+        float healthBefore = server.computeOnServer(s -> dummy.getHealth());
+
+        setActive(ctx, StunSlam.class, true);
+        int ticks = server.waitFor(s -> dummy.isShieldDisabled() && dummy.getHealth() < healthBefore, 60);
+        ctx.waitTicks(5);
+        setActive(ctx, StunSlam.class, false);
+
+        float healthAfter = server.computeOnServer(s -> dummy.getHealth());
+        log("StunSlam (im Stehen): nach " + ticks + " Ticks, Dummy-Leben " + healthBefore + " -> " + healthAfter
+            + ", Schild deaktiviert: " + server.computeOnServer(s -> dummy.isShieldDisabled()));
+        check(server.computeOnServer(s -> dummy.isShieldDisabled()), "StunSlam im Stehen: Schild nicht gebrochen");
+        check(healthAfter < healthBefore, "StunSlam im Stehen: Mace hat nicht getroffen");
+        check(ctx.computeOnClient(mc -> mc.player.getInventory().getSelectedSlot()) == SWORD, "StunSlam im Stehen: nicht zurückgewechselt");
+
+        removeDummy(ctx, server, dummy);
+    }
 
     private void testStunSlam(ClientGameTestContext ctx, TestServerContext server) {
         resetPlayer(ctx, server, base.getX() + 0.5, base.getY(), base.getZ() - 4.5);

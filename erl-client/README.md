@@ -44,16 +44,19 @@ in der Hotbar, schlägt zu (der Schild ist 5 Sekunden deaktiviert) und wechselt 
 
 ### StunSlam
 
-Kombo aus Axt und Streitkolben: Zuerst deaktiviert ein Axt-Treffer den Schild (Stun), dann folgt sofort mit dem Mace
-ein Smash-Angriff aus dem Fall. Pro Fall wird nur eine Kombo ausgeführt.
+Kombo aus Axt und Streitkolben: Sobald ein Ziel in Reichweite blockt, deaktiviert ein Axt-Treffer den Schild (Stun),
+und im selben Tick folgt der Mace-Treffer. Fällst du dabei, wird daraus ein voller Smash-Angriff. Im Stehen macht der
+Mace direkt nach der Axt nur wenig Schaden (etwa 1–2), weil Vanilla nach jedem Treffer die Angriffsladung zurücksetzt;
+der Smash-Bonus aus dem Fall hängt davon nicht ab. Pro Fall wird nur eine Kombo ausgeführt.
 
 | Einstellung | Bedeutung | Standard |
 |---|---|---|
-| `min-fall-height` | Mindest-Fallhöhe in Blöcken (Smash braucht > 1,5) | 3 |
+| `require-fall` | Nur aus dem Fall auslösen | aus |
+| `min-fall-height` | Mindest-Fallhöhe in Blöcken bei `require-fall` (Smash braucht > 1,5) | 3 |
 | `range` | Reichweite bis zur Hitbox des Ziels | 3 |
-| `only-when-blocking` | Nur auslösen, wenn das Ziel blockt. Aus: ohne Schild direkt Mace-Smash | an |
+| `only-when-blocking` | Nur auslösen, wenn das Ziel blockt. Aus: beim Fallen auch ohne Schild direkt Mace-Smash | an |
 | `only-players` / `rotate` | wie bei ShieldBreaker | an / an |
-| `tick-gap` | Ticks zwischen Axt- und Mace-Treffer (0 = gleicher Tick) | 1 |
+| `tick-gap` | Ticks zwischen Axt- und Mace-Treffer (0 = gleicher Tick, am schnellsten) | 0 |
 | `axe-priority` | Welche Axt | Best |
 | `prefer-density` | Bei mehreren Maces den mit höchster Dichte nehmen | an |
 | `swap-back` | Danach auf den vorherigen Slot zurückwechseln | an |
