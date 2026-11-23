@@ -11,6 +11,9 @@ import de.erl.client.modules.LungeSwap;
 import de.erl.client.modules.ShieldBreaker;
 import de.erl.client.modules.StunSlam;
 import de.erl.client.utils.ErlCombatUtils;
+import de.erl.client.utils.misc.input.KeyBinds;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.locale.Language;
 import de.erl.client.ErlClient;
 import de.erl.client.gui.GuiThemes;
 import de.erl.client.gui.tabs.TabScreen;
@@ -54,6 +57,17 @@ public class ErlClientGameTest implements FabricClientGameTest {
             check(ErlClient.NAME.equals("ERL-Client"), "Name ist nicht ERL-Client: " + ErlClient.NAME);
             check(ErlClient.FOLDER.getName().equals("erl-client"), "Config-Ordner: " + ErlClient.FOLDER);
             check(mc.getWindow() != null, "kein Fenster");
+
+            // Anticheat-relevant: Server können per Übersetzungs-Trick prüfen, ob bekannte Client-Schlüssel existieren
+            check(KeyBinds.OPEN_GUI.getName().equals("key.erl-client.open-gui"), "Open-GUI-Schlüssel: " + KeyBinds.OPEN_GUI.getName());
+            check(KeyBinds.OPEN_COMMANDS.getName().equals("key.erl-client.open-commands"), "Open-Commands-Schlüssel: " + KeyBinds.OPEN_COMMANDS.getName());
+            check(I18n.get(KeyBinds.OPEN_GUI.getName()).equals("Open GUI"), "Open GUI nicht übersetzt");
+            check(I18n.get(KeyBinds.OPEN_GUI.getCategory().label().getString()).equals("ERL-Client")
+                || KeyBinds.OPEN_GUI.getCategory().label().getString().equals("ERL-Client"), "Tasten-Kategorie: " + KeyBinds.OPEN_GUI.getCategory().label().getString());
+            for (String key : List.of("key.meteor-client.open-gui", "key.meteor-client.open-commands", "key.category.meteor-client.meteor-client")) {
+                check(!Language.getInstance().has(key), "Alter Schlüssel noch übersetzbar: " + key);
+            }
+            log("Tasten: '" + I18n.get(KeyBinds.OPEN_GUI.getName()) + "' in Kategorie '" + KeyBinds.OPEN_GUI.getCategory().label().getString() + "'");
 
             boolean categoryRegistered = false;
             for (var category : Modules.loopCategories()) if (category == ErlExtras.CATEGORY) categoryRegistered = true;

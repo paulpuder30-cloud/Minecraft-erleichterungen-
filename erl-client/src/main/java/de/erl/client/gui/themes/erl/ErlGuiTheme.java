@@ -148,12 +148,12 @@ public class ErlGuiTheme extends GuiTheme {
     public final ThreeStateColorSetting sliderHandle = new ThreeStateColorSetting(
         sgSlider,
         "slider-handle",
-        new SettingColor(130, 0, 255),
-        new SettingColor(140, 30, 255),
-        new SettingColor(150, 60, 255)
+        new SettingColor(20, 140, 255),
+        new SettingColor(50, 160, 255),
+        new SettingColor(80, 180, 255)
     );
 
-    public final Setting<SettingColor> sliderLeft = color(sgSlider, "slider-left", "Color of slider left part.", new SettingColor(100, 35, 170));
+    public final Setting<SettingColor> sliderLeft = color(sgSlider, "slider-left", "Color of slider left part.", new SettingColor(25, 100, 180));
     public final Setting<SettingColor> sliderRight = color(sgSlider, "slider-right", "Color of slider right part.", new SettingColor(50, 50, 50));
 
     // Starscript

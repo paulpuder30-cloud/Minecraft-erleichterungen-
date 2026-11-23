@@ -114,10 +114,17 @@ Entwicklungs-Client starten:
 ```
 
 Automatischer Client-Test (erstellt eine Welt, prüft Branding, Click-GUI, Keybinds und alle drei ERL-Module gegen einen
-Schild blockenden Test-Gegner, macht Screenshots unter `run/screenshots/`). Ohne Bildschirm mit `xvfb-run -a` davor:
+Schild blockenden Test-Gegner, prüft die Tastenbelegungs-Schlüssel und macht Screenshots unter
+`build/run/clientGameTest/screenshots/`):
 
 ```bash
 ./gradlew runClientGameTest
+```
+
+Ohne Bildschirm (z. B. CI-Server mit Mesa) über Xvfb und EGL:
+
+```bash
+SDL_VIDEO_FORCE_EGL=1 xvfb-run -a -s "-screen 0 1280x720x24" ./gradlew runClientGameTest
 ```
 
 ### Toolchain
