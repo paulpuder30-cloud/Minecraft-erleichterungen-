@@ -3,10 +3,10 @@
 > **Automatisch generiert** aus dem Quellcode mit `tools/generate_modules_md.py`.
 > Nicht von Hand bearbeiten – stattdessen das Skript erneut ausführen.
 
-**Module gesamt:** 26  
+**Module gesamt:** 28  
 **Setting-Typen:** Bool (An/Aus), Int (Ganzzahl), Dec (Dezimal), Color (Hex), Text, Mode (Darstellung), ListEdit (ID-Liste mit Farbe), Action (Knopf).
 
-**Pro Kategorie:** Kampf: 5  Render: 10  Bewegung: 2  Welt: 4  Spieler: 2  Sonstiges: 1  Client: 2
+**Pro Kategorie:** Kampf: 7  Render: 10  Bewegung: 2  Welt: 4  Spieler: 2  Sonstiges: 1  Client: 2
 
 Dieser Client gruppiert Einstellungen **flach pro Modul** (keine Unter-Gruppen wie bei Meteor); die Spalte „Feld" nennt das zugehörige Config-Feld in `ModConfig`.
 
@@ -62,6 +62,22 @@ Greift automatisch das anvisierte Ziel an, wenn die Angriffsleiste voll ist.
 Unterdrückt den vom Server geschickten Rückstoß (z.B. durch Treffer).
 
 _Keine Einstellungen._
+
+### Auto-LungeSwap  
+`id: lungeswap` · Kategorie: **Kampf** · Aktions-/Einstellungs-Modul  
+Wirft auf Tastendruck eine Wind Charge und wechselt sofort auf den Speer (Items automatisch aus der Hotbar).
+
+_Keine Einstellungen._
+
+### Shieldbreaker  
+`id: shieldbreaker` · Kategorie: **Kampf** · Aktions-/Einstellungs-Modul  
+Taste halten: schnelle, zufällig getimte Mace-Angriffe auf das anvisierte Ziel (nutzt Schilde ab).
+
+| Einstellung | Typ | Standard | Bereich / Werte | Feld |
+|---|---|---|---|---|
+| Nur mit Mace | Bool | An | An / Aus | `shieldbreakerRequireMace` |
+| Min. Klicks/s | Int | 8 | 1 … 20 | `shieldbreakerMinCps` |
+| Max. Klicks/s | Int | 14 | 1 … 20 | `shieldbreakerMaxCps` |
 
 
 ## Render  

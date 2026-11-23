@@ -118,6 +118,11 @@ public final class ModConfig {
 	// ---------- AntiKnockback ----------
 	public boolean antiKnockbackEnabled = false;
 
+	// ---------- Shieldbreaker ----------
+	public boolean shieldbreakerRequireMace = true;
+	public int shieldbreakerMinCps = 8;
+	public int shieldbreakerMaxCps = 14;
+
 	// ---------- Storage-ESP ----------
 	public boolean storageEspEnabled = false;
 	public int storageEspRange = 128;

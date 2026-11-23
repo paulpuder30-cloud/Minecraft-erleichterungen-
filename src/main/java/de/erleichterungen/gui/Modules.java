@@ -115,6 +115,20 @@ public final class Modules {
 		list.add(toggleable("antiknockback", "AntiKnockback", Category.COMBAT,
 				"Unterdrückt den vom Server geschickten Rückstoß (z.B. durch Treffer).", () -> c().antiKnockbackEnabled));
 
+		list.add(new Module("lungeswap", "Auto-LungeSwap", Category.COMBAT,
+				"Wirft auf Tastendruck eine Wind Charge und wechselt sofort auf den Speer (Items automatisch aus der Hotbar).",
+				null, null, () -> ErleichterungenClient.keyFor("lungeswap")));
+
+		list.add(new Module("shieldbreaker", "Shieldbreaker", Category.COMBAT,
+				"Taste halten: schnelle, zufällig getimte Mace-Angriffe auf das anvisierte Ziel (nutzt Schilde ab).",
+				null, null, () -> ErleichterungenClient.keyFor("shieldbreaker"))
+				.add(new Setting.Bool("Nur mit Mace", "Nur auslösen, wenn du eine Mace in der Hand hast.",
+						() -> c().shieldbreakerRequireMace, v -> c().shieldbreakerRequireMace = v))
+				.add(new Setting.Int("Min. Klicks/s", "Untere Grenze der zufälligen Klickrate.", 1, 20,
+						() -> c().shieldbreakerMinCps, v -> c().shieldbreakerMinCps = v))
+				.add(new Setting.Int("Max. Klicks/s", "Obere Grenze der zufälligen Klickrate.", 1, 20,
+						() -> c().shieldbreakerMaxCps, v -> c().shieldbreakerMaxCps = v)));
+
 		// ------------------------------------------------------------------ Render
 		list.add(toggleable("blockesp", "Block-ESP", Category.RENDER,
 				"Markiert ausgewählte Blöcke (Erze, Spawner, ...) durch Wände.", () -> c().blockEspEnabled)

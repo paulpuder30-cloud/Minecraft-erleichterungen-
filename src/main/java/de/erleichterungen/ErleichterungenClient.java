@@ -18,9 +18,11 @@ import de.erleichterungen.feature.GeodeTracker;
 import de.erleichterungen.feature.Hud;
 import de.erleichterungen.feature.ItemEsp;
 import de.erleichterungen.feature.KillAura;
+import de.erleichterungen.feature.LungeSwap;
 import de.erleichterungen.feature.Nametags;
 import de.erleichterungen.feature.PlayerEsp;
 import de.erleichterungen.feature.PortalEsp;
+import de.erleichterungen.feature.Shieldbreaker;
 import de.erleichterungen.feature.StorageEsp;
 import de.erleichterungen.feature.TargetInfo;
 import de.erleichterungen.feature.TriggerBot;
@@ -62,6 +64,8 @@ public class ErleichterungenClient implements ClientModInitializer {
 	private static KeyMapping keyFreecam;
 	private static KeyMapping keyGui;
 	private static KeyMapping keyZoom;
+	private static KeyMapping keyLungeSwap;
+	private static KeyMapping keyShieldbreaker;
 
 	@Override
 	public void onInitializeClient() {
@@ -82,6 +86,8 @@ public class ErleichterungenClient implements ClientModInitializer {
 		keyFreecam = key("freecam", InputConstants.KEY_G);
 		keyGui = key("gui", InputConstants.KEY_RSHIFT);
 		keyZoom = key("zoom", InputConstants.KEY_C);
+		keyLungeSwap = key("lungeswap", InputConstants.KEY_R);
+		keyShieldbreaker = key("shieldbreaker", InputConstants.KEY_X);
 
 		ClientTickEvents.END_CLIENT_TICK.register(ErleichterungenClient::onTick);
 
@@ -138,6 +144,8 @@ public class ErleichterungenClient implements ClientModInitializer {
 			case "freecam" -> keyFreecam;
 			case "gui" -> keyGui;
 			case "zoom" -> keyZoom;
+			case "lungeswap" -> keyLungeSwap;
+			case "shieldbreaker" -> keyShieldbreaker;
 			default -> null;
 		};
 	}
@@ -158,6 +166,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 		while (keyGui.consumeClick()) {
 			if (mc.gui.screen() == null) mc.setScreenAndShow(new ClickGuiScreen());
 		}
+		while (keyLungeSwap.consumeClick()) LungeSwap.trigger(mc);
 
 		Freecam.tick(mc);
 		Zoom.tick(mc, keyZoom);
@@ -168,6 +177,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 		AutoTotem.tick(mc);
 		KillAura.tick(mc);
 		TriggerBot.tick(mc);
+		Shieldbreaker.tick(mc, keyShieldbreaker);
 
 		ScanManager.tick(mc);
 		AntiVanish.tick(mc);
