@@ -143,6 +143,23 @@ loom {
     accessWidenerPath = file("src/main/resources/erl-client.classtweaker")
 }
 
+// Automatischer Client-Test (Welt erstellen, GUI öffnen, ERL-Module gegen einen Fake-Spieler testen, Screenshots):
+//   ./gradlew runClientGameTest      (ohne Bildschirm: xvfb-run -a ./gradlew runClientGameTest)
+fabricApi {
+    configureTests {
+        createSourceSet = true
+        modId = "erl-client-test"
+        enableGameTests = false
+        enableClientGameTests = true
+        eula = true
+    }
+}
+
+dependencies {
+    // Nur für den Test: komplette Fabric API (Client-Gametest-API, FakePlayer)
+    "gametestImplementation"("net.fabricmc.fabric-api:fabric-api:${libs.versions.fabric.api.get()}")
+}
+
 fun toMinecraftCompat(version: String): String {
     // Stable release
     val stable = Regex("""^(\d{2})\.([1-9]\d*)(?:\.(\d+))?$""")

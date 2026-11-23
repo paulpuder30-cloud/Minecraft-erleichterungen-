@@ -5,6 +5,9 @@
 
 package de.erl.client;
 
+import de.erl.client.modules.LungeSwap;
+import de.erl.client.modules.ShieldBreaker;
+import de.erl.client.modules.StunSlam;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
@@ -36,5 +39,8 @@ public final class ErlClient {
     }
 
     public static void registerModules(Modules modules) {
+        modules.add(new ShieldBreaker());
+        modules.add(new StunSlam());
+        modules.add(new LungeSwap());
     }
 }
