@@ -93,6 +93,19 @@ public final class ModConfig {
 	// ---------- Ziel-Info ----------
 	public boolean targetInfoEnabled = false;
 
+	// ---------- KillAura ----------
+	public boolean killAuraEnabled = false;
+	public float killAuraRange = 3.0f;
+	public boolean killAuraHostile = true;
+	public boolean killAuraPassive = false;
+	public boolean killAuraPlayers = false;
+	public boolean killAuraOther = false;
+	public boolean killAuraRotate = true;
+	public boolean killAuraRequireCharged = true;
+	public boolean killAuraPrioritizeLowHealth = false;
+	public int killAuraMaxTargets = 1;
+	public int killAuraDelayTicks = 0;
+
 	// ---------- TriggerBot ----------
 	public boolean triggerBotEnabled = false;
 	public boolean triggerBotHostile = true;

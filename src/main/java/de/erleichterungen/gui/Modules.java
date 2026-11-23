@@ -74,6 +74,29 @@ public final class Modules {
 		list.add(toggleable("targetinfo", "Ziel-Info", Category.COMBAT,
 				"Zeigt Name, Gesundheit und Entfernung des anvisierten Gegners unter dem Fadenkreuz.", () -> c().targetInfoEnabled));
 
+		list.add(toggleable("killaura", "KillAura", Category.COMBAT,
+				"Erfasst nahe Ziele automatisch, dreht (optional) zu ihnen und greift an.", () -> c().killAuraEnabled)
+				.add(new Setting.Dec("Reichweite", "Angriffsreichweite in Blöcken (über ~3 kann Anticheat auslösen).", 1f, 6f, 0.5f,
+						() -> c().killAuraRange, v -> c().killAuraRange = v))
+				.add(new Setting.Bool("Monster", "Feindliche Mobs angreifen.",
+						() -> c().killAuraHostile, v -> c().killAuraHostile = v))
+				.add(new Setting.Bool("Tiere", "Passive Tiere angreifen.",
+						() -> c().killAuraPassive, v -> c().killAuraPassive = v))
+				.add(new Setting.Bool("Spieler", "Andere Spieler angreifen.",
+						() -> c().killAuraPlayers, v -> c().killAuraPlayers = v))
+				.add(new Setting.Bool("Sonstige", "Andere Lebewesen angreifen (z.B. Dorfbewohner).",
+						() -> c().killAuraOther, v -> c().killAuraOther = v))
+				.add(new Setting.Bool("Rotation", "Zum Ziel drehen (Kamera schwenkt).",
+						() -> c().killAuraRotate, v -> c().killAuraRotate = v))
+				.add(new Setting.Bool("Nur voll aufgeladen", "Nur angreifen, wenn die Angriffsleiste voll ist.",
+						() -> c().killAuraRequireCharged, v -> c().killAuraRequireCharged = v))
+				.add(new Setting.Bool("Niedrigste HP zuerst", "Ziel mit der geringsten Gesundheit bevorzugen.",
+						() -> c().killAuraPrioritizeLowHealth, v -> c().killAuraPrioritizeLowHealth = v))
+				.add(new Setting.Int("Max. Ziele", "Wie viele Ziele pro Tick angegriffen werden.", 1, 10,
+						() -> c().killAuraMaxTargets, v -> c().killAuraMaxTargets = v))
+				.add(new Setting.Int("Verzögerung (Ticks)", "Zusätzliche Pause zwischen Angriffen.", 0, 40,
+						() -> c().killAuraDelayTicks, v -> c().killAuraDelayTicks = v)));
+
 		list.add(toggleable("triggerbot", "TriggerBot", Category.COMBAT,
 				"Greift automatisch das anvisierte Ziel an, wenn die Angriffsleiste voll ist.", () -> c().triggerBotEnabled)
 				.add(new Setting.Bool("Monster", "Feindliche Mobs angreifen.",

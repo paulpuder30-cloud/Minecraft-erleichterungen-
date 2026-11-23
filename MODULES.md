@@ -3,10 +3,10 @@
 > **Automatisch generiert** aus dem Quellcode mit `tools/generate_modules_md.py`.
 > Nicht von Hand bearbeiten – stattdessen das Skript erneut ausführen.
 
-**Module gesamt:** 24  
+**Module gesamt:** 25  
 **Setting-Typen:** Bool (An/Aus), Int (Ganzzahl), Dec (Dezimal), Color (Hex), Text, Mode (Darstellung), ListEdit (ID-Liste mit Farbe), Action (Knopf).
 
-**Pro Kategorie:** Kampf: 3  Render: 10  Bewegung: 2  Welt: 4  Spieler: 2  Sonstiges: 1  Client: 2
+**Pro Kategorie:** Kampf: 4  Render: 10  Bewegung: 2  Welt: 4  Spieler: 2  Sonstiges: 1  Client: 2
 
 Dieser Client gruppiert Einstellungen **flach pro Modul** (keine Unter-Gruppen wie bei Meteor); die Spalte „Feld" nennt das zugehörige Config-Feld in `ModConfig`.
 
@@ -26,6 +26,23 @@ Legt automatisch ein Totem der Unsterblichkeit in die Nebenhand.
 Zeigt Name, Gesundheit und Entfernung des anvisierten Gegners unter dem Fadenkreuz.
 
 _Keine Einstellungen._
+
+### KillAura  
+`id: killaura` · Kategorie: **Kampf** · An/Aus-Modul  
+Erfasst nahe Ziele automatisch, dreht (optional) zu ihnen und greift an.
+
+| Einstellung | Typ | Standard | Bereich / Werte | Feld |
+|---|---|---|---|---|
+| Reichweite | Dec | 3.0 | 1 … 6 (Schritt 0.5) | `killAuraRange` |
+| Monster | Bool | An | An / Aus | `killAuraHostile` |
+| Tiere | Bool | Aus | An / Aus | `killAuraPassive` |
+| Spieler | Bool | Aus | An / Aus | `killAuraPlayers` |
+| Sonstige | Bool | Aus | An / Aus | `killAuraOther` |
+| Rotation | Bool | An | An / Aus | `killAuraRotate` |
+| Nur voll aufgeladen | Bool | An | An / Aus | `killAuraRequireCharged` |
+| Niedrigste HP zuerst | Bool | Aus | An / Aus | `killAuraPrioritizeLowHealth` |
+| Max. Ziele | Int | 1 | 1 … 10 | `killAuraMaxTargets` |
+| Verzögerung (Ticks) | Int | 0 | 0 … 40 | `killAuraDelayTicks` |
 
 ### TriggerBot  
 `id: triggerbot` · Kategorie: **Kampf** · An/Aus-Modul  

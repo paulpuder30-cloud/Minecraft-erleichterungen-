@@ -17,6 +17,7 @@ import de.erleichterungen.gui.ClickGuiScreen;
 import de.erleichterungen.feature.GeodeTracker;
 import de.erleichterungen.feature.Hud;
 import de.erleichterungen.feature.ItemEsp;
+import de.erleichterungen.feature.KillAura;
 import de.erleichterungen.feature.Nametags;
 import de.erleichterungen.feature.PlayerEsp;
 import de.erleichterungen.feature.PortalEsp;
@@ -165,6 +166,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 		AutoWalk.tick(mc);
 		AutoRespawn.tick(mc);
 		AutoTotem.tick(mc);
+		KillAura.tick(mc);
 		TriggerBot.tick(mc);
 
 		ScanManager.tick(mc);
@@ -212,6 +214,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 			case "autototem" -> { state = c.autoTotemEnabled = !c.autoTotemEnabled; label = "AutoTotem"; }
 			case "targetinfo" -> { state = c.targetInfoEnabled = !c.targetInfoEnabled; label = "Ziel-Info"; }
 			case "triggerbot" -> { state = c.triggerBotEnabled = !c.triggerBotEnabled; label = "TriggerBot"; }
+			case "killaura" -> { state = c.killAuraEnabled = !c.killAuraEnabled; label = "KillAura"; }
 			default -> {
 				return null;
 			}
