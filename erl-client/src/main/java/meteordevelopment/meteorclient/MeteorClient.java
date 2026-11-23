@@ -5,6 +5,7 @@
 
 package meteordevelopment.meteorclient;
 
+import de.erl.client.ErlClient;
 import meteordevelopment.meteorclient.addons.AddonManager;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.events.meteor.KeyInputEvent;
@@ -21,7 +22,6 @@ import meteordevelopment.meteorclient.systems.hud.screens.HudElementPresetsScree
 import meteordevelopment.meteorclient.systems.hud.screens.HudElementScreen;
 import meteordevelopment.meteorclient.systems.modules.Categories;
 import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.systems.modules.misc.DiscordPresence;
 import meteordevelopment.meteorclient.utils.PostInit;
 import meteordevelopment.meteorclient.utils.PreInit;
 import meteordevelopment.meteorclient.utils.ReflectInit;
@@ -48,7 +48,9 @@ import java.io.File;
 import java.lang.invoke.MethodHandles;
 
 public class MeteorClient implements ClientModInitializer {
-    public static final String MOD_ID = "meteor-client";
+    public static final String MOD_ID = "erl-client";
+    /** Namespace, unter dem Meteor-Addons ihre Metadaten (z. B. "meteor-client:color") deklarieren. */
+    public static final String ADDON_META_NAMESPACE = "meteor-client";
     public static final ModMetadata MOD_META;
     public static final String NAME;
     public static final Version VERSION;
@@ -98,7 +100,6 @@ public class MeteorClient implements ClientModInitializer {
         if (!FOLDER.exists()) {
             FOLDER.getParentFile().mkdirs();
             FOLDER.mkdir();
-            Systems.addPreLoadTask(() -> Modules.get().get(DiscordPresence.class).enable());
         }
 
         // Register addons
@@ -112,6 +113,9 @@ public class MeteorClient implements ClientModInitializer {
                 throw new RuntimeException("Addon \"%s\" is too old and cannot be ran.".formatted(addon.name), e);
             }
         });
+
+        // ERL-Client: Event-Handler im Package de.erl.client
+        ErlClient.registerEventPackage();
 
         // Register init classes
         ReflectInit.registerPackages();

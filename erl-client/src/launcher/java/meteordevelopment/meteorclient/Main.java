@@ -20,8 +20,8 @@ public class Main {
 
         int option = JOptionPane.showOptionDialog(
             null,
-            "To install Meteor Client you need to put it in your mods folder and run Fabric for latest Minecraft version.",
-            "Meteor Client",
+            "To install ERL-Client you need to put it in your mods folder and run Fabric for Minecraft 26.3.",
+            "ERL-Client",
             JOptionPane.YES_NO_OPTION,
             JOptionPane.ERROR_MESSAGE,
             null,
@@ -31,7 +31,7 @@ public class Main {
 
         switch (option) {
             case 0:
-                getOS().open("https://meteorclient.com/faq/installation");
+                getOS().open("https://github.com/paulpuder30-cloud/Minecraft-erleichterungen-");
                 break;
             case 1: {
                 File mods = new File(getModsFolder());

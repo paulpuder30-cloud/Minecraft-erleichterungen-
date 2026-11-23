@@ -5,6 +5,7 @@
 
 package meteordevelopment.meteorclient.systems.modules;
 
+import de.erl.client.ErlClient;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -81,6 +82,9 @@ public class Modules extends System<Modules> {
         initRender();
         initWorld();
         initMisc();
+
+        // ERL-Client
+        ErlClient.registerModules(this);
     }
 
     @Override

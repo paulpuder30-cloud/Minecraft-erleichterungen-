@@ -31,12 +31,12 @@ public class AddonManager {
 
                 @Override
                 public String getWebsite() {
-                    return "https://meteorclient.com";
+                    return "https://github.com/paulpuder30-cloud/Minecraft-erleichterungen-";
                 }
 
                 @Override
                 public GithubRepo getRepo() {
-                    return new GithubRepo("MeteorDevelopment", "meteor-client");
+                    return new GithubRepo("paulpuder30-cloud", "Minecraft-erleichterungen-");
                 }
 
                 @Override
@@ -77,8 +77,8 @@ public class AddonManager {
             if (metadata.getAuthors().isEmpty()) throw new RuntimeException("Addon \"%s\" requires at least 1 author to be defined in it's fabric.mod.json. See https://fabricmc.net/wiki/documentation:fabric_mod_json_spec".formatted(addon.name));
             addon.authors = new String[metadata.getAuthors().size()];
 
-            if (metadata.containsCustomValue(MeteorClient.MOD_ID + ":color")) {
-                addon.color.parse(metadata.getCustomValue(MeteorClient.MOD_ID + ":color").getAsString());
+            if (metadata.containsCustomValue(MeteorClient.ADDON_META_NAMESPACE + ":color")) {
+                addon.color.parse(metadata.getCustomValue(MeteorClient.ADDON_META_NAMESPACE + ":color").getAsString());
             }
 
             int i = 0;

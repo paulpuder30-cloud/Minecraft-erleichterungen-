@@ -5,6 +5,7 @@
 
 package meteordevelopment.meteorclient.systems.modules;
 
+import de.erl.client.ErlClient;
 import meteordevelopment.meteorclient.addons.AddonManager;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.utils.render.DisplayItemUtils;
@@ -30,6 +31,9 @@ public class Categories {
         Modules.registerCategory(Render);
         Modules.registerCategory(World);
         Modules.registerCategory(Misc);
+
+        // ERL-Client
+        ErlClient.registerCategories();
 
         // Addons
         AddonManager.ADDONS.forEach(MeteorAddon::onRegisterCategories);

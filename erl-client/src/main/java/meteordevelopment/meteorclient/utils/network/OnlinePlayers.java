@@ -14,14 +14,12 @@ public class OnlinePlayers {
     public static void update() {
         long time = System.currentTimeMillis();
 
-        if (time - lastPingTime > 5 * 60 * 1000) {
-            MeteorExecutor.execute(() -> Http.post("https://meteorclient.com/api/online/ping").ignoreExceptions().send());
-
-            lastPingTime = time;
-        }
+        // ERL-Client: Meteors Online-Zähler (meteorclient.com/api/online) wird bewusst nicht angepingt,
+        // da dieser Fork nicht als Meteor-Client-Nutzer gezählt werden soll.
+        lastPingTime = time;
     }
 
     public static void leave() {
-        MeteorExecutor.execute(() -> Http.post("https://meteorclient.com/api/online/leave").ignoreExceptions().send());
+        // ERL-Client: siehe update()
     }
 }

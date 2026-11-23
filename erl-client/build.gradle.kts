@@ -14,8 +14,8 @@ base {
     archivesName = archivesBaseName
     group = mavenGroup
 
-    val suffix = providers.gradleProperty("build_number").getOrElse("local")
-    version = "${libs.versions.minecraft.get()}-$suffix"
+    val modVersion = providers.gradleProperty("mod_version").get()
+    version = "$modVersion-mc${libs.versions.minecraft.get()}"
 }
 
 repositories {
@@ -140,7 +140,7 @@ listOf("api", "implementation", "include").forEach { configName ->
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/meteor-client.classtweaker")
+    accessWidenerPath = file("src/main/resources/erl-client.classtweaker")
 }
 
 fun toMinecraftCompat(version: String): String {

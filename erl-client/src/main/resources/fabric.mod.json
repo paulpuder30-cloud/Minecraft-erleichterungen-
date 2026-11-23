@@ -1,23 +1,29 @@
 {
   "schemaVersion": 1,
-  "name": "Meteor Client",
-  "id": "meteor-client",
+  "name": "ERL-Client",
+  "id": "erl-client",
   "version": "${version}",
-  "description": "Based utility mod.",
+  "description": "ERL-Client – Utility-Client für Minecraft 26.3. Basiert auf Meteor Client von MeteorDevelopment (GPL-3.0).",
   "authors": [
+    "paulpuder30-cloud"
+  ],
+  "contributors": [
+    "MeteorDevelopment (Meteor Client)",
     "MineGame159",
     "squidoodly",
     "seasnail"
   ],
   "contact": {
-    "homepage": "https://meteorclient.com",
-    "issues": "https://github.com/MeteorDevelopment/meteor-client/issues",
-    "sources": "https://github.com/MeteorDevelopment/meteor-client",
-    "discord": "https://meteorclient.com/discord"
+    "homepage": "https://github.com/paulpuder30-cloud/Minecraft-erleichterungen-",
+    "issues": "https://github.com/paulpuder30-cloud/Minecraft-erleichterungen-/issues",
+    "sources": "https://github.com/paulpuder30-cloud/Minecraft-erleichterungen-"
   },
   "license": "GPL-3.0",
-  "icon": "assets/meteor-client/icon.png",
+  "icon": "assets/erl-client/icon.png",
   "environment": "client",
+  "provides": [
+    "meteor-client"
+  ],
   "entrypoints": {
     "client": [
       "meteordevelopment.meteorclient.MeteorClient"
@@ -27,23 +33,18 @@
     ]
   },
   "mixins": [
-    "meteor-client.mixins.json",
-    "meteor-client-baritone.mixins.json",
-    "meteor-client-indigo.mixins.json",
-    "meteor-client-sodium.mixins.json",
-    "meteor-client-lithium.mixins.json",
-    "meteor-client-metallum.mixins.json"
+    "erl-client.mixins.json",
+    "erl-client-baritone.mixins.json",
+    "erl-client-indigo.mixins.json",
+    "erl-client-sodium.mixins.json",
+    "erl-client-lithium.mixins.json",
+    "erl-client-metallum.mixins.json"
   ],
-  "accessWidener": "meteor-client.classtweaker",
+  "accessWidener": "erl-client.classtweaker",
   "custom": {
-    "meteor-client:build_number": "${build_number}",
-    "meteor-client:color": "145,61,226",
-    "meteor-client:commit": "${commit}",
-    "modmenu": {
-      "links": {
-        "modmenu.discord": "https://meteorclient.com/discord"
-      }
-    },
+    "erl-client:build_number": "${build_number}",
+    "erl-client:color": "40,160,255",
+    "erl-client:commit": "${commit}",
     "badoptimizations:cache_hooks": {
       "lightmap": "meteordevelopment.meteorclient.modintegration.BadOptimizationsHook"
     }

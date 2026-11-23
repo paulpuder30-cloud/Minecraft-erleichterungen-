@@ -123,7 +123,7 @@ public class DiscordPresence extends Module {
     }
 
     public DiscordPresence() {
-        super(Categories.Misc, "discord-presence", "Displays Meteor as your presence on Discord.");
+        super(Categories.Misc, "discord-presence", "Displays ERL-Client as your presence on Discord (uses the Meteor Client Discord application).");
 
         runInMainMenu = true;
     }
@@ -251,7 +251,7 @@ public class DiscordPresence extends Module {
                 else if (mc.gui.screen() instanceof ManageServerScreen) rpc.setState("Adding server");
                 else if (mc.gui.screen() instanceof ConnectScreen || mc.gui.screen() instanceof DirectJoinServerScreen)
                     rpc.setState("Connecting to server");
-                else if (mc.gui.screen() instanceof WidgetScreen) rpc.setState("Browsing Meteor's GUI");
+                else if (mc.gui.screen() instanceof WidgetScreen) rpc.setState("Browsing ERL-Client's GUI");
                 else if (mc.gui.screen() instanceof OptionsScreen || mc.gui.screen() instanceof SkinCustomizationScreen || mc.gui.screen() instanceof SoundOptionsScreen || mc.gui.screen() instanceof VideoSettingsScreen || mc.gui.screen() instanceof ControlsScreen || mc.gui.screen() instanceof LanguageSelectScreen || mc.gui.screen() instanceof ChatOptionsScreen || mc.gui.screen() instanceof PackSelectionScreen || mc.gui.screen() instanceof AccessibilityOptionsScreen)
                     rpc.setState("Changing options");
                 else if (mc.gui.screen() instanceof WinScreen) rpc.setState("Reading credits");

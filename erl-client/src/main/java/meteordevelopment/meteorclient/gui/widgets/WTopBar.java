@@ -5,6 +5,7 @@
 
 package meteordevelopment.meteorclient.gui.widgets;
 
+import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.gui.renderer.GuiRenderer;
 import meteordevelopment.meteorclient.gui.tabs.Tab;
 import meteordevelopment.meteorclient.gui.tabs.TabScreen;
@@ -22,14 +23,39 @@ public abstract class WTopBar extends WHorizontalList {
 
     protected abstract Color getNameColor();
 
+    /** Farbe des "ERL-Client"-Titels links in der Leiste. */
+    protected Color getTitleColor() {
+        return getNameColor();
+    }
+
     public WTopBar() {
         spacing = 0;
     }
 
     @Override
     public void init() {
+        add(new WTopBarTitle());
+
         for (Tab tab : Tabs.get()) {
             add(new WTopBarButton(tab));
+        }
+    }
+
+    protected class WTopBarTitle extends WWidget {
+        @Override
+        protected void onCalculateSize() {
+            double pad = pad();
+
+            width = pad + theme.textWidth(MeteorClient.NAME) + pad * 2;
+            height = pad + theme.textHeight() + pad;
+        }
+
+        @Override
+        protected void onRender(GuiRenderer renderer, double mouseX, double mouseY, double delta) {
+            double pad = pad();
+
+            renderer.quad(x, y, width, height, getButtonColor(false, false));
+            renderer.text(MeteorClient.NAME, x + pad, y + pad, getTitleColor(), true);
         }
     }
 
