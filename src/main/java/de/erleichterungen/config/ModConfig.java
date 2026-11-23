@@ -123,6 +123,12 @@ public final class ModConfig {
 	public int shieldbreakerMinCps = 8;
 	public int shieldbreakerMaxCps = 14;
 
+	// ---------- Auto-StunSlam ----------
+	public float autoStunSlamRange = 5.0f;
+	public int autoStunSlamGapTicks = 2;
+	public boolean autoStunSlamRotate = true;
+	public boolean autoStunSlamPlayersOnly = true;
+
 	// ---------- Storage-ESP ----------
 	public boolean storageEspEnabled = false;
 	public int storageEspRange = 128;

@@ -5,6 +5,7 @@ import de.erleichterungen.config.ModConfig;
 import de.erleichterungen.feature.AntiVanish;
 import de.erleichterungen.feature.AutoRespawn;
 import de.erleichterungen.feature.AutoSprint;
+import de.erleichterungen.feature.AutoStunSlam;
 import de.erleichterungen.feature.AutoTotem;
 import de.erleichterungen.feature.AutoWalk;
 import de.erleichterungen.feature.BlockEsp;
@@ -66,6 +67,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 	private static KeyMapping keyZoom;
 	private static KeyMapping keyLungeSwap;
 	private static KeyMapping keyShieldbreaker;
+	private static KeyMapping keyStunSlam;
 
 	@Override
 	public void onInitializeClient() {
@@ -88,6 +90,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 		keyZoom = key("zoom", InputConstants.KEY_C);
 		keyLungeSwap = key("lungeswap", InputConstants.KEY_R);
 		keyShieldbreaker = key("shieldbreaker", InputConstants.KEY_X);
+		keyStunSlam = key("stunslam", InputConstants.KEY_V);
 
 		ClientTickEvents.END_CLIENT_TICK.register(ErleichterungenClient::onTick);
 
@@ -146,6 +149,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 			case "zoom" -> keyZoom;
 			case "lungeswap" -> keyLungeSwap;
 			case "shieldbreaker" -> keyShieldbreaker;
+			case "stunslam" -> keyStunSlam;
 			default -> null;
 		};
 	}
@@ -167,6 +171,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 			if (mc.gui.screen() == null) mc.setScreenAndShow(new ClickGuiScreen());
 		}
 		while (keyLungeSwap.consumeClick()) LungeSwap.trigger(mc);
+		while (keyStunSlam.consumeClick()) AutoStunSlam.start(mc);
 
 		Freecam.tick(mc);
 		Zoom.tick(mc, keyZoom);
@@ -178,6 +183,7 @@ public class ErleichterungenClient implements ClientModInitializer {
 		KillAura.tick(mc);
 		TriggerBot.tick(mc);
 		Shieldbreaker.tick(mc, keyShieldbreaker);
+		AutoStunSlam.tick(mc);
 
 		ScanManager.tick(mc);
 		AntiVanish.tick(mc);

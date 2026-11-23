@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Set;
 
@@ -41,5 +42,16 @@ public final class ComboUtil {
 		if (inv.getSelectedSlot() == slot) return;
 		inv.setSelectedSlot(slot);
 		mc.getConnection().send(new ServerboundSetCarriedItemPacket(slot));
+	}
+
+	/** Dreht den Spieler (Yaw/Pitch) so, dass er von den Augen aus auf den Zielpunkt schaut. */
+	public static void rotateTo(Minecraft mc, Vec3 to) {
+		Vec3 from = mc.player.getEyePosition(1.0f);
+		double dx = to.x - from.x, dy = to.y - from.y, dz = to.z - from.z;
+		double distXZ = Math.sqrt(dx * dx + dz * dz);
+		float yaw = (float) (Math.toDegrees(Math.atan2(dz, dx)) - 90.0);
+		float pitch = (float) (-Math.toDegrees(Math.atan2(dy, distXZ)));
+		mc.player.setYRot(yaw);
+		mc.player.setXRot(pitch);
 	}
 }

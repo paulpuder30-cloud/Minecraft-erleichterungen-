@@ -129,6 +129,18 @@ public final class Modules {
 				.add(new Setting.Int("Max. Klicks/s", "Obere Grenze der zufälligen Klickrate.", 1, 20,
 						() -> c().shieldbreakerMaxCps, v -> c().shieldbreakerMaxCps = v)));
 
+		list.add(new Module("stunslam", "Auto-StunSlam", Category.COMBAT,
+				"Du schießt dich selbst hoch; auf Tastendruck: Axt-Schlag (Schild-Stun) → Mace-Wechsel → Mace-Slam auf den nächsten Gegner.",
+				null, null, () -> ErleichterungenClient.keyFor("stunslam"))
+				.add(new Setting.Dec("Reichweite", "Reichweite der Zielsuche in Blöcken.", 1f, 6f, 0.5f,
+						() -> c().autoStunSlamRange, v -> c().autoStunSlamRange = v))
+				.add(new Setting.Int("Lücke (Ticks)", "Ticks zwischen Axt-Stun und Mace-Slam.", 0, 10,
+						() -> c().autoStunSlamGapTicks, v -> c().autoStunSlamGapTicks = v))
+				.add(new Setting.Bool("Rotation", "Vor jedem Schlag zum Ziel drehen.",
+						() -> c().autoStunSlamRotate, v -> c().autoStunSlamRotate = v))
+				.add(new Setting.Bool("Nur Spieler", "Nur Spieler als Ziel erfassen.",
+						() -> c().autoStunSlamPlayersOnly, v -> c().autoStunSlamPlayersOnly = v)));
+
 		// ------------------------------------------------------------------ Render
 		list.add(toggleable("blockesp", "Block-ESP", Category.RENDER,
 				"Markiert ausgewählte Blöcke (Erze, Spawner, ...) durch Wände.", () -> c().blockEspEnabled)

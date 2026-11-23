@@ -3,10 +3,10 @@
 > **Automatisch generiert** aus dem Quellcode mit `tools/generate_modules_md.py`.
 > Nicht von Hand bearbeiten – stattdessen das Skript erneut ausführen.
 
-**Module gesamt:** 28  
+**Module gesamt:** 29  
 **Setting-Typen:** Bool (An/Aus), Int (Ganzzahl), Dec (Dezimal), Color (Hex), Text, Mode (Darstellung), ListEdit (ID-Liste mit Farbe), Action (Knopf).
 
-**Pro Kategorie:** Kampf: 7  Render: 10  Bewegung: 2  Welt: 4  Spieler: 2  Sonstiges: 1  Client: 2
+**Pro Kategorie:** Kampf: 8  Render: 10  Bewegung: 2  Welt: 4  Spieler: 2  Sonstiges: 1  Client: 2
 
 Dieser Client gruppiert Einstellungen **flach pro Modul** (keine Unter-Gruppen wie bei Meteor); die Spalte „Feld" nennt das zugehörige Config-Feld in `ModConfig`.
 
@@ -78,6 +78,17 @@ Taste halten: schnelle, zufällig getimte Mace-Angriffe auf das anvisierte Ziel 
 | Nur mit Mace | Bool | An | An / Aus | `shieldbreakerRequireMace` |
 | Min. Klicks/s | Int | 8 | 1 … 20 | `shieldbreakerMinCps` |
 | Max. Klicks/s | Int | 14 | 1 … 20 | `shieldbreakerMaxCps` |
+
+### Auto-StunSlam  
+`id: stunslam` · Kategorie: **Kampf** · Aktions-/Einstellungs-Modul  
+Du schießt dich selbst hoch; auf Tastendruck: Axt-Schlag (Schild-Stun) → Mace-Wechsel → Mace-Slam auf den nächsten Gegner.
+
+| Einstellung | Typ | Standard | Bereich / Werte | Feld |
+|---|---|---|---|---|
+| Reichweite | Dec | 5.0 | 1 … 6 (Schritt 0.5) | `autoStunSlamRange` |
+| Lücke (Ticks) | Int | 2 | 0 … 10 | `autoStunSlamGapTicks` |
+| Rotation | Bool | An | An / Aus | `autoStunSlamRotate` |
+| Nur Spieler | Bool | An | An / Aus | `autoStunSlamPlayersOnly` |
 
 
 ## Render  
