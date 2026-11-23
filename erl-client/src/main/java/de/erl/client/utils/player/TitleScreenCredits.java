@@ -95,12 +95,6 @@ public class TitleScreenCredits {
             credit.text.append(Component.literal(addon.authors[i]).withStyle(ChatFormatting.WHITE));
         }
 
-        if (addon == ErlClient.ADDON) {
-            credit.text.append(Component.literal(" (based on ").withStyle(ChatFormatting.GRAY));
-            credit.text.append(Component.literal("Meteor Client").withStyle(style -> style.withColor(0x913DE2)));
-            credit.text.append(Component.literal(" by MeteorDevelopment)").withStyle(ChatFormatting.GRAY));
-        }
-
         credits.add(credit);
     }
 

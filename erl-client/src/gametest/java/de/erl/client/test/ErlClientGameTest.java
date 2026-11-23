@@ -169,6 +169,7 @@ public class ErlClientGameTest implements FabricClientGameTest {
         setActive(ctx, StunSlam.class, true);
         // Über und vor den Dummy (in Schildrichtung) teleportieren und fallen lassen
         server.runCommand("tp @a %d.5 %d %d.0 0 60".formatted(base.getX(), base.getY() + 11, base.getZ() + 1));
+        ctx.waitFor(mc -> mc.player.getY() > base.getY() + 8, 40);
         ctx.waitFor(mc -> mc.player.onGround() && mc.player.getY() < base.getY() + 1, 100);
         ctx.waitTicks(5);
         ctx.takeScreenshot("04-stunslam");

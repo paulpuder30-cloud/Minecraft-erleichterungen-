@@ -5,7 +5,7 @@
   "version": "${version}",
   "description": "ERL-Client – Utility-Client für Minecraft 26.3. Basiert auf Meteor Client von MeteorDevelopment (GPL-3.0).",
   "authors": [
-    "paulpuder30-cloud"
+    "holyfricc"
   ],
   "contributors": [
     "MeteorDevelopment (Meteor Client)",

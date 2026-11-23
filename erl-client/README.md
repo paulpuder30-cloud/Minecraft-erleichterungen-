@@ -19,7 +19,7 @@
   (Prefix `.`), Freunde, Makros, Profile, Waypoints, Baritone-Integration, Addon-Schnittstelle.
 - **Eigene Kategorie „ERL“** mit drei neuen Modulen (siehe unten).
 - **Branding**: Fenstertitel `ERL-Client <Version> - Minecraft 26.3`, Click-GUI-Titel, Chat-Prefix `[ERL]`,
-  eigene Splash-Texte, Titelbildschirm-Credits (inkl. Hinweis auf Meteor Client), eigenes Icon.
+  eigene Splash-Texte, Titelbildschirm-Credits („ERL-Client by holyfricc“), eigenes Icon.
 - **Config-Ordner**: `.minecraft/erl-client/`
 - **Komplett umbenannt**: Packages (`de.erl.client`), Klassen (`ErlClient`, `ErlAddon`, Theme „ERL“ …),
   Starscript-Variablen (`{erl.name}`, `{erl.version}` …), Texte und Ressourcen. Übrig bleiben nur die von der
