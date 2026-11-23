@@ -11,7 +11,7 @@
 
 - **Umfangreiche Utility-Module**: Module (Combat, Player, Movement, Render, World, Misc), HUD-Editor, Befehle
   (Prefix `.`), Freunde, Makros, Profile, Waypoints, Baritone-Integration, Addon-Schnittstelle.
-- **Eigene Kategorie „ERL“** mit drei neuen Modulen (siehe unten).
+- **Eigene Kategorie „ERL“** mit vier neuen Modulen (siehe unten).
 - **Branding**: Fenstertitel `ERL-Client <Version> - Minecraft 26.3`, Click-GUI-Titel, Chat-Prefix `[ERL]`,
   eigene Splash-Texte, Titelbildschirm-Credits („ERL-Client by holyfricc“), eigenes Icon.
 - **Config-Ordner**: `.minecraft/erl-client/`
@@ -20,7 +20,7 @@
 
 ## ERL-Module
 
-Alle drei Module findest du in der Click-GUI (**Rechte Shift**) in der Kategorie **ERL**. Wie jedes Modul
+Alle vier Module findest du in der Click-GUI (**Rechte Shift**) in der Kategorie **ERL**. Wie jedes Modul
 lassen sie sich per Mittelklick (oder in den Moduleinstellungen unter *Bind*) auf eine Taste legen.
 
 | Einstellungen | | |
@@ -71,6 +71,22 @@ Wechselt auf einen **Speer mit Lunge**, führt einen Jab aus (Lunge-Dash nach vo
 | `lunge-key` | Taste für den Lunge (nur bei `Keybind`) | – |
 | `prefer-highest-level` | Höchstes Lunge-Level (weiter) statt niedrigstes (weniger Hunger) | an |
 | `min-hunger` | Pausiert unter diesem Hungerwert (7–20) | 7 |
+| `swap-back` / `swap-back-delay` | Zurückwechseln und Ticks bis dahin | an / 1 |
+
+### MaceAura
+
+Schlägt automatisch mit dem Streitkolben zu, sobald du tief genug fällst und ein Gegner in Reichweite ist: Wechsel auf
+den Mace, Smash, Wechsel zurück. Pro Fall gibt es einen Schlag. Schilde blocken den Smash; solche Ziele lässt MaceAura
+standardmäßig aus (dafür gibt es StunSlam).
+
+| Einstellung | Bedeutung | Standard |
+|---|---|---|
+| `min-fall-height` | Mindest-Fallhöhe in Blöcken (Smash braucht > 1,5) | 3 |
+| `range` | Reichweite bis zur Hitbox des Ziels | 3 |
+| `only-players` | Nur Spieler als Ziel | an |
+| `skip-blocking` | Ziele überspringen, deren Schild zu dir zeigt | an |
+| `rotate` | Zum Ziel drehen. Aus: nur das Ziel unter dem Fadenkreuz | an |
+| `prefer-density` | Bei mehreren Maces den mit höchster Dichte nehmen | an |
 | `swap-back` / `swap-back-delay` | Zurückwechseln und Ticks bis dahin | an / 1 |
 
 ## Vanilla-Mechaniken in 26.3 (am Quellcode geprüft)

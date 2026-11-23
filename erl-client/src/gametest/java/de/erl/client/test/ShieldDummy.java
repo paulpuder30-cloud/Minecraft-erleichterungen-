@@ -57,6 +57,10 @@ public class ShieldDummy extends FakePlayer {
         startUsingItem(InteractionHand.OFF_HAND);
     }
 
+    public void lowerShield() {
+        stopUsingItem();
+    }
+
     public boolean isShieldDisabled() {
         return getCooldowns().isOnCooldown(SHIELD);
     }

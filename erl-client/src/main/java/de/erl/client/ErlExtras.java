@@ -6,6 +6,7 @@
 package de.erl.client;
 
 import de.erl.client.modules.LungeSwap;
+import de.erl.client.modules.MaceAura;
 import de.erl.client.modules.ShieldBreaker;
 import de.erl.client.modules.StunSlam;
 import de.erl.client.systems.modules.Category;
@@ -34,5 +35,6 @@ public final class ErlExtras {
         modules.add(new ShieldBreaker());
         modules.add(new StunSlam());
         modules.add(new LungeSwap());
+        modules.add(new MaceAura());
     }
 }

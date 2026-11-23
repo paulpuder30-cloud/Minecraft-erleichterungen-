@@ -8,6 +8,7 @@ package de.erl.client.test;
 import com.mojang.blaze3d.platform.InputConstants;
 import de.erl.client.ErlExtras;
 import de.erl.client.modules.LungeSwap;
+import de.erl.client.modules.MaceAura;
 import de.erl.client.modules.ShieldBreaker;
 import de.erl.client.modules.StunSlam;
 import de.erl.client.utils.ErlCombatUtils;
@@ -77,7 +78,7 @@ public class ErlClientGameTest implements FabricClientGameTest {
             for (var category : Modules.loopCategories()) if (category == ErlExtras.CATEGORY) categoryRegistered = true;
             check(categoryRegistered, "Kategorie ERL fehlt");
 
-            for (Class<? extends Module> type : List.of(ShieldBreaker.class, StunSlam.class, LungeSwap.class)) {
+            for (Class<? extends Module> type : List.of(ShieldBreaker.class, StunSlam.class, LungeSwap.class, MaceAura.class)) {
                 Module module = Modules.get().get(type);
                 check(module != null, type.getSimpleName() + " nicht registriert");
                 check(module.category == ErlExtras.CATEGORY, type.getSimpleName() + " nicht in Kategorie ERL");
@@ -97,6 +98,7 @@ public class ErlClientGameTest implements FabricClientGameTest {
             testShieldBreaker(ctx, server);
             testStunSlamGround(ctx, server);
             testStunSlam(ctx, server);
+            testMaceAura(ctx, server);
             testLungeSwap(ctx, server);
         }
     }
@@ -189,7 +191,7 @@ public class ErlClientGameTest implements FabricClientGameTest {
         in.pressKey(InputConstants.KEY_ESCAPE);
         ctx.waitForScreen(null);
 
-        for (Class<? extends Module> type : List.of(ShieldBreaker.class, StunSlam.class, LungeSwap.class)) {
+        for (Class<? extends Module> type : List.of(ShieldBreaker.class, StunSlam.class, LungeSwap.class, MaceAura.class)) {
             String name = type.getSimpleName().toLowerCase();
             ctx.setScreen(() -> GuiThemes.get().moduleScreen(Modules.get().get(type)));
             ctx.waitTicks(5);
@@ -275,6 +277,32 @@ public class ErlClientGameTest implements FabricClientGameTest {
         check(shieldDisabled, "StunSlam: Schild wurde nicht mit der Axt deaktiviert");
         check(healthBefore - healthAfter >= 10, "StunSlam: Mace-Smash hat zu wenig Schaden gemacht (" + (healthBefore - healthAfter) + ")");
         check(ctx.computeOnClient(mc -> mc.player.getInventory().getSelectedSlot()) == SWORD, "StunSlam hat nicht zurückgewechselt");
+
+        removeDummy(ctx, server, dummy);
+    }
+
+    // ------------------------------------------------------------------ MaceAura
+
+    private void testMaceAura(ClientGameTestContext ctx, TestServerContext server) {
+        resetPlayer(ctx, server, base.getX() + 0.5, base.getY(), base.getZ() - 4.5);
+        ShieldDummy dummy = spawnDummy(ctx, server, "AuraDummy", base.getX() + 0.5, base.getZ() + 2.5);
+        int id = server.computeOnServer(s -> dummy.getId());
+        server.runOnServer(s -> dummy.lowerShield());
+        ctx.waitFor(mc -> mc.level.getEntity(id) instanceof LivingEntity le && !le.isUsingItem(), 40);
+        float healthBefore = server.computeOnServer(s -> dummy.getHealth());
+
+        setActive(ctx, MaceAura.class, true);
+        server.runCommand("tp @a %d.5 %d %d.0 0 60".formatted(base.getX(), base.getY() + 11, base.getZ() + 1));
+        ctx.waitFor(mc -> mc.player.getY() > base.getY() + 8, 40);
+        ctx.waitFor(mc -> mc.player.onGround() && mc.player.getY() < base.getY() + 1, 100);
+        ctx.waitTicks(5);
+        ctx.takeScreenshot("06-maceaura");
+        setActive(ctx, MaceAura.class, false);
+
+        float healthAfter = server.computeOnServer(s -> dummy.getHealth());
+        log("MaceAura: Dummy-Leben " + healthBefore + " -> " + healthAfter);
+        check(healthBefore - healthAfter >= 10, "MaceAura: kein Smash (" + (healthBefore - healthAfter) + ")");
+        check(ctx.computeOnClient(mc -> mc.player.getInventory().getSelectedSlot()) == SWORD, "MaceAura hat nicht zurückgewechselt");
 
         removeDummy(ctx, server, dummy);
     }
