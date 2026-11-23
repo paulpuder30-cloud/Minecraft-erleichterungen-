@@ -5,15 +5,15 @@
 
 package de.erl.client.modules;
 
-import de.erl.client.ErlClient;
+import de.erl.client.ErlExtras;
 import de.erl.client.utils.ErlCombatUtils;
-import meteordevelopment.meteorclient.events.entity.player.DoAttackEvent;
-import meteordevelopment.meteorclient.events.game.GameLeftEvent;
-import meteordevelopment.meteorclient.events.world.TickEvent;
-import meteordevelopment.meteorclient.settings.*;
-import meteordevelopment.meteorclient.systems.modules.Module;
-import meteordevelopment.meteorclient.utils.misc.Keybind;
-import meteordevelopment.meteorclient.utils.player.InvUtils;
+import de.erl.client.events.entity.player.DoAttackEvent;
+import de.erl.client.events.game.GameLeftEvent;
+import de.erl.client.events.world.TickEvent;
+import de.erl.client.settings.*;
+import de.erl.client.systems.modules.Module;
+import de.erl.client.utils.misc.Keybind;
+import de.erl.client.utils.player.InvUtils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.tags.ItemTags;
@@ -96,7 +96,7 @@ public class LungeSwap extends Module {
     private boolean warnedHunger;
 
     public LungeSwap() {
-        super(ErlClient.CATEGORY, "lunge-swap", "Swaps to a Lunge spear, jabs to get the lunge dash and swaps back.");
+        super(ErlExtras.CATEGORY, "lunge-swap", "Swaps to a Lunge spear, jabs to get the lunge dash and swaps back.");
     }
 
     @Override

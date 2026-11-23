@@ -1,8 +1,8 @@
 {
   "required": false,
-  "package": "meteordevelopment.meteorclient.mixin.metallum",
+  "package": "de.erl.client.mixin.metallum",
   "compatibilityLevel": "JAVA_21",
-  "plugin": "meteordevelopment.meteorclient.MixinPlugin",
+  "plugin": "de.erl.client.MixinPlugin",
   "client": [
     "MetalDeviceMixin"
   ],

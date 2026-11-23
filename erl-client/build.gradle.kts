@@ -2,7 +2,6 @@ import net.ltgt.gradle.errorprone.errorprone
 
 plugins {
     alias(libs.plugins.fabric.loom)
-    id("maven-publish")
     alias(libs.plugins.errorprone)
 }
 
@@ -20,11 +19,11 @@ base {
 
 repositories {
     maven {
-        name = "meteor-maven"
+        name = "orbit-starscript-baritone"  // Bibliotheken von MeteorDevelopment
         url = uri("https://maven.meteordev.org/releases")
     }
     maven {
-        name = "meteor-maven-snapshots"
+        name = "orbit-starscript-baritone-snapshots"
         url = uri("https://maven.meteordev.org/snapshots")
     }
     maven {
@@ -224,7 +223,7 @@ tasks {
         from(launcher.output)
 
         manifest {
-            attributes["Main-Class"] = "meteordevelopment.meteorclient.Main"
+            attributes["Main-Class"] = "de.erl.client.Main"
         }
     }
 
@@ -241,7 +240,7 @@ tasks {
         if (runErrorProne) {
             options.errorprone {
                 check("NullAway", net.ltgt.gradle.errorprone.CheckSeverity.ERROR)
-                option("NullAway:AnnotatedPackages", "meteordevelopment.meteorclient")
+                option("NullAway:AnnotatedPackages", "de.erl.client")
                 option("NullAway:JSpecifyMode", "true")
                 // Event handlers are discovered reflectively by Orbit.
                 option("UnusedMethod:ExcludedAnnotations", "meteordevelopment.orbit.EventHandler")
@@ -260,32 +259,6 @@ tasks {
     build {
         if (System.getenv("CI")?.toBoolean() == true) {
             dependsOn("javadocJar")
-        }
-    }
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("mavenJava") {
-            from(components["java"])
-            artifactId = "meteor-client"
-
-            version = "${libs.versions.minecraft.get()}-SNAPSHOT"
-        }
-    }
-
-    repositories {
-        maven("https://maven.meteordev.org/snapshots") {
-            name = "meteor-maven"
-
-            credentials {
-                username = System.getenv("MAVEN_METEOR_ALIAS")
-                password = System.getenv("MAVEN_METEOR_TOKEN")
-            }
-
-            authentication {
-                create<BasicAuthentication>("basic")
-            }
         }
     }
 }

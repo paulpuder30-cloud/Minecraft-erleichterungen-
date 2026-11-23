@@ -15,18 +15,23 @@
 
 ## Features
 
-- **Alle Meteor-Client-Features**: Module (Combat, Player, Movement, Render, World, Misc), HUD-Editor, Befehle
-  (Prefix `.`), Freunde, Makros, Profile, Waypoints, Baritone-Integration, Addon-Unterstützung.
+- **Alle Features von Meteor Client**: Module (Combat, Player, Movement, Render, World, Misc), HUD-Editor, Befehle
+  (Prefix `.`), Freunde, Makros, Profile, Waypoints, Baritone-Integration, Addon-Schnittstelle.
 - **Eigene Kategorie „ERL“** mit drei neuen Modulen (siehe unten).
 - **Branding**: Fenstertitel `ERL-Client <Version> - Minecraft 26.3`, Click-GUI-Titel, Chat-Prefix `[ERL]`,
   eigene Splash-Texte, Titelbildschirm-Credits (inkl. Hinweis auf Meteor Client), eigenes Icon.
 - **Config-Ordner**: `.minecraft/erl-client/`
-- **Meteor-Addons** laufen weiter: ERL-Client meldet sich gegenüber Fabric zusätzlich als `meteor-client`.
+- **Komplett umbenannt**: Packages (`de.erl.client`), Klassen (`ErlClient`, `ErlAddon`, Theme „ERL“ …),
+  Starscript-Variablen (`{erl.name}`, `{erl.version}` …), Texte und Ressourcen. Übrig bleiben nur die von der
+  GPL-3.0 vorgeschriebenen Copyright-Hinweise und Credits, die Packages der externen MeteorDevelopment-Bibliotheken
+  (Orbit, Starscript, Discord-IPC) sowie Links zu Meteors Wiki, Cape-Server und Discord-App.
+- **Addons**: Addons nutzen den Entrypoint `erl` und die Klasse `de.erl.client.addons.ErlAddon`. Fertige
+  Meteor-Addons sind wegen der Umbenennung **nicht** kompatibel.
 - Keine Online-Statistik-Pings an meteorclient.com; Discord-Rich-Presence ist standardmäßig aus.
 
 ## ERL-Module
 
-Alle drei Module findest du in der Click-GUI (**Rechte Shift**) in der Kategorie **ERL**. Wie jedes Meteor-Modul
+Alle drei Module findest du in der Click-GUI (**Rechte Shift**) in der Kategorie **ERL**. Wie jedes Modul
 lassen sie sich per Mittelklick (oder in den Moduleinstellungen unter *Bind*) auf eine Taste legen.
 
 | Einstellungen | | |
@@ -100,7 +105,7 @@ Wechselt auf einen **Speer mit Lunge**, führt einen Jab aus (Lunge-Dash nach vo
 1. [Fabric Loader](https://fabricmc.net/use/) **0.20.1 oder neuer** für Minecraft **26.3** installieren.
 2. `erl-client-1.0.0-mc26.3.jar` in den `mods`-Ordner legen (`.minecraft/mods`).
 3. Die Fabric API ist **nicht** nötig (die benötigten Module sind eingebettet), stört aber auch nicht.
-4. **Nicht** zusammen mit Meteor Client installieren – ERL-Client *ist* Meteor Client plus Extras.
+4. **Nicht** zusammen mit Meteor Client installieren (gleiche Mixins, Konflikte).
 5. Minecraft mit dem Fabric-Profil starten, Click-GUI mit **Rechte Shift** öffnen.
 
 ## Selbst bauen
@@ -137,14 +142,15 @@ Schild blockenden Test-Gegner, macht Screenshots unter `run/screenshots/`). Ohne
 | Gradle | 9.9.2 |
 | Java | 25 |
 
-Die Versionen stehen wie bei Meteor in `gradle/libs.versions.toml`, die Mod-Version in `gradle.properties`.
+Die Versionen stehen in `gradle/libs.versions.toml`, die Mod-Version in `gradle.properties`.
 
 ## Projektstruktur
 
-- `src/main/java/meteordevelopment/meteorclient/` – Meteor-Kern. Das Package wurde bewusst nicht umbenannt, damit
-  sich Upstream-Updates einfach mergen lassen und Addons kompatibel bleiben.
-- `src/main/java/de/erl/client/` – ERL-eigener Code: `ErlClient` (Kategorie, Registrierung), `modules/`
-  (ShieldBreaker, StunSlam, LungeSwap) und `utils/ErlCombatUtils`.
+- `src/main/java/de/erl/client/` – gesamter Client. `ErlClient` ist der Einstiegspunkt (Mod-Initialisierung),
+  `systems/`, `gui/`, `mixin/` usw. stammen aus Meteor Client.
+- ERL-eigene Erweiterungen: `ErlExtras` (Kategorie „ERL“, Registrierung), `modules/` (ShieldBreaker, StunSlam,
+  LungeSwap) und `utils/ErlCombatUtils`.
+- Hinweis: Durch die komplette Umbenennung lassen sich künftige Meteor-Updates nur noch mit Aufwand übernehmen.
 - `src/gametest/` – Fabric-Client-Gametest.
 
 ## Credits

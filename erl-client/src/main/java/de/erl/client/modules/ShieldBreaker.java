@@ -5,18 +5,18 @@
 
 package de.erl.client.modules;
 
-import de.erl.client.ErlClient;
+import de.erl.client.ErlExtras;
 import de.erl.client.utils.ErlCombatUtils;
 import de.erl.client.utils.ErlCombatUtils.AxePriority;
-import meteordevelopment.meteorclient.events.game.GameLeftEvent;
-import meteordevelopment.meteorclient.events.world.TickEvent;
-import meteordevelopment.meteorclient.settings.*;
-import meteordevelopment.meteorclient.systems.modules.Module;
-import meteordevelopment.meteorclient.utils.entity.SortPriority;
-import meteordevelopment.meteorclient.utils.entity.Target;
-import meteordevelopment.meteorclient.utils.entity.TargetUtils;
-import meteordevelopment.meteorclient.utils.player.InvUtils;
-import meteordevelopment.meteorclient.utils.player.Rotations;
+import de.erl.client.events.game.GameLeftEvent;
+import de.erl.client.events.world.TickEvent;
+import de.erl.client.settings.*;
+import de.erl.client.systems.modules.Module;
+import de.erl.client.utils.entity.SortPriority;
+import de.erl.client.utils.entity.Target;
+import de.erl.client.utils.entity.TargetUtils;
+import de.erl.client.utils.player.InvUtils;
+import de.erl.client.utils.player.Rotations;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -106,7 +106,7 @@ public class ShieldBreaker extends Module {
     private int cooldown;
 
     public ShieldBreaker() {
-        super(ErlClient.CATEGORY, "shield-breaker", "Swaps to an axe and hits targets that are blocking with a shield, then swaps back.");
+        super(ErlExtras.CATEGORY, "shield-breaker", "Swaps to an axe and hits targets that are blocking with a shield, then swaps back.");
     }
 
     @Override

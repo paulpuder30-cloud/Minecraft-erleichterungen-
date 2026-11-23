@@ -21,15 +21,12 @@
   "license": "GPL-3.0",
   "icon": "assets/erl-client/icon.png",
   "environment": "client",
-  "provides": [
-    "meteor-client"
-  ],
   "entrypoints": {
     "client": [
-      "meteordevelopment.meteorclient.MeteorClient"
+      "de.erl.client.ErlClient"
     ],
     "modmenu": [
-      "meteordevelopment.meteorclient.modintegration.ModMenuIntegration"
+      "de.erl.client.modintegration.ModMenuIntegration"
     ]
   },
   "mixins": [
@@ -46,7 +43,7 @@
     "erl-client:color": "40,160,255",
     "erl-client:commit": "${commit}",
     "badoptimizations:cache_hooks": {
-      "lightmap": "meteordevelopment.meteorclient.modintegration.BadOptimizationsHook"
+      "lightmap": "de.erl.client.modintegration.BadOptimizationsHook"
     }
   },
   "depends": {

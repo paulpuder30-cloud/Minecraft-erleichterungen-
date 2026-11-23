@@ -5,9 +5,9 @@
 
 package de.erl.client.utils;
 
-import meteordevelopment.meteorclient.systems.friends.Friends;
-import meteordevelopment.meteorclient.utils.Utils;
-import meteordevelopment.meteorclient.utils.player.SwingMode;
+import de.erl.client.systems.friends.Friends;
+import de.erl.client.utils.Utils;
+import de.erl.client.utils.player.SwingMode;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.InteractionHand;
@@ -26,7 +26,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.function.ToIntFunction;
 
-import static meteordevelopment.meteorclient.MeteorClient.mc;
+import static de.erl.client.ErlClient.mc;
 
 /**
  * Gemeinsame Kampf-Hilfsfunktionen der ERL-Module.

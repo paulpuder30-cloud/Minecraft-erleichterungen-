@@ -6,17 +6,17 @@
 package de.erl.client.test;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import de.erl.client.ErlClient;
+import de.erl.client.ErlExtras;
 import de.erl.client.modules.LungeSwap;
 import de.erl.client.modules.ShieldBreaker;
 import de.erl.client.modules.StunSlam;
-import meteordevelopment.meteorclient.MeteorClient;
-import meteordevelopment.meteorclient.gui.GuiThemes;
-import meteordevelopment.meteorclient.gui.tabs.TabScreen;
-import meteordevelopment.meteorclient.settings.Setting;
-import meteordevelopment.meteorclient.systems.modules.Module;
-import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.utils.misc.Keybind;
+import de.erl.client.ErlClient;
+import de.erl.client.gui.GuiThemes;
+import de.erl.client.gui.tabs.TabScreen;
+import de.erl.client.settings.Setting;
+import de.erl.client.systems.modules.Module;
+import de.erl.client.systems.modules.Modules;
+import de.erl.client.utils.misc.Keybind;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.TestInput;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -49,20 +49,20 @@ public class ErlClientGameTest implements FabricClientGameTest {
         ctx.takeScreenshot("00-titelbildschirm");
 
         ctx.runOnClient(mc -> {
-            check(MeteorClient.MOD_ID.equals("erl-client"), "Mod-ID ist nicht erl-client: " + MeteorClient.MOD_ID);
-            check(MeteorClient.NAME.equals("ERL-Client"), "Name ist nicht ERL-Client: " + MeteorClient.NAME);
-            check(MeteorClient.FOLDER.getName().equals("erl-client"), "Config-Ordner: " + MeteorClient.FOLDER);
+            check(ErlClient.MOD_ID.equals("erl-client"), "Mod-ID ist nicht erl-client: " + ErlClient.MOD_ID);
+            check(ErlClient.NAME.equals("ERL-Client"), "Name ist nicht ERL-Client: " + ErlClient.NAME);
+            check(ErlClient.FOLDER.getName().equals("erl-client"), "Config-Ordner: " + ErlClient.FOLDER);
             check(mc.getWindow() != null, "kein Fenster");
 
             boolean categoryRegistered = false;
-            for (var category : Modules.loopCategories()) if (category == ErlClient.CATEGORY) categoryRegistered = true;
+            for (var category : Modules.loopCategories()) if (category == ErlExtras.CATEGORY) categoryRegistered = true;
             check(categoryRegistered, "Kategorie ERL fehlt");
 
             for (Class<? extends Module> type : List.of(ShieldBreaker.class, StunSlam.class, LungeSwap.class)) {
                 Module module = Modules.get().get(type);
                 check(module != null, type.getSimpleName() + " nicht registriert");
-                check(module.category == ErlClient.CATEGORY, type.getSimpleName() + " nicht in Kategorie ERL");
-                check(Modules.get().getGroup(ErlClient.CATEGORY).contains(module), type.getSimpleName() + " fehlt in der GUI-Gruppe ERL");
+                check(module.category == ErlExtras.CATEGORY, type.getSimpleName() + " nicht in Kategorie ERL");
+                check(Modules.get().getGroup(ErlExtras.CATEGORY).contains(module), type.getSimpleName() + " fehlt in der GUI-Gruppe ERL");
             }
         });
 
@@ -283,6 +283,6 @@ public class ErlClientGameTest implements FabricClientGameTest {
     }
 
     private static void log(String message) {
-        MeteorClient.LOG.info("[ERL-Test] {}", message);
+        ErlClient.LOG.info("[ERL-Test] {}", message);
     }
 }

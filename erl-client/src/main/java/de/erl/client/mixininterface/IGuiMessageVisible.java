@@ -1,0 +1,12 @@
+/*
+ * This file is part of the Meteor Client distribution (https://github.com/MeteorDevelopment/meteor-client).
+ * Copyright (c) Meteor Development.
+ */
+
+package de.erl.client.mixininterface;
+
+public interface IGuiMessageVisible extends IGuiMessage {
+    boolean erl$isStartOfEntry();
+
+    void erl$setStartOfEntry(boolean start);
+}

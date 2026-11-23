@@ -5,18 +5,18 @@
 
 package de.erl.client.modules;
 
-import de.erl.client.ErlClient;
+import de.erl.client.ErlExtras;
 import de.erl.client.utils.ErlCombatUtils;
 import de.erl.client.utils.ErlCombatUtils.AxePriority;
-import meteordevelopment.meteorclient.events.game.GameLeftEvent;
-import meteordevelopment.meteorclient.events.world.TickEvent;
-import meteordevelopment.meteorclient.settings.*;
-import meteordevelopment.meteorclient.systems.modules.Module;
-import meteordevelopment.meteorclient.utils.entity.SortPriority;
-import meteordevelopment.meteorclient.utils.entity.Target;
-import meteordevelopment.meteorclient.utils.entity.TargetUtils;
-import meteordevelopment.meteorclient.utils.player.InvUtils;
-import meteordevelopment.meteorclient.utils.player.Rotations;
+import de.erl.client.events.game.GameLeftEvent;
+import de.erl.client.events.world.TickEvent;
+import de.erl.client.settings.*;
+import de.erl.client.systems.modules.Module;
+import de.erl.client.utils.entity.SortPriority;
+import de.erl.client.utils.entity.Target;
+import de.erl.client.utils.entity.TargetUtils;
+import de.erl.client.utils.player.InvUtils;
+import de.erl.client.utils.player.Rotations;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -119,7 +119,7 @@ public class StunSlam extends Module {
     private int previousSlot = -1;
 
     public StunSlam() {
-        super(ErlClient.CATEGORY, "stun-slam", "Axe + mace combo: disables the target's shield with an axe, then smashes with a mace while falling.");
+        super(ErlExtras.CATEGORY, "stun-slam", "Axe + mace combo: disables the target's shield with an axe, then smashes with a mace while falling.");
     }
 
     @Override
