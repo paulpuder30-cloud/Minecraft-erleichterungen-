@@ -19,7 +19,7 @@ import de.erl.client.utils.misc.input.KeyAction;
 import de.erl.client.utils.player.ChatUtils;
 import de.erl.client.utils.player.FindItemResult;
 import de.erl.client.utils.player.InvUtils;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;

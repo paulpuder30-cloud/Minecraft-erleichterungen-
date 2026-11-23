@@ -15,7 +15,7 @@ import de.erl.client.utils.entity.simulator.ProjectileEntitySimulator;
 import de.erl.client.utils.entity.simulator.SimulationStep;
 import de.erl.client.utils.misc.Pool;
 import de.erl.client.utils.render.color.SettingColor;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Mth;

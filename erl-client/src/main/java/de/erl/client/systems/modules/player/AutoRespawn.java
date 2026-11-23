@@ -10,8 +10,8 @@ import de.erl.client.systems.modules.Categories;
 import de.erl.client.systems.modules.Module;
 import de.erl.client.systems.modules.Modules;
 import de.erl.client.systems.modules.render.WaypointsModule;
-import meteordevelopment.orbit.EventHandler;
-import meteordevelopment.orbit.EventPriority;
+import de.erl.client.lib.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventPriority;
 import net.minecraft.client.gui.screens.DeathScreen;
 
 public class AutoRespawn extends Module {

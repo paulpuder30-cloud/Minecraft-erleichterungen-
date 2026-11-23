@@ -13,7 +13,7 @@ import de.erl.client.settings.*;
 import de.erl.client.systems.modules.Categories;
 import de.erl.client.systems.modules.Module;
 import de.erl.client.utils.player.Rotations;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.world.InteractionHand;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;

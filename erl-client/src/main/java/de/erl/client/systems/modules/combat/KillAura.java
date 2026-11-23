@@ -21,7 +21,7 @@ import de.erl.client.utils.player.PlayerUtils;
 import de.erl.client.utils.player.Rotations;
 import de.erl.client.utils.player.SwingMode;
 import de.erl.client.utils.world.TickRate;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;

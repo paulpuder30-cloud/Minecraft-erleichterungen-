@@ -20,7 +20,7 @@ import de.erl.client.events.world.TickEvent;
 import de.erl.client.systems.modules.Modules;
 import de.erl.client.systems.modules.misc.Notebot;
 import de.erl.client.utils.notebot.song.Note;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;

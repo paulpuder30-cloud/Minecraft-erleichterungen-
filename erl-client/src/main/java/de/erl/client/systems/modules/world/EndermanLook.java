@@ -14,7 +14,7 @@ import de.erl.client.systems.modules.Categories;
 import de.erl.client.systems.modules.Module;
 import de.erl.client.utils.entity.Target;
 import de.erl.client.utils.player.Rotations;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;

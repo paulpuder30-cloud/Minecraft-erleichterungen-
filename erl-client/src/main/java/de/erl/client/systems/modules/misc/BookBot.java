@@ -12,7 +12,7 @@ import de.erl.client.systems.modules.Categories;
 import de.erl.client.systems.modules.Module;
 import de.erl.client.utils.player.FindItemResult;
 import de.erl.client.utils.player.InvUtils;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.*;

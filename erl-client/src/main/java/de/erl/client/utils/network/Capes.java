@@ -9,7 +9,7 @@ import com.mojang.blaze3d.platform.NativeImage;
 import de.erl.client.ErlClient;
 import de.erl.client.events.world.TickEvent;
 import de.erl.client.utils.PreInit;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;

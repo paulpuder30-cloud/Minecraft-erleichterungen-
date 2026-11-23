@@ -11,7 +11,7 @@ import de.erl.client.systems.System;
 import de.erl.client.systems.Systems;
 import de.erl.client.utils.Utils;
 import de.erl.client.utils.misc.NbtUtils;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.nbt.CompoundTag;
 import org.jspecify.annotations.NonNull;
 

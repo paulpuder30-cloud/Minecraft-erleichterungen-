@@ -17,7 +17,7 @@ import de.erl.client.utils.entity.TargetUtils;
 import de.erl.client.utils.player.InvUtils;
 import de.erl.client.utils.player.PlayerUtils;
 import de.erl.client.utils.player.Rotations;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;

@@ -8,7 +8,7 @@ package de.erl.client.utils.misc;
 import de.erl.client.ErlClient;
 import de.erl.client.events.world.TickEvent;
 import de.erl.client.utils.PreInit;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 
 
 public class CPSUtils {

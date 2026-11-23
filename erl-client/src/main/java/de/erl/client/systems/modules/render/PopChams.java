@@ -15,7 +15,7 @@ import de.erl.client.systems.modules.Module;
 import de.erl.client.utils.entity.fakeplayer.FakePlayerEntity;
 import de.erl.client.utils.render.WireframeEntityRenderer;
 import de.erl.client.utils.render.color.SettingColor;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.network.protocol.game.ClientboundEntityEventPacket;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityEvent;

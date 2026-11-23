@@ -27,7 +27,7 @@ import de.erl.client.settings.Setting;
 import de.erl.client.settings.SettingGroup;
 import de.erl.client.systems.modules.Categories;
 import de.erl.client.systems.modules.Module;
-import meteordevelopment.orbit.listeners.ConsumerListener;
+import de.erl.client.lib.orbit.listeners.ConsumerListener;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;

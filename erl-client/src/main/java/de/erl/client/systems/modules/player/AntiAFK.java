@@ -13,7 +13,7 @@ import de.erl.client.utils.Utils;
 import de.erl.client.utils.player.ChatUtils;
 import de.erl.client.utils.player.Rotations;
 import de.erl.client.utils.player.SwingMode;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 
 import java.util.List;
 import java.util.Random;

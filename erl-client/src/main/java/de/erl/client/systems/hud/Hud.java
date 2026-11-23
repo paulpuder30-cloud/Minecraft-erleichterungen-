@@ -19,7 +19,7 @@ import de.erl.client.utils.Utils;
 import de.erl.client.utils.misc.Keybind;
 import de.erl.client.utils.misc.NbtUtils;
 import de.erl.client.utils.render.color.SettingColor;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import org.jspecify.annotations.NonNull;

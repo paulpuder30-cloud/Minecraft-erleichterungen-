@@ -19,11 +19,11 @@ base {
 
 repositories {
     maven {
-        name = "orbit-starscript-baritone"
+        name = "baritone"
         url = uri("https://maven.meteordev.org/releases")
     }
     maven {
-        name = "orbit-starscript-baritone-snapshots"
+        name = "baritone-snapshots"
         url = uri("https://maven.meteordev.org/snapshots")
     }
     maven {
@@ -88,8 +88,6 @@ dependencies {
     compileOnly(libs.modmenu)
 
     // Libraries (JAR-in-JAR)
-    jij(libs.orbit)
-    jij(libs.starscript)
     jij(libs.reflections)
     jij(libs.netty.handler.proxy) { isTransitive = false }
     jij(libs.netty.codec.socks) { isTransitive = false }
@@ -242,7 +240,7 @@ tasks {
                 option("NullAway:AnnotatedPackages", "de.erl.client")
                 option("NullAway:JSpecifyMode", "true")
                 // Event handlers are discovered reflectively by Orbit.
-                option("UnusedMethod:ExcludedAnnotations", "meteordevelopment.orbit.EventHandler")
+                option("UnusedMethod:ExcludedAnnotations", "de.erl.client.lib.orbit.EventHandler")
             }
         }
     }

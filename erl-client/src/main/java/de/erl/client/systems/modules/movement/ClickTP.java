@@ -8,7 +8,7 @@ package de.erl.client.systems.modules.movement;
 import de.erl.client.events.world.TickEvent;
 import de.erl.client.systems.modules.Categories;
 import de.erl.client.systems.modules.Module;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.client.Camera;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

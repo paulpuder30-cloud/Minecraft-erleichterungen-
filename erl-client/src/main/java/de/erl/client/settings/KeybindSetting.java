@@ -12,8 +12,8 @@ import de.erl.client.events.erl.MouseClickEvent;
 import de.erl.client.gui.widgets.WKeybind;
 import de.erl.client.utils.misc.Keybind;
 import de.erl.client.utils.misc.input.KeyAction;
-import meteordevelopment.orbit.EventHandler;
-import meteordevelopment.orbit.EventPriority;
+import de.erl.client.lib.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventPriority;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.function.Consumer;

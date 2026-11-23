@@ -19,7 +19,7 @@ import de.erl.client.renderer.text.VanillaTextRenderer;
 import de.erl.client.utils.Utils;
 import de.erl.client.utils.render.RenderUtils;
 import de.erl.client.utils.render.color.Color;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;

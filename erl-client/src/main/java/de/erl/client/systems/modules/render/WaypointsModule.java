@@ -28,7 +28,7 @@ import de.erl.client.utils.player.ChatUtils;
 import de.erl.client.utils.player.PlayerUtils;
 import de.erl.client.utils.render.NametagUtils;
 import de.erl.client.utils.render.color.Color;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.DeathScreen;
 import net.minecraft.core.BlockPos;

@@ -11,7 +11,7 @@ import de.erl.client.systems.modules.Categories;
 import de.erl.client.systems.modules.Module;
 import de.erl.client.utils.entity.DamageUtils;
 import de.erl.client.utils.player.InvUtils;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;

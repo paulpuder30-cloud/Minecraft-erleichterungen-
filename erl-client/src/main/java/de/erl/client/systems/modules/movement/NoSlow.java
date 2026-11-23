@@ -11,7 +11,7 @@ import de.erl.client.systems.modules.Categories;
 import de.erl.client.systems.modules.Module;
 import de.erl.client.systems.modules.Modules;
 import de.erl.client.systems.modules.world.Timer;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.world.level.block.Blocks;
 
 public class NoSlow extends Module {

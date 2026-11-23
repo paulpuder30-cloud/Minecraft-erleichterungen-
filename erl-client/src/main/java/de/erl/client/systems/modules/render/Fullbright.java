@@ -13,7 +13,7 @@ import de.erl.client.settings.Setting;
 import de.erl.client.settings.SettingGroup;
 import de.erl.client.systems.modules.Categories;
 import de.erl.client.systems.modules.Module;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;

@@ -14,7 +14,7 @@ import de.erl.client.settings.Setting;
 import de.erl.client.settings.SettingGroup;
 import de.erl.client.systems.modules.Categories;
 import de.erl.client.systems.modules.Module;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.client.gui.screens.inventory.AbstractSignEditScreen;
 import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
 import net.minecraft.world.level.block.entity.SignBlockEntity;

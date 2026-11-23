@@ -25,7 +25,7 @@ import de.erl.client.utils.render.RenderUtils;
 import de.erl.client.utils.render.color.Color;
 import de.erl.client.utils.world.BlockEntityIterator;
 import de.erl.client.utils.world.ChunkIterator;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.client.ResourceLoadStateTracker;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;

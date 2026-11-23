@@ -9,7 +9,7 @@ import de.erl.client.events.packets.PacketEvent;
 import de.erl.client.mixin.BlockHitResultAccessor;
 import de.erl.client.systems.modules.Categories;
 import de.erl.client.systems.modules.Module;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ServerboundUseItemOnPacket;
 

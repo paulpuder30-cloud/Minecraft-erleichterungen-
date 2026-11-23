@@ -12,8 +12,8 @@ import de.erl.client.systems.System;
 import de.erl.client.systems.Systems;
 import de.erl.client.utils.misc.NbtUtils;
 import de.erl.client.utils.misc.input.KeyAction;
-import meteordevelopment.orbit.EventHandler;
-import meteordevelopment.orbit.EventPriority;
+import de.erl.client.lib.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventPriority;
 import net.minecraft.nbt.CompoundTag;
 import org.jspecify.annotations.NonNull;
 

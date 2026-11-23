@@ -15,7 +15,7 @@ import de.erl.client.systems.modules.Module;
 import de.erl.client.utils.entity.EntityUtils;
 import de.erl.client.utils.misc.input.Input;
 import de.erl.client.utils.player.PlayerUtils;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.game.ClientboundMoveVehiclePacket;
 import net.minecraft.network.protocol.game.ServerboundMoveVehiclePacket;

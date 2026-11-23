@@ -19,7 +19,7 @@ import de.erl.client.gui.widgets.pressable.WCheckbox;
 import de.erl.client.gui.widgets.pressable.WMinus;
 import de.erl.client.systems.modules.Categories;
 import de.erl.client.systems.modules.Module;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;

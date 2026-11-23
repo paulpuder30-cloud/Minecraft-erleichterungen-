@@ -9,7 +9,7 @@ import de.erl.client.ErlClient;
 import de.erl.client.events.game.GameJoinedEvent;
 import de.erl.client.events.packets.PacketEvent;
 import de.erl.client.utils.Utils;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.network.protocol.game.ClientboundSetTimePacket;
 import net.minecraft.util.Mth;
 

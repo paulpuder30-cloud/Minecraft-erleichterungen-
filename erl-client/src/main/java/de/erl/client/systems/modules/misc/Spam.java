@@ -13,7 +13,7 @@ import de.erl.client.systems.modules.Categories;
 import de.erl.client.systems.modules.Module;
 import de.erl.client.utils.Utils;
 import de.erl.client.utils.player.ChatUtils;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.client.gui.screens.DisconnectedScreen;
 import org.apache.commons.lang3.RandomStringUtils;
 

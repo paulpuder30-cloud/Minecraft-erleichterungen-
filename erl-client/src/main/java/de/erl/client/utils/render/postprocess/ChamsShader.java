@@ -20,7 +20,7 @@ import de.erl.client.systems.modules.Modules;
 import de.erl.client.systems.modules.render.Chams;
 import de.erl.client.utils.PostInit;
 import de.erl.client.utils.render.color.Color;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.client.renderer.DynamicGpuDataStorage;
 import net.minecraft.client.renderer.DynamicGpuDataStorageMapped;
 import net.minecraft.server.packs.resources.Resource;

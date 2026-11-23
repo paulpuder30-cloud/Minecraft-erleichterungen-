@@ -9,7 +9,7 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import de.erl.client.ErlClient;
 import de.erl.client.events.game.ResourcePacksReloadedEvent;
 import de.erl.client.utils.PreInit;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.resources.language.I18n;

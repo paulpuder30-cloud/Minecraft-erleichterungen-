@@ -14,7 +14,7 @@ import de.erl.client.utils.entity.TargetUtils;
 import de.erl.client.utils.player.FindItemResult;
 import de.erl.client.utils.player.InvUtils;
 import de.erl.client.utils.world.BlockUtils;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.world.item.Items;
 
 public class SelfWeb extends Module {

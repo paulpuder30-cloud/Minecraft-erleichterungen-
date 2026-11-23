@@ -14,7 +14,7 @@ import de.erl.client.events.packets.PacketEvent;
 import de.erl.client.events.world.TickEvent;
 import de.erl.client.mixin.ClientPacketListenerAccessor;
 import de.erl.client.utils.world.TickRate;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.client.multiplayer.ServerData;

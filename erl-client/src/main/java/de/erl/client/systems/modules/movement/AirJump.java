@@ -15,7 +15,7 @@ import de.erl.client.systems.modules.Module;
 import de.erl.client.systems.modules.Modules;
 import de.erl.client.systems.modules.render.Freecam;
 import de.erl.client.utils.misc.input.KeyAction;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 
 public class AirJump extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();

@@ -15,7 +15,7 @@ import de.erl.client.systems.modules.Module;
 import de.erl.client.utils.Utils;
 import de.erl.client.utils.player.InvUtils;
 import de.erl.client.utils.player.SlotUtils;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;

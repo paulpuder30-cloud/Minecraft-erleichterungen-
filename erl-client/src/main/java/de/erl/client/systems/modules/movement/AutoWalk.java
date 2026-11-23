@@ -21,8 +21,8 @@ import de.erl.client.systems.modules.Module;
 import de.erl.client.systems.modules.Modules;
 import de.erl.client.utils.Utils;
 import de.erl.client.utils.misc.input.KeyAction;
-import meteordevelopment.orbit.EventHandler;
-import meteordevelopment.orbit.EventPriority;
+import de.erl.client.lib.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventPriority;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 

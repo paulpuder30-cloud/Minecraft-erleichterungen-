@@ -14,7 +14,7 @@ import de.erl.client.settings.SettingGroup;
 import de.erl.client.systems.modules.Categories;
 import de.erl.client.systems.modules.Module;
 import de.erl.client.utils.misc.input.KeyAction;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 
 public class BreakDelay extends Module {
     SettingGroup sgGeneral = settings.getDefaultGroup();

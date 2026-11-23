@@ -19,7 +19,7 @@ import de.erl.client.systems.modules.Module;
 import de.erl.client.utils.misc.Keybind;
 import de.erl.client.utils.misc.input.KeyAction;
 import de.erl.client.utils.render.color.SettingColor;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class Excavator extends Module {

@@ -17,7 +17,7 @@ import de.erl.client.systems.waypoints.Waypoint;
 import de.erl.client.systems.waypoints.Waypoints;
 import de.erl.client.utils.PostInit;
 import de.erl.client.utils.misc.UnorderedArrayList;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 
 import java.util.List;
 

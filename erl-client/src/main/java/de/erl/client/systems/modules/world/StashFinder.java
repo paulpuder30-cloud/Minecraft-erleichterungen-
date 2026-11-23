@@ -32,7 +32,7 @@ import de.erl.client.utils.player.ChatUtils;
 import de.erl.client.utils.render.ErlToast;
 import de.erl.client.utils.render.RenderUtils;
 import de.erl.client.utils.render.color.SettingColor;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;

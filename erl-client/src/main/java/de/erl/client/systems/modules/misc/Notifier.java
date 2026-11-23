@@ -22,7 +22,7 @@ import de.erl.client.systems.modules.Module;
 import de.erl.client.utils.entity.fakeplayer.FakePlayerEntity;
 import de.erl.client.utils.player.ChatUtils;
 import de.erl.client.utils.player.PlayerUtils;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;

@@ -14,7 +14,7 @@ import de.erl.client.systems.friends.Friends;
 import de.erl.client.systems.modules.Categories;
 import de.erl.client.systems.modules.Module;
 import de.erl.client.utils.player.ChatUtils;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.world.entity.player.Player;
 
 public class MessageAura extends Module {

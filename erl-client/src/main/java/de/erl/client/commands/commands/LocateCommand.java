@@ -15,7 +15,7 @@ import de.erl.client.pathing.BaritoneUtils;
 import de.erl.client.pathing.PathManagers;
 import de.erl.client.utils.player.ChatUtils;
 import de.erl.client.utils.player.InvUtils;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentMap;

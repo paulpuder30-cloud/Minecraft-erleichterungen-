@@ -12,7 +12,7 @@ import de.erl.client.ErlClient;
 import de.erl.client.commands.Command;
 import de.erl.client.events.world.TickEvent;
 import de.erl.client.mixin.KeyMappingAccessor;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.client.resources.language.I18n;

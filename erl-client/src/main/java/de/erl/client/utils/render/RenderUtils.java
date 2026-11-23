@@ -13,7 +13,7 @@ import de.erl.client.renderer.ShapeMode;
 import de.erl.client.utils.PostInit;
 import de.erl.client.utils.misc.Pool;
 import de.erl.client.utils.render.color.Color;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.irisshaders.iris.api.v0.IrisApi;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;

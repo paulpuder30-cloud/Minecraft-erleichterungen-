@@ -19,7 +19,7 @@ import de.erl.client.systems.modules.Module;
 import de.erl.client.utils.Utils;
 import de.erl.client.utils.render.color.RainbowColors;
 import de.erl.client.utils.render.color.SettingColor;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;

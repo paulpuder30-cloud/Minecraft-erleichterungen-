@@ -17,7 +17,7 @@ import de.erl.client.systems.modules.Modules;
 import de.erl.client.systems.profiles.Profiles;
 import de.erl.client.systems.proxies.Proxies;
 import de.erl.client.systems.waypoints.Waypoints;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 
 import java.io.File;
 import java.util.ArrayList;

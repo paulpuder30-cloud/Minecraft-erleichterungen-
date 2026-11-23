@@ -22,7 +22,7 @@ import de.erl.client.systems.modules.movement.elytrafly.modes.Vanilla;
 import de.erl.client.systems.modules.player.ChestSwap;
 import de.erl.client.systems.modules.player.Rotation;
 import de.erl.client.systems.modules.render.Freecam;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;

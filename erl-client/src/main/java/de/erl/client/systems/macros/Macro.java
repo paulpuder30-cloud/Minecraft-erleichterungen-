@@ -13,7 +13,7 @@ import de.erl.client.utils.misc.ErlStarscript;
 import de.erl.client.utils.player.ChatUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import org.meteordev.starscript.Script;
+import de.erl.client.lib.starscript.Script;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -7,7 +7,7 @@ package de.erl.client.utils.player;
 
 import de.erl.client.ErlClient;
 import de.erl.client.events.entity.player.PlayerMoveEvent;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;

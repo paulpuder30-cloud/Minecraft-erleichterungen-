@@ -12,7 +12,7 @@ import de.erl.client.commands.Command;
 import de.erl.client.commands.arguments.MacroArgumentType;
 import de.erl.client.events.world.TickEvent;
 import de.erl.client.systems.macros.Macro;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.commands.arguments.TimeArgument;
 

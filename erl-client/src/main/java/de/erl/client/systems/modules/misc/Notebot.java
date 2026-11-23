@@ -32,7 +32,7 @@ import de.erl.client.utils.player.SwingMode;
 import de.erl.client.utils.render.NametagUtils;
 import de.erl.client.utils.render.color.Color;
 import de.erl.client.utils.render.color.SettingColor;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;

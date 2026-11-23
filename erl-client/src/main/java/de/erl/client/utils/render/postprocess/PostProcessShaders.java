@@ -3,7 +3,7 @@ package de.erl.client.utils.render.postprocess;
 import de.erl.client.ErlClient;
 import de.erl.client.events.render.Render2DEvent;
 import de.erl.client.utils.PreInit;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 
 import static de.erl.client.ErlClient.mc;
 

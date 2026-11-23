@@ -16,13 +16,13 @@ import de.erl.client.utils.misc.input.KeyAction;
 import de.erl.client.utils.player.FindItemResult;
 import de.erl.client.utils.player.InvUtils;
 import de.erl.client.utils.player.PlayerUtils;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Items;
 
 import static com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_RIGHT;
-import static meteordevelopment.orbit.EventPriority.HIGHEST;
+import static de.erl.client.lib.orbit.EventPriority.HIGHEST;
 
 public class Offhand extends Module {
     private final SettingGroup sgCombat = settings.createGroup("Combat");

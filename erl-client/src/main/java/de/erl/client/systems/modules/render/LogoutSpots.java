@@ -19,7 +19,7 @@ import de.erl.client.utils.player.PlayerUtils;
 import de.erl.client.utils.render.NametagUtils;
 import de.erl.client.utils.render.color.Color;
 import de.erl.client.utils.render.color.SettingColor;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.world.entity.Entity;

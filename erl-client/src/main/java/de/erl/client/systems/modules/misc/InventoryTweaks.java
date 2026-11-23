@@ -24,7 +24,7 @@ import de.erl.client.utils.misc.Keybind;
 import de.erl.client.utils.misc.input.KeyAction;
 import de.erl.client.utils.network.ErlExecutor;
 import de.erl.client.utils.player.*;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.protocol.game.ServerboundContainerClosePacket;
 import net.minecraft.world.InteractionHand;

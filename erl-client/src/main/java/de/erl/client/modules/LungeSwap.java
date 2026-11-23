@@ -14,7 +14,7 @@ import de.erl.client.settings.*;
 import de.erl.client.systems.modules.Module;
 import de.erl.client.utils.misc.Keybind;
 import de.erl.client.utils.player.InvUtils;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;

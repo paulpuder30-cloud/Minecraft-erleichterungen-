@@ -16,7 +16,7 @@ import de.erl.client.systems.modules.movement.speed.modes.Strafe;
 import de.erl.client.systems.modules.movement.speed.modes.Vanilla;
 import de.erl.client.systems.modules.world.Timer;
 import de.erl.client.utils.player.PlayerUtils;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket;
 import net.minecraft.world.entity.MoverType;
 

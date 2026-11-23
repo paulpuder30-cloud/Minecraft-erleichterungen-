@@ -37,7 +37,7 @@ import de.erl.client.utils.render.color.SettingColor;
 import de.erl.client.utils.world.BlockUtils;
 import de.erl.client.utils.world.Dir;
 import de.erl.client.utils.world.TickRate;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;

@@ -5,7 +5,7 @@
 
 package de.erl.client.events;
 
-import meteordevelopment.orbit.ICancellable;
+import de.erl.client.lib.orbit.ICancellable;
 
 public class Cancellable implements ICancellable {
     private boolean cancelled = false;

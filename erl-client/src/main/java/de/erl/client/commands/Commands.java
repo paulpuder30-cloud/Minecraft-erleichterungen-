@@ -12,7 +12,7 @@ import de.erl.client.commands.commands.*;
 import de.erl.client.events.game.GameJoinedEvent;
 import de.erl.client.pathing.PathManagers;
 import de.erl.client.utils.PostInit;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.commands.CommandBuildContext;

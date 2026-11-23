@@ -17,7 +17,7 @@ import net.minecraft.network.chat.MessageSignature;
 import net.minecraft.network.chat.SignedMessageBody;
 import net.minecraft.network.protocol.game.ServerboundChatPacket;
 import net.minecraft.util.Crypt;
-import org.meteordev.starscript.Script;
+import de.erl.client.lib.starscript.Script;
 
 import java.time.Instant;
 import java.util.Optional;

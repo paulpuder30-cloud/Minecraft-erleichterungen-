@@ -19,7 +19,7 @@ import de.erl.client.systems.modules.misc.AutoReconnect;
 import de.erl.client.utils.Utils;
 import de.erl.client.utils.entity.DamageUtils;
 import de.erl.client.utils.player.PlayerUtils;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;

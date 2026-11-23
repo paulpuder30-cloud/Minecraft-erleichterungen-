@@ -17,7 +17,7 @@ import de.erl.client.gui.widgets.pressable.WButton;
 import de.erl.client.settings.*;
 import de.erl.client.systems.modules.Categories;
 import de.erl.client.systems.modules.Module;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 
 import java.net.URI;
 

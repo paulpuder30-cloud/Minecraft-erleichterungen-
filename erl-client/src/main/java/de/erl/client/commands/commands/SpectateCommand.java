@@ -12,7 +12,7 @@ import de.erl.client.commands.arguments.PlayerArgumentType;
 import de.erl.client.events.erl.KeyInputEvent;
 import de.erl.client.events.erl.MouseClickEvent;
 import de.erl.client.utils.misc.input.Input;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.network.chat.Component;
 

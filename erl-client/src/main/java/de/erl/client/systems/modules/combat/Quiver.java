@@ -16,7 +16,7 @@ import de.erl.client.utils.entity.EntityUtils;
 import de.erl.client.utils.player.FindItemResult;
 import de.erl.client.utils.player.InvUtils;
 import de.erl.client.utils.player.SlotUtils;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;

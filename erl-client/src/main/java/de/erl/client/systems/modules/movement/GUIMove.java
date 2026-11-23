@@ -18,7 +18,7 @@ import de.erl.client.systems.modules.Modules;
 import de.erl.client.systems.modules.render.Freecam;
 import de.erl.client.utils.misc.input.Input;
 import de.erl.client.utils.misc.input.KeyAction;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.ChatScreen;

@@ -11,7 +11,7 @@ import de.erl.client.systems.modules.Module;
 import de.erl.client.utils.player.FindItemResult;
 import de.erl.client.utils.player.InvUtils;
 import de.erl.client.utils.player.Rotations;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.world.item.Items;
 
 public class EXPThrower extends Module {

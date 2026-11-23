@@ -15,7 +15,7 @@ import de.erl.client.systems.modules.Modules;
 import de.erl.client.systems.modules.player.ChestSwap;
 import de.erl.client.utils.Utils;
 import de.erl.client.utils.player.InvUtils;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceKey;

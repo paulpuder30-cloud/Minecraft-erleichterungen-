@@ -13,7 +13,7 @@ import de.erl.client.systems.modules.Categories;
 import de.erl.client.systems.modules.Module;
 import de.erl.client.systems.modules.Modules;
 import de.erl.client.utils.Utils;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 
 public class AntiVoid extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();

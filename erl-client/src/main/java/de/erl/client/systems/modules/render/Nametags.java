@@ -27,7 +27,7 @@ import de.erl.client.utils.render.NametagUtils;
 import de.erl.client.utils.render.RenderUtils;
 import de.erl.client.utils.render.color.Color;
 import de.erl.client.utils.render.color.SettingColor;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;

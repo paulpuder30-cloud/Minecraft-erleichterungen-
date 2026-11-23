@@ -12,7 +12,7 @@ import de.erl.client.settings.*;
 import de.erl.client.systems.modules.Categories;
 import de.erl.client.systems.modules.Module;
 import de.erl.client.utils.misc.Keybind;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.client.CameraType;
 
 public class CameraTweaks extends Module {

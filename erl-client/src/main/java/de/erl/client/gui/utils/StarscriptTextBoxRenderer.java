@@ -11,9 +11,9 @@ import de.erl.client.gui.widgets.input.WTextBox;
 import de.erl.client.systems.hud.elements.TextHud;
 import de.erl.client.utils.misc.ErlStarscript;
 import de.erl.client.utils.render.color.Color;
-import org.meteordev.starscript.utils.SemanticToken;
-import org.meteordev.starscript.utils.SemanticTokenProvider;
-import org.meteordev.starscript.utils.SemanticTokenType;
+import de.erl.client.lib.starscript.utils.SemanticToken;
+import de.erl.client.lib.starscript.utils.SemanticTokenProvider;
+import de.erl.client.lib.starscript.utils.SemanticTokenType;
 
 import java.util.ArrayList;
 import java.util.List;

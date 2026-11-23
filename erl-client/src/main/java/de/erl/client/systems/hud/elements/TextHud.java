@@ -15,11 +15,11 @@ import de.erl.client.systems.hud.HudRenderer;
 import de.erl.client.utils.misc.ErlStarscript;
 import de.erl.client.utils.render.color.Color;
 import de.erl.client.utils.render.color.SettingColor;
-import org.meteordev.starscript.Script;
-import org.meteordev.starscript.Section;
-import org.meteordev.starscript.compiler.Compiler;
-import org.meteordev.starscript.compiler.Parser;
-import org.meteordev.starscript.utils.StarscriptError;
+import de.erl.client.lib.starscript.Script;
+import de.erl.client.lib.starscript.Section;
+import de.erl.client.lib.starscript.compiler.Compiler;
+import de.erl.client.lib.starscript.compiler.Parser;
+import de.erl.client.lib.starscript.utils.StarscriptError;
 
 import java.util.List;
 

@@ -22,10 +22,6 @@ lithium = "mc26.3-0.26.2-fabric"
 iris = "1.11.7+26.3-fabric"
 # ModMenu (https://github.com/TerraformersMC/ModMenu)
 modmenu = "21.0.0"
-# Orbit
-orbit = "0.2.4"
-# Starscript
-starscript = "0.2.5"
 # Reflections (https://github.com/ronmamo/reflections)
 reflections = "0.10.2"
 # Netty (https://github.com/netty/netty)
@@ -54,8 +50,6 @@ baritone = { module = "meteordevelopment:baritone", version.ref = "baritone" }
 modmenu = { module = "maven.modrinth:modmenu", version.ref = "modmenu" }
 
 # Libraries
-orbit = { module = "meteordevelopment:orbit", version.ref = "orbit" }
-starscript = { module = "org.meteordev:starscript", version.ref = "starscript" }
 reflections = { module = "org.reflections:reflections", version.ref = "reflections" }
 netty-handler-proxy = { module = "io.netty:netty-handler-proxy", version.ref = "netty" }
 netty-codec-socks = { module = "io.netty:netty-codec-socks", version.ref = "netty" }

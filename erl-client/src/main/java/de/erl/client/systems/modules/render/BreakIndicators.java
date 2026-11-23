@@ -16,7 +16,7 @@ import de.erl.client.systems.modules.world.HighwayBuilder;
 import de.erl.client.systems.modules.world.PacketMine;
 import de.erl.client.utils.render.color.Color;
 import de.erl.client.utils.render.color.SettingColor;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.BlockDestructionProgress;
 import net.minecraft.world.level.block.state.BlockState;

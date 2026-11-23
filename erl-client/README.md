@@ -159,3 +159,6 @@ ERL-Client steht unter der [GNU General Public License v3.0](https://www.gnu.org
 (siehe [LICENSE](LICENSE)). Der Code basiert auf einem GPL-3.0-lizenzierten Open-Source-Projekt von
 MeteorDevelopment; die Copyright-Hinweise in den Quelldateien bleiben deshalb erhalten, wie es die Lizenz verlangt.
 Wer Code daraus verwendet, muss den Quellcode offenlegen und dieselbe Lizenz verwenden.
+
+Die eingebetteten Bibliotheken unter `de.erl.client.lib` (Event-Bus und Skript-Sprache) stehen unter der MIT-Lizenz;
+ihre Lizenztexte liegen unter `src/main/resources/licenses/` und werden ins JAR übernommen.

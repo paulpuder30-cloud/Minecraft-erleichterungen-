@@ -10,7 +10,7 @@ import de.erl.client.events.game.GameLeftEvent;
 import de.erl.client.events.game.OpenScreenEvent;
 import de.erl.client.events.world.BlockActivateEvent;
 import de.erl.client.utils.PreInit;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;

@@ -22,7 +22,7 @@ import de.erl.client.systems.modules.combat.CrystalAura;
 import de.erl.client.systems.modules.combat.KillAura;
 import de.erl.client.utils.Utils;
 import de.erl.client.utils.player.InvUtils;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;

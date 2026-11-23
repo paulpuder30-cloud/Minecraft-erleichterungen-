@@ -22,7 +22,7 @@ import de.erl.client.utils.misc.Keybind;
 import de.erl.client.utils.player.EChestMemory;
 import de.erl.client.utils.render.color.Color;
 import de.erl.client.utils.tooltip.*;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.BookViewScreen;

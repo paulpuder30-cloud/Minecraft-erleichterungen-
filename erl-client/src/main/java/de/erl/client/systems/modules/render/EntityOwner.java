@@ -18,7 +18,7 @@ import de.erl.client.utils.network.Http;
 import de.erl.client.utils.network.ErlExecutor;
 import de.erl.client.utils.render.NametagUtils;
 import de.erl.client.utils.render.color.Color;
-import meteordevelopment.orbit.EventHandler;
+import de.erl.client.lib.orbit.EventHandler;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityReference;
