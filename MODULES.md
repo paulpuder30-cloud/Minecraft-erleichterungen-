@@ -65,7 +65,7 @@ _Keine Einstellungen._
 
 ### Auto-LungeSwap  
 `id: lungeswap` · Kategorie: **Kampf** · Aktions-/Einstellungs-Modul  
-Wirft auf Tastendruck eine Wind Charge und wechselt sofort auf den Speer (Items automatisch aus der Hotbar).
+Schlägt auf Tastendruck mit der Wind Charge zu und wechselt sofort auf den Speer (Lunge) – Items automatisch aus der Hotbar.
 
 _Keine Einstellungen._
 

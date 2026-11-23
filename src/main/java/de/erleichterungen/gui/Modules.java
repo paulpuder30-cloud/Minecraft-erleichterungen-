@@ -116,7 +116,7 @@ public final class Modules {
 				"Unterdrückt den vom Server geschickten Rückstoß (z.B. durch Treffer).", () -> c().antiKnockbackEnabled));
 
 		list.add(new Module("lungeswap", "Auto-LungeSwap", Category.COMBAT,
-				"Wirft auf Tastendruck eine Wind Charge und wechselt sofort auf den Speer (Items automatisch aus der Hotbar).",
+				"Schlägt auf Tastendruck mit der Wind Charge zu und wechselt sofort auf den Speer (Lunge) – Items automatisch aus der Hotbar.",
 				null, null, () -> ErleichterungenClient.keyFor("lungeswap")));
 
 		list.add(new Module("shieldbreaker", "Shieldbreaker", Category.COMBAT,

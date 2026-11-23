@@ -2,14 +2,18 @@ package de.erleichterungen.feature;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.SwingAnimation;
 
 import java.util.Set;
 
 /**
- * Auto-LungeSwap: wirft auf Tastendruck eine Wind Charge (geringer Cooldown) und wechselt
- * im selben Tick auf den Speer. Die Items werden automatisch in der Hotbar gesucht.
+ * Auto-LungeSwap: schlägt auf Tastendruck mit der Wind Charge zu (geringer Cooldown, schneller
+ * Hit auf das anvisierte Ziel) und wechselt im selben Tick auf den Speer (mit Lunge-Verzauberung).
+ * Die Items werden automatisch in der Hotbar gesucht.
  */
 public final class LungeSwap {
 	private static final Set<Item> SPEARS = Set.of(
@@ -27,7 +31,12 @@ public final class LungeSwap {
 		if (wc < 0 || spear < 0) return; // Wind Charge und/oder Speer nicht in der Hotbar
 
 		ComboUtil.selectSlot(mc, wc);
-		mc.gameMode.useItem(mc.player, InteractionHand.MAIN_HAND); // Wind Charge werfen
-		ComboUtil.selectSlot(mc, spear); // sofort auf den Speer wechseln
+		// Mit der Wind Charge zuschlagen (nicht werfen): anvisiertes Ziel angreifen, Arm schwingen
+		Entity e = mc.crosshairPickEntity;
+		if (e instanceof LivingEntity target && target.isAlive()) {
+			mc.gameMode.attack(mc.player, target);
+		}
+		mc.player.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, true);
+		ComboUtil.selectSlot(mc, spear); // gleichzeitig auf den Speer (Lunge) wechseln
 	}
 }
